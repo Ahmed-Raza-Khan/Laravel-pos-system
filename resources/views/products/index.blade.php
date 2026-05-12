@@ -3,12 +3,12 @@
 @section('content')
     <div class="flex justify-between mb-5">
         <h2 class="text-2xl font-bold">
-            Categories
+            Products
         </h2>
 
-        <a href="{{ route('categories.create') }}"
+        <a href="{{ route('products.create') }}"
         class="bg-blue-500 text-white px-4 py-2 rounded">
-            Add Category
+            Add Product
         </a>
     </div>
 
@@ -18,30 +18,35 @@
                 <tr class="bg-gray-200 text-left">
                     <th class="p-3">ID</th>
                     <th class="p-3">Name</th>
+                    <th class="p-3">Category</th>
+                    <th class="p-3">Price</th>
+                    <th class="p-3">Stock</th>
                     <th class="p-3">Status</th>
                     <th class="p-3">Action</th>
                 </tr>
             </thead>
-            <tbody>
-                @forelse($categories as $category)
 
+            <tbody>
+                @forelse($products as $product)
                     <tr class="border-t">
-                        <td class="p-3">{{ $category->id }}</td>
-                        <td class="p-3">{{ $category->name }}</td>
+                        <td class="p-3">{{ $product->id }}</td>
+                        <td class="p-3">{{ $product->name }}</td>
+                        <td class="p-3">{{ $product->category->name }}</td>
+                        <td class="p-3">{{ $product->price }}</td>
+                        <td class="p-3">{{ $product->stock }}</td>
                         <td class="p-3">
-                            <span class="{{ $category->status ? 'text-green-600' : 'text-red-600' }}">
-                                {{ $category->status ? 'Active' : 'Inactive' }}
+                            <span class="{{ $product->status ? 'text-green-600' : 'text-red-600' }}">
+                                {{ $product->status ? 'Active' : 'Inactive' }}
                             </span>
                         </td>
-
                         <td class="p-3">
                             <div class="flex gap-2">
-                                <a href="{{ route('categories.edit', $category->id) }}"
+                                <a href="{{ route('products.edit', $product->id) }}"
                                 class="bg-yellow-500 text-white px-3 py-1 rounded">
                                     Edit
                                 </a>
 
-                                <form action="{{ route('categories.destroy', $category->id) }}"
+                                <form action="{{ route('products.destroy', $product->id) }}"
                                     method="POST"
                                     onsubmit="return confirm('Are you sure?')">
                                     @csrf
@@ -55,17 +60,17 @@
                             </div>
                         </td>
                     </tr>
-                @empty
+                    @empty
                     <tr>
-                        <td colspan="4" class="p-5 text-center text-gray-500">
-                            No categories found
+                        <td colspan="7" class="p-5 text-center text-gray-500">
+                            No products found
                         </td>
                     </tr>
                 @endforelse
             </tbody>
-        </table>        
+        </table>
     </div>
-    <div class="mt-4">
-        {{ $categories->links() }}
+    <div class="mt-4 text-center">
+        {{ $products->links() }}
     </div>
 @endsection

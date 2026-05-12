@@ -17,7 +17,7 @@
             </a>
         </li>
         <li class="bg-neutral-600 rounded-md p-2 text-[18px]">
-            <a href="#">
+            <a href="{{ route('products.index')}}">
                 Products
             </a>
         </li>
