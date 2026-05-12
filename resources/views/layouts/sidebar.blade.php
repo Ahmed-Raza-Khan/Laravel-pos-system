@@ -22,7 +22,12 @@
             </a>
         </li>
         <li class="bg-neutral-600 rounded-md p-2 text-[18px]">
-            <a href="#">
+            <a href="{{ route('suppliers.index')}}">
+                Suppliers
+            </a>
+        </li>
+        <li class="bg-neutral-600 rounded-md p-2 text-[18px]">
+            <a href="{{ route('customers.index')}}">
                 Customers
             </a>
         </li>

@@ -12,6 +12,16 @@ use App\Interfaces\ProductRepositoryInterface;
 use App\Repositories\ProductRepository;
 use App\Services\ProductService;
 
+// customer interface repository service
+use App\Interfaces\CustomerRepositoryInterface;
+use App\Repositories\CustomerRepository;
+use App\Services\CustomerService;
+
+// supplier interface repository service
+use App\Interfaces\SupplierRepositoryInterface;
+use App\Repositories\SupplierRepository;
+use App\Services\SupplierService;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -35,6 +45,26 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->singleton(ProductService::class, function ($app) {
             return new ProductService($app->make(ProductRepositoryInterface::class));
+        });
+
+        $this->app->bind(
+            CustomerRepositoryInterface::class,
+            CustomerRepository::class
+        );
+
+        $this->app->singleton(CustomerService::class, function ($app) {
+            return new CustomerService($app->make(CustomerRepositoryInterface::class));
+        });
+
+        $this->app->bind(
+            SupplierRepositoryInterface::class,
+            SupplierRepository::class
+        );
+
+        $this->app->singleton(SupplierService::class, function ($app) {
+            return new SupplierService(
+                $app->make(SupplierRepositoryInterface::class)
+            );
         });
     }
 
