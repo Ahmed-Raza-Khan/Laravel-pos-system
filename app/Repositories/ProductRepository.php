@@ -9,7 +9,7 @@ class ProductRepository implements ProductRepositoryInterface
 {
     public function getAll()
     {
-        return Product::with('category')->latest()->paginate(5);
+        return Product::with('category')->latest()->paginate(10);
     }
 
     public function store(array $data)

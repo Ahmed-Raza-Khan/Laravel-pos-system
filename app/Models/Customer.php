@@ -17,4 +17,3 @@ class Customer extends Model
         'status'
     ];
 }
-

@@ -9,7 +9,7 @@ class SupplierRepository implements SupplierRepositoryInterface
 {
     public function getAll()
     {
-        return Supplier::latest()->paginate(10);
+        return Supplier::latest()->paginate(5);
     }
 
     public function store(array $data)

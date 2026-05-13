@@ -1,4 +1,4 @@
-<aside class="w-64 bg-neutral-700 text-white min-h-screen p-5">
+<aside class="w-64 bg-neutral-700 text-white h-full p-5">
     <h1 class="text-3xl font-bold mb-8 text-mauve-400">
         <a href="{{ route('dashboard')}}">
             Laravel POS
