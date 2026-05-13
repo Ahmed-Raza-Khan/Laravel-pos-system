@@ -22,6 +22,11 @@ use App\Interfaces\SupplierRepositoryInterface;
 use App\Repositories\SupplierRepository;
 use App\Services\SupplierService;
 
+// supplier interface repository service
+use App\Interfaces\BrandRepositoryInterface;
+use App\Repositories\BrandRepository;
+use App\Services\BrandService;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -64,6 +69,17 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(SupplierService::class, function ($app) {
             return new SupplierService(
                 $app->make(SupplierRepositoryInterface::class)
+            );
+        });
+
+        $this->app->bind(
+            BrandRepositoryInterface::class,
+            BrandRepository::class
+        );
+
+        $this->app->singleton(BrandService::class, function ($app) {
+            return new BrandService(
+                $app->make(BrandRepositoryInterface::class)
             );
         });
     }
