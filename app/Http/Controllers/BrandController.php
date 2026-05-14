@@ -101,13 +101,3 @@ class BrandController extends Controller
             ->with('success', 'Brand deleted successfully');
     }
 }
-
-
-
-<?php
-
-namespace App\Http\Controllers;
-
-class BrandController extends Controller
-{
-}
