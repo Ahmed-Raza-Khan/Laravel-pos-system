@@ -12,9 +12,7 @@ class PurchaseRepository implements PurchaseRepositoryInterface
 {
     public function getAll()
     {
-        return Purchase::with('supplier')
-            ->latest()
-            ->paginate(10);
+        return Purchase::with('supplier')->latest()->paginate(10);
     }
 
     public function store(array $data)
@@ -22,7 +20,6 @@ class PurchaseRepository implements PurchaseRepositoryInterface
         DB::beginTransaction();
 
         try {
-
             $purchase = Purchase::create([
                 'invoice_no' => 'INV-' . time(),
                 'supplier_id' => $data['supplier_id'],
@@ -35,11 +32,8 @@ class PurchaseRepository implements PurchaseRepositoryInterface
             $total = 0;
 
             foreach ($data['product_id'] as $key => $productId) {
-
                 $qty = $data['quantity'][$key];
-
                 $price = $data['purchase_price'][$key];
-
                 $subtotal = $qty * $price;
 
                 PurchaseItem::create([
@@ -51,11 +45,8 @@ class PurchaseRepository implements PurchaseRepositoryInterface
                 ]);
 
                 $product = Product::findOrFail($productId);
-
                 $product->stock += $qty;
-
                 $product->save();
-
                 $total += $subtotal;
             }
 
@@ -64,13 +55,9 @@ class PurchaseRepository implements PurchaseRepositoryInterface
             ]);
 
             DB::commit();
-
             return $purchase;
-
         } catch (\Exception $e) {
-
             DB::rollBack();
-
             throw $e;
         }
     }
@@ -86,33 +73,24 @@ class PurchaseRepository implements PurchaseRepositoryInterface
         DB::beginTransaction();
 
         try {
-
             $purchase = Purchase::with('items')
                 ->findOrFail($id);
 
             foreach ($purchase->items as $item) {
-
                 $product = Product::find($item->product_id);
-
                 if ($product) {
-
                     $product->stock -= $item->quantity;
-
                     $product->save();
                 }
             }
 
             PurchaseItem::where('purchase_id', $purchase->id)
                 ->delete();
-
             $total = 0;
 
             foreach ($data['product_id'] as $key => $productId) {
-
                 $qty = $data['quantity'][$key];
-
                 $price = $data['purchase_price'][$key];
-
                 $subtotal = $qty * $price;
 
                 PurchaseItem::create([
@@ -124,11 +102,8 @@ class PurchaseRepository implements PurchaseRepositoryInterface
                 ]);
 
                 $product = Product::findOrFail($productId);
-
                 $product->stock += $qty;
-
                 $product->save();
-
                 $total += $subtotal;
             }
 
@@ -142,11 +117,8 @@ class PurchaseRepository implements PurchaseRepositoryInterface
             DB::commit();
 
             return $purchase;
-
         } catch (\Exception $e) {
-
             DB::rollBack();
-
             throw $e;
         }
     }
@@ -156,18 +128,13 @@ class PurchaseRepository implements PurchaseRepositoryInterface
         DB::beginTransaction();
 
         try {
-
             $purchase = Purchase::with('items')
                 ->findOrFail($id);
 
             foreach ($purchase->items as $item) {
-
                 $product = Product::find($item->product_id);
-
                 if ($product) {
-
                     $product->stock -= $item->quantity;
-
                     $product->save();
                 }
             }
@@ -176,15 +143,11 @@ class PurchaseRepository implements PurchaseRepositoryInterface
                 ->delete();
 
             $purchase->delete();
-
             DB::commit();
 
             return true;
-
         } catch (\Exception $e) {
-
             DB::rollBack();
-
             throw $e;
         }
     }

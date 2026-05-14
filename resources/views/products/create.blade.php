@@ -20,7 +20,14 @@
 
         <div>
             <label>Brand</label>
-            <input type="text" name="brand_id" class="w-full border p-2 rounded">
+            <select name="brand_id" class="w-full border p-2 rounded">
+                <option value="">Select Brand</option>
+                @foreach($brands as $brand)
+                    <option value="{{ $brand->id }}">
+                        {{ $brand->name }}
+                    </option>
+                @endforeach
+            </select>
         </div>
 
         <div>

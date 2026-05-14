@@ -6,6 +6,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 use App\Models\Product;
+use App\Models\Brand;
 
 class ProductSeeder extends Seeder
 {
@@ -23,16 +24,22 @@ class ProductSeeder extends Seeder
             ['category_id' => 3, 'name' => 'Laravel Beginner Guide', 'purchase_price' => 2000, 'sale_price' => 3000, 'stock' => 20],
         ];
 
+        $brandIds = Brand::pluck('id')->toArray();
+
+        if (empty($brandIds)) {
+            $brandIds = [null];
+        }
+
         foreach ($products as $p) {
             Product::create([
                 'category_id' => $p['category_id'],
-                'brand_id' => null,
+                'brand_id' => $brandIds[array_rand($brandIds)],
 
                 'name' => $p['name'],
                 'slug' => Str::slug($p['name']),
 
                 'sku' => 'SKU-' . rand(10000, 99999),
-                'barcode' => null,
+                'barcode' => 'BC-' . rand(1000000000, 9999999999),
 
                 'purchase_price' => $p['purchase_price'],
                 'sale_price' => $p['sale_price'],
