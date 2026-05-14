@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StorePrdouctRequest;
+use App\Http\Requests\StoreProductRequest;
+use App\Http\Requests\UpdateProductRequest;
 use App\Services\ProductService;
-use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Models\Category;
+use App\Models\Brand;
 
 class ProductController extends Controller
 {
@@ -26,21 +27,15 @@ class ProductController extends Controller
     public function create()
     {
         $categories = Category::where('status', 1)->get();
-        return view('products.create', compact('categories'));
+        $brands = Brand::where('status', 1)->get();
+
+        return view('products.create', compact('categories', 'brands'));
     }
 
-    public function store(Request $request)
+    public function store(StoreProductRequest $request)
     {
-        $data = $request->validate([
-            'category_id' => 'required',
-            'name' => 'required',
-            'price' => 'required',
-            'stock' => 'required',
-            'status' => 'required'
-        ]);
-
-        $data['slug'] = Str::slug($request->name);
-
+        $data = $request->validated();
+        $data['slug'] = Str::slug($data['name']);
         $this->productService->createProduct($data);
 
         return redirect()->route('products.index')->with('success', 'Product created');
@@ -50,22 +45,15 @@ class ProductController extends Controller
     {
         $product = $this->productService->getProduct($id);
         $categories = Category::where('status', 1)->get();
+        $brands = Brand::where('status', 1)->get();
 
-        return view('products.edit', compact('product', 'categories'));
+        return view('products.edit', compact('product', 'categories', 'brands'));
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateProductRequest $request, $id)
     {
-        $data = $request->validate([
-            'category_id' => 'required',
-            'name' => 'required|string',
-            'price' => 'required',
-            'stock' => 'required',
-            'status' => 'required',
-        ]);
-
-        $data['slug'] = Str::slug($request->name);
-
+        $data = $request->validated();
+        $data['slug'] = Str::slug($data['name']);
         $this->productService->updateProduct($id, $data);
 
         return redirect()->route('products.index')->with('success', 'Product updated');
@@ -75,6 +63,7 @@ class ProductController extends Controller
     {
         $this->productService->deleteProduct($id);
 
-        return redirect()->route('products.index')->with('success', 'Product deleted');
+        return redirect()->route('products.index')
+            ->with('success', 'Product deleted');
     }
 }

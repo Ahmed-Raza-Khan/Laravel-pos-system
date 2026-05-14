@@ -61,10 +61,7 @@ class PurchaseController extends Controller
 
         $products = Product::where('status', 1)->get();
 
-        return view(
-            'purchases.edit',
-            compact('purchase', 'suppliers', 'products')
-        );
+        return view('purchases.edit',compact('purchase', 'suppliers', 'products'));
     }
 
     /**
