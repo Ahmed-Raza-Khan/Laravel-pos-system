@@ -2,7 +2,7 @@
 
 namespace App\Interfaces;
 
-interface SupplierRepositoryInterface
+interface PurchaseRepositoryInterface
 {
     public function getAll();
 
@@ -11,6 +11,6 @@ interface SupplierRepositoryInterface
     public function findById($id);
 
     public function update($id, array $data);
-    
+
     public function delete($id);
 }

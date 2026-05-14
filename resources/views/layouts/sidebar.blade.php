@@ -12,28 +12,33 @@
             </a>
         </li>
         <li class="bg-neutral-600 rounded-md p-2 text-[18px]">
-            <a href="{{ route('categories.index')}}">
+            <a href="{{ route('categories.index') }}">
                 Categories
             </a>
         </li>
         <li class="bg-neutral-600 rounded-md p-2 text-[18px]">
-            <a href="{{ route('brands.index')}}">
+            <a href="{{ route('brands.index') }}">
                 Brands
             </a>
         </li>
         <li class="bg-neutral-600 rounded-md p-2 text-[18px]">
-            <a href="{{ route('products.index')}}">
+            <a href="{{ route('products.index') }}">
                 Products
             </a>
         </li>
         <li class="bg-neutral-600 rounded-md p-2 text-[18px]">
-            <a href="{{ route('suppliers.index')}}">
+            <a href="{{ route('suppliers.index') }}">
                 Suppliers
             </a>
         </li>
         <li class="bg-neutral-600 rounded-md p-2 text-[18px]">
-            <a href="{{ route('customers.index')}}">
+            <a href="{{ route('customers.index') }}">
                 Customers
+            </a>
+        </li>
+        <li class="bg-neutral-600 rounded-md p-2 text-[18px]">
+            <a href="{{ route('purchases.index') }}">
+                Purchases
             </a>
         </li>
         <li class="bg-neutral-600 rounded-md p-2 text-[18px]">
