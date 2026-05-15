@@ -32,6 +32,12 @@ use App\Interfaces\PurchaseRepositoryInterface;
 use App\Repositories\PurchaseRepository;
 use App\Services\PurchaseService;
 
+
+// Sale interface repository service
+use App\Interfaces\SaleRepositoryInterface;
+use App\Repositories\SaleRepository;
+use App\Services\SaleService;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -96,6 +102,17 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(PurchaseService::class, function ($app) {
             return new PurchaseService(
                 $app->make(PurchaseRepositoryInterface::class)
+            );
+        });
+
+        $this->app->bind(
+            SaleRepositoryInterface::class,
+            SaleRepository::class
+        );
+
+        $this->app->singleton(SaleService::class, function ($app) {
+            return new SaleService(
+                $app->make(SaleRepositoryInterface::class)
             );
         });
     }

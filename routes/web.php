@@ -7,6 +7,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\PurchaseController;
+use App\Http\Controllers\SaleController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -32,5 +33,15 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('purchases', PurchaseController::class);
 });
 
+Route::prefix('sales')->name('sales.')->group(function () {
+        Route::get('/', [SaleController::class, 'index'])->name('index');
+        Route::get('/create', [SaleController::class, 'create'])->name('create');
+        Route::post('/store', [SaleController::class, 'store'])->name('store');
+        Route::get('/show/{id}', [SaleController::class, 'show'])->name('show');
+        Route::post('/add-to-cart/{id}', [SaleController::class, 'addToCart'])->name('addToCart');
+        Route::post('/update-cart/{id}', [SaleController::class, 'updateCart'])->name('updateCart');
+        Route::delete('/remove-cart/{id}', [SaleController::class, 'removeCart'])->name('removeCart');
+        Route::delete('/clear-cart', [SaleController::class, 'clearCart'])->name('clearCart');
+    });
 
 require __DIR__.'/auth.php';
