@@ -26,6 +26,21 @@ class ProductController extends Controller
         return view('products.index', compact('products'));
     }
 
+    public function show($id)
+    {
+        $product = Product::with(['category', 'brand'])
+            ->findOrFail($id);
+
+        return view('products.show', compact('product'));
+    }
+
+    public function barcode($id)
+    {
+        $product = Product::findOrFail($id);
+
+        return view('products.barcode', compact('product'));
+    }
+
     public function create()
     {
         $categories = Category::where('status', 1)->get();

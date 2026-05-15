@@ -20,7 +20,7 @@ class UpdateProductRequest extends FormRequest
             'brand_id' => 'nullable|exists:brands,id',
             'name' => 'required|string|max:255',
             'sku' => 'required|unique:products,sku,' . $id,
-            'barcode' => 'nullable|unique:products,barcode,' . $id,
+            'barcode' => 'required|unique:products,barcode,' . $id,
             'purchase_price' => 'required|numeric|min:0',
             'sale_price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
