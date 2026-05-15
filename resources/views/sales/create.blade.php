@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <div class="w-full mx-auto px-4 sm:px-6 lg:px-1 py-1">
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <!-- Products Section -->
             <div class="lg:col-span-2">

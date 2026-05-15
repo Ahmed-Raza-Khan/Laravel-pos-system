@@ -5,7 +5,7 @@
         </a>
     </h1>
 
-    <ul class="space-y-6">
+    <ul class="space-y-3">
         <li class="bg-neutral-600 rounded-lg p-2 text-[18px]">
             <a href="{{ route('dashboard') }}">
                 Dashboard
@@ -44,6 +44,11 @@
         <li class="bg-neutral-600 rounded-md p-2 text-[18px]">
             <a href="{{ route('sales.index') }}">
                 Sales
+            </a>
+        </li>
+        <li class="bg-neutral-600 rounded-md p-2 text-[18px]">
+            <a href="{{ route('inventory.index') }}">
+                Inventory
             </a>
         </li>
         <li class="bg-neutral-600 rounded-md p-2 text-[18px]">

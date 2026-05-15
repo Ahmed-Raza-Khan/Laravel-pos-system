@@ -6,10 +6,19 @@ use App\Models\Product;
 use App\Models\Purchase;
 use App\Models\PurchaseItem;
 use Illuminate\Support\Facades\DB;
+use App\Services\InventoryService;
 use App\Interfaces\PurchaseRepositoryInterface;
 
 class PurchaseRepository implements PurchaseRepositoryInterface
 {
+    protected $inventoryService;
+    
+    public function __construct(
+        InventoryService $inventoryService
+    ) {
+        $this->inventoryService = $inventoryService;
+    }
+
     public function getAll()
     {
         return Purchase::with('supplier')->latest()->paginate(10);
@@ -45,8 +54,13 @@ class PurchaseRepository implements PurchaseRepositoryInterface
                 ]);
 
                 $product = Product::findOrFail($productId);
+                $before = $product->stock;
                 $product->stock += $qty;
                 $product->save();
+                $product->refresh();
+                $after = $product->stock;
+
+                $this->inventoryService->log($product,'purchase',$qty,$before,$after,'Stock added from purchase creation.');
                 $total += $subtotal;
             }
 
@@ -64,8 +78,7 @@ class PurchaseRepository implements PurchaseRepositoryInterface
 
     public function findById($id)
     {
-        return Purchase::with('items.product')
-            ->findOrFail($id);
+        return Purchase::with('items.product')->findOrFail($id);
     }
 
     public function update($id, array $data)
@@ -73,14 +86,21 @@ class PurchaseRepository implements PurchaseRepositoryInterface
         DB::beginTransaction();
 
         try {
-            $purchase = Purchase::with('items')
-                ->findOrFail($id);
+            $purchase = Purchase::with('items')->findOrFail($id);
 
             foreach ($purchase->items as $item) {
                 $product = Product::find($item->product_id);
                 if ($product) {
+                    $before = $product->stock;
                     $product->stock -= $item->quantity;
                     $product->save();
+                    $product->refresh();
+                    $after = $product->stock;
+
+                    $this->inventoryService->log(
+                        $product,'adjustment',$item->quantity,$before,$after,
+                        'Stock reduced from purchase update rollback.'
+                    );
                 }
             }
 
@@ -102,8 +122,16 @@ class PurchaseRepository implements PurchaseRepositoryInterface
                 ]);
 
                 $product = Product::findOrFail($productId);
+                $before = $product->stock;
                 $product->stock += $qty;
                 $product->save();
+                $product->refresh();
+                $after = $product->stock;
+
+                $this->inventoryService->log(
+                    $product,'purchase',
+                    $qty,$before,$after,'Stock added from purchase update.'
+                );
                 $total += $subtotal;
             }
 
@@ -134,8 +162,16 @@ class PurchaseRepository implements PurchaseRepositoryInterface
             foreach ($purchase->items as $item) {
                 $product = Product::find($item->product_id);
                 if ($product) {
+                    $before = $product->stock;
                     $product->stock -= $item->quantity;
                     $product->save();
+                    $product->refresh();
+                    $after = $product->stock;
+
+                    $this->inventoryService->log(
+                        $product,'adjustment',$item->quantity,$before,$after,
+                        'Stock reduced from purchase deletion.'
+                    );
                 }
             }
 

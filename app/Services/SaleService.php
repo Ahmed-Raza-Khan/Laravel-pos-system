@@ -5,16 +5,20 @@ namespace App\Services;
 use App\Models\Product;
 use App\Models\SaleItem;
 use Illuminate\Support\Facades\DB;
+use App\Services\InventoryService;
 use App\Interfaces\SaleRepositoryInterface;
 
 class SaleService
 {
+    protected $inventoryService;
     protected $saleRepository;
 
     public function __construct(
-        SaleRepositoryInterface $saleRepository
+        SaleRepositoryInterface $saleRepository,
+        InventoryService $inventoryService
     ) {
         $this->saleRepository = $saleRepository;
+        $this->inventoryService = $inventoryService;
     }
 
     /**
@@ -23,17 +27,13 @@ class SaleService
     public function createSale(array $data)
     {
         DB::beginTransaction();
-
         try {
-
             $cart = session()->get('cart', []);
-
             if (empty($cart)) {
                 throw new \Exception('Cart is empty.');
             }
 
             $subtotal = $this->calculateSubtotal($cart);
-
             $discountAmount = $this->calculateDiscount(
                 $subtotal,
                 $data['discount_type'] ?? null,
@@ -41,13 +41,9 @@ class SaleService
             );
 
             $afterDiscount = $subtotal - $discountAmount;
-
             $taxAmount = ($afterDiscount * $data['tax_percentage']) / 100;
-
             $grandTotal = $afterDiscount + $taxAmount;
-
             $paidAmount = $data['paid_amount'];
-
             $dueAmount = $grandTotal - $paidAmount;
 
             $sale = $this->saleRepository->create([
@@ -79,26 +75,31 @@ class SaleService
                 ]);
 
                 $product = Product::findOrFail($item['product_id']);
-
                 if ($product->stock < $item['qty']) {
                     throw new \Exception(
                         "{$product->name} stock not available."
                     );
                 }
 
+                $before = $product->stock;
                 $product->decrement('stock', $item['qty']);
+                $product->refresh();
+                $after = $product->stock;
+                $this->inventoryService->log(
+                    $product,
+                    'sale',
+                    $item['qty'],
+                    $before,
+                    $after,
+                    'Stock reduced from sale.'
+                );
             }
 
             session()->forget('cart');
-
             DB::commit();
-
             return $sale;
-
         } catch (\Exception $e) {
-
             DB::rollBack();
-
             throw $e;
         }
     }
@@ -122,15 +123,12 @@ class SaleService
         if (!$type || !$value) {
             return 0;
         }
-
         if ($type === 'fixed') {
             return $value;
         }
-
         if ($type === 'percentage') {
             return ($subtotal * $value) / 100;
         }
-
         return 0;
     }
 }

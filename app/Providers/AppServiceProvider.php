@@ -36,6 +36,7 @@ use App\Services\PurchaseService;
 // Sale interface repository service
 use App\Interfaces\SaleRepositoryInterface;
 use App\Repositories\SaleRepository;
+use App\Services\InventoryService;
 use App\Services\SaleService;
 
 class AppServiceProvider extends ServiceProvider
@@ -112,7 +113,8 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->singleton(SaleService::class, function ($app) {
             return new SaleService(
-                $app->make(SaleRepositoryInterface::class)
+                $app->make(SaleRepositoryInterface::class),
+                $app->make(InventoryService::class)
             );
         });
     }
