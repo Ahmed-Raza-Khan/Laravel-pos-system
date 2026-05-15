@@ -9,6 +9,7 @@ use App\Http\Controllers\BrandController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\InventoryController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -32,6 +33,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('suppliers', SupplierController::class);
     Route::resource('brands', BrandController::class);
     Route::resource('purchases', PurchaseController::class);
+    Route::get('/dashboard',[DashboardController::class, 'index'])->middleware(['auth'])->name('dashboard');
 });
 
 Route::prefix('sales')->name('sales.')->group(function () {
