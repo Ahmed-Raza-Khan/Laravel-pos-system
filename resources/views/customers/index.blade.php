@@ -2,74 +2,74 @@
 
 @section('content')
 
-<div class="flex justify-between mb-5">
-    <h2 class="text-2xl font-bold">Customers</h2>
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
+    <div>
+        <h2 class="text-3xl font-bold text-slate-900">Customers</h2>
+        <p class="text-slate-500 mt-1">Manage customer information and contact details</p>
+    </div>
 
-    <a href="{{ route('customers.create') }}"
-       class="bg-blue-500 text-white px-4 py-2 rounded">
-        Add Customer
+    <a href="{{ route('customers.create') }}" class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-2xl shadow-sm transition mt-4 sm:mt-0">
+        ➕ Add Customer
     </a>
 </div>
 
-<div class="bg-white shadow rounded overflow-hidden">
+<div class="bg-gradient-to-br from-white to-slate-50 rounded-3xl shadow-lg overflow-hidden border border-slate-100">
+    <div class="overflow-x-auto">
     <table class="w-full">
         <thead>
-            <tr class="bg-gray-200 text-left">
-                <th class="p-3">ID</th>
-                <th class="p-3">Name</th>
-                <th class="p-3">Email</th>
-                <th class="p-3">Phone</th>
-                <th class="p-3">Status</th>
-                <th class="p-3">Action</th>
+            <tr class="bg-white text-black text-left">
+                <th class="px-6 py-4 font-semibold">ID</th>
+                <th class="px-6 py-4 font-semibold">Name</th>
+                <th class="px-6 py-4 font-semibold">Email</th>
+                <th class="px-6 py-4 font-semibold">Phone</th>
+                <th class="px-6 py-4 font-semibold">Status</th>
+                <th class="px-6 py-4 font-semibold text-right">Action</th>
             </tr>
         </thead>
 
-        <tbody>
+        <tbody class="divide-y divide-slate-200">
             @forelse($customers as $customer)
-                <tr class="border-t">
-                    <td class="p-3">{{ $customer->id }}</td>
-                    <td class="p-3">{{ $customer->name }}</td>
-                    <td class="p-3">{{ $customer->email }}</td>
-                    <td class="p-3">{{ $customer->phone }}</td>
+                <tr class="hover:bg-cyan-50 transition-colors">
+                    <td class="px-6 py-4 text-sm text-slate-600">{{ $customer->id }}</td>
+                    <td class="px-6 py-4 font-semibold text-slate-900">{{ $customer->name }}</td>
+                    <td class="px-6 py-4 text-sm text-slate-600">{{ $customer->email }}</td>
+                    <td class="px-6 py-4 text-sm text-slate-600">{{ $customer->phone }}</td>
 
-                    <td class="p-3">
-                        <span class="{{ $customer->status ? 'text-green-600' : 'text-red-600' }}">
-                            {{ $customer->status ? 'Active' : 'Inactive' }}
-                        </span>
+                    <td class="px-6 py-4">
+                        @if($customer->status)
+                            <span class="inline-flex rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-700">Active</span>
+                        @else
+                            <span class="inline-flex rounded-full bg-slate-200 px-3 py-1 text-xs font-bold text-slate-700">Inactive</span>
+                        @endif
                     </td>
 
-                    <td class="p-3">
-                        <div class="flex gap-2">
-
-                            <a href="{{ route('customers.edit', $customer->id) }}"
-                               class="bg-yellow-500 text-white px-3 py-1 rounded">
-                                Edit
+                    <td class="px-6 py-4 text-right">
+                        <div class="inline-flex items-center gap-2">
+                            <a href="{{ route('customers.edit', $customer->id) }}" class="inline-flex items-center gap-1 bg-blue-500 hover:bg-blue-600 text-white text-xs font-semibold px-3 py-2 rounded-lg transition">
+                                ✎ Edit
                             </a>
 
-                            <form action="{{ route('customers.destroy', $customer->id) }}"
-                                  method="POST"
-                                  onsubmit="return confirm('Are you sure?')">
+                            <form action="{{ route('customers.destroy', $customer->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure?')">
                                 @csrf
                                 @method('DELETE')
 
-                                <button type="submit"
-                                        class="bg-red-500 text-white px-3 py-1 rounded">
-                                    Delete
+                                <button type="submit" class="inline-flex items-center gap-1 bg-red-500 hover:bg-red-600 text-white text-xs font-semibold px-3 py-2 rounded-lg transition">
+                                    🗑 Delete
                                 </button>
                             </form>
-
                         </div>
                     </td>
                 </tr>
             @empty
                 <tr>
-                    <td colspan="6" class="p-5 text-center text-gray-500">
-                        No customers found
+                    <td colspan="6" class="px-6 py-8 text-center text-slate-500 font-medium">
+                        👥 No customers found. Start adding customers!
                     </td>
                 </tr>
             @endforelse
         </tbody>
     </table>
+    </div>
 </div>
 
 <div class="mt-4">

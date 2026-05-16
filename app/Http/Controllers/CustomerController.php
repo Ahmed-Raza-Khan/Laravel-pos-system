@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreCustomerRequest;
+use App\Http\Requests\UpdateCustomerRequest;
 use App\Services\CustomerService;
-use Illuminate\Http\Request;
 
 class CustomerController extends Controller
 {
@@ -35,15 +36,9 @@ class CustomerController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreCustomerRequest $request)
     {
-        $data = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['nullable', 'email', 'max:255'],
-            'phone' => ['nullable', 'string', 'max:255'],
-            'address' => ['nullable', 'string'],
-            'status' => ['required', 'boolean'],
-        ]);
+        $data = $request->validated();
 
         $this->customerService->createCustomer($data);
 
@@ -65,15 +60,9 @@ class CustomerController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateCustomerRequest $request, string $id)
     {
-        $data = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['nullable', 'email', 'max:255'],
-            'phone' => ['nullable', 'string', 'max:255'],
-            'address' => ['nullable', 'string'],
-            'status' => ['required', 'boolean'],
-        ]);
+        $data = $request->validated();
 
         $this->customerService->updateCustomer($id, $data);
 

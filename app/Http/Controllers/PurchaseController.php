@@ -65,6 +65,16 @@ class PurchaseController extends Controller
     }
 
     /**
+     * Display the specified purchase invoice.
+     */
+    public function show(string $id)
+    {
+        $purchase = $this->purchaseService->getPurchase($id);
+
+        return view('purchases.show', compact('purchase'));
+    }
+
+    /**
      * Update purchase.
      */
     public function update(UpdatePurchaseRequest $request,string $id) 

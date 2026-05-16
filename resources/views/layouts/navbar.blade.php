@@ -1,7 +1,10 @@
-<nav class="bg-neutral-600 shadow px-6 py-4 flex justify-between">
-    <h2 class="text-2xl font-bold text-white">
-        Laravel POS
-    </h2>
+<nav class="container mx-auto flex items-center justify-between gap-4 px-4 py-4">
+    <div class="flex flex-col gap-2">
+        <span class="inline-flex rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white shadow-sm">
+            {{ strtoupper(str_replace('.', ' ', request()->route()?->getName() ?? 'dashboard')) }}
+        </span>
+        <span class="text-sm text-slate-500">Modern POS control panel with clean navigation.</span>
+    </div>
 
     
     <div class="hidden sm:flex sm:items-center sm:ms-6">

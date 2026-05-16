@@ -1,113 +1,76 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="max-w-7xl mx-auto px-4 py-6">
-
+    <div class="w-full mx-auto px-4 py-6">
         <h2 class="text-2xl font-bold mb-6">
             Inventory History
+            {{-- @include('partials.back-button', ['href' => route('dashboard')]) --}}
         </h2>
-
         <div class="bg-white shadow rounded-xl overflow-hidden">
-
             <div class="overflow-x-auto">
-
                 <table class="min-w-full divide-y divide-gray-200">
-
-                    <thead class="bg-gray-100">
-
+                    <thead class="bg-white text-black">
                         <tr>
-
                             <th class="px-6 py-3 text-left">
                                 Product
                             </th>
-
                             <th class="px-6 py-3 text-left">
                                 Type
                             </th>
-
                             <th class="px-6 py-3 text-left">
                                 Quantity
                             </th>
-
                             <th class="px-6 py-3 text-left">
                                 Before
                             </th>
-
                             <th class="px-6 py-3 text-left">
                                 After
                             </th>
-
                             <th class="px-6 py-3 text-left">
                                 User
                             </th>
-
                             <th class="px-6 py-3 text-left">
                                 Date
                             </th>
-
                         </tr>
-
                     </thead>
 
                     <tbody class="divide-y divide-gray-200">
-
                         @foreach ($histories as $history)
                             <tr>
-
                                 <td class="px-6 py-4">
                                     {{ $history->product->name }}
                                 </td>
-
                                 <td class="px-6 py-4">
-
-                                    <span
-                                        class="
-                                    px-2 py-1 rounded text-white text-xs
-                                    @if ($history->type === 'purchase') bg-green-600
-                                    @elseif($history->type === 'sale') bg-red-600
-                                    @else bg-blue-600 @endif
-                                ">
+                                    <span class="px-2 py-1 rounded text-white text-xs
+                                    @if ($history->type === 'purchase') bg-green-600 @elseif($history->type === 'sale') bg-red-600 @else bg-blue-600 @endif">
                                         {{ ucfirst($history->type) }}
                                     </span>
-
                                 </td>
-
                                 <td class="px-6 py-4">
                                     {{ $history->quantity }}
                                 </td>
-
                                 <td class="px-6 py-4">
                                     {{ $history->stock_before }}
                                 </td>
-
                                 <td class="px-6 py-4">
                                     {{ $history->stock_after }}
                                 </td>
-
                                 <td class="px-6 py-4">
                                     {{ $history->user->name }}
                                 </td>
-
                                 <td class="px-6 py-4">
                                     {{ $history->created_at->format('d M Y h:i A') }}
                                 </td>
-
                             </tr>
                         @endforeach
-
                     </tbody>
-
                 </table>
-
             </div>
-
         </div>
 
         <div class="mt-6">
-
             {{ $histories->links() }}
-
         </div>
-
     </div>
 @endsection

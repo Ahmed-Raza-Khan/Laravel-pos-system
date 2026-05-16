@@ -1,60 +1,37 @@
-<aside class="w-64 bg-neutral-700 text-white h-full p-5">
-    <h1 class="text-3xl font-bold mb-8 text-mauve-400">
-        <a href="{{ route('dashboard')}}">
+<aside class="w-full h-full p-6">
+    <div class="mb-10">
+        <a href="{{ route('dashboard') }}" class="block text-3xl font-bold tracking-tight text-white">
             Laravel POS
         </a>
-    </h1>
+        <p class="mt-2 text-sm text-slate-400 max-w-[220px]">
+            Modern inventory and sales management for your store.
+        </p>
+    </div>
 
-    <ul class="space-y-3">
-        <li class="bg-neutral-600 rounded-lg p-2 text-[18px]">
-            <a href="{{ route('dashboard') }}">
-                Dashboard
+    <nav class="space-y-2 text-sm font-medium">
+        @php
+            $items = [
+                ['route' => 'dashboard', 'label' => 'Dashboard'],
+                ['route' => 'categories.index', 'label' => 'Categories'],
+                ['route' => 'brands.index', 'label' => 'Brands'],
+                ['route' => 'products.index', 'label' => 'Products'],
+                ['route' => 'suppliers.index', 'label' => 'Suppliers'],
+                ['route' => 'customers.index', 'label' => 'Customers'],
+                ['route' => 'purchases.index', 'label' => 'Purchases'],
+                ['route' => 'sales.index', 'label' => 'Sales'],
+                ['route' => 'inventory.index', 'label' => 'Inventory'],
+            ];
+        @endphp
+
+        @foreach ($items as $item)
+            <a href="{{ route($item['route']) }}"
+               class="flex items-center justify-between rounded-3xl px-4 py-3 transition
+                    {{ request()->routeIs($item['route']) || request()->routeIs(str_replace('.index', '.*', $item['route'])) ? 'bg-slate-800 text-white shadow-lg' : 'text-slate-300 hover:bg-slate-800/80 hover:text-white' }}">
+                <span>{{ $item['label'] }}</span>
+                @if(request()->routeIs($item['route']) || request()->routeIs(str_replace('.index', '.*', $item['route'])))
+                    <span class="inline-flex h-2 w-2 rounded-full bg-emerald-400"></span>
+                @endif
             </a>
-        </li>
-        <li class="bg-neutral-600 rounded-md p-2 text-[18px]">
-            <a href="{{ route('categories.index') }}">
-                Categories
-            </a>
-        </li>
-        <li class="bg-neutral-600 rounded-md p-2 text-[18px]">
-            <a href="{{ route('brands.index') }}">
-                Brands
-            </a>
-        </li>
-        <li class="bg-neutral-600 rounded-md p-2 text-[18px]">
-            <a href="{{ route('products.index') }}">
-                Products
-            </a>
-        </li>
-        <li class="bg-neutral-600 rounded-md p-2 text-[18px]">
-            <a href="{{ route('suppliers.index') }}">
-                Suppliers
-            </a>
-        </li>
-        <li class="bg-neutral-600 rounded-md p-2 text-[18px]">
-            <a href="{{ route('customers.index') }}">
-                Customers
-            </a>
-        </li>
-        <li class="bg-neutral-600 rounded-md p-2 text-[18px]">
-            <a href="{{ route('purchases.index') }}">
-                Purchases
-            </a>
-        </li>
-        <li class="bg-neutral-600 rounded-md p-2 text-[18px]">
-            <a href="{{ route('sales.index') }}">
-                Sales
-            </a>
-        </li>
-        <li class="bg-neutral-600 rounded-md p-2 text-[18px]">
-            <a href="{{ route('inventory.index') }}">
-                Inventory
-            </a>
-        </li>
-        <li class="bg-neutral-600 rounded-md p-2 text-[18px]">
-            <a href="#">
-                POS
-            </a>
-        </li>
-    </ul>
+        @endforeach
+    </nav>
 </aside>

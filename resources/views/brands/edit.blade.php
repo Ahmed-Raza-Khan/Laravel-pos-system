@@ -11,9 +11,14 @@
         @csrf
         @method('PUT')
 
-        <div class="mb-4">
-            <label class="block mb-1 font-medium">
-                Brand Name
+        <div class="flex items-center justify-between mb-6">
+            <div class="flex items-center gap-4">
+                @include('partials.back-button', ['href' => route('brands.index')])
+                <div>
+                    <h2 class="text-2xl font-bold">Edit Brand</h2>
+                </div>
+            </div>
+        </div>
             </label>
             <input type="text" name="name" value="{{ old('name', $brand->name) }}" class="w-full border p-2 rounded">
             @error('name')

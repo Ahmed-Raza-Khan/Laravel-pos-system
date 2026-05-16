@@ -1,125 +1,137 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="flex justify-between mb-5">
-        <h2 class="text-2xl font-bold">Products</h2>
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
+        <div>
+            <h2 class="text-3xl font-bold text-slate-900">Products</h2>
+            <p class="text-slate-500 mt-1">Manage product catalog, stock, and pricing from one place.</p>
+        </div>
 
         <a href="{{ route('products.create') }}"
-        class="bg-blue-500 text-white px-4 py-2 rounded">
+           class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-2xl shadow-sm transition">
             Add Product
         </a>
     </div>
 
-    <div class="bg-white shadow rounded overflow-x-auto">
+    <div class="bg-gradient-to-br from-white to-slate-50 rounded-3xl shadow-lg overflow-hidden border border-slate-100">
+        <div class="overflow-x-auto">
         <table class="w-full min-w-[1200px]">
-            <thead>
-                <tr class="bg-gray-200 text-left">
-                    <th class="p-3">ID</th>
-                    <th class="p-3">Image</th>
-                    <th class="p-3">Name</th>
-                    <th class="p-3">SKU</th>
-                    <th class="p-3">Barcode</th>
-                    <th class="p-3">Category</th>
-                    <th class="p-3">Brand</th>
-                    <th class="p-3">Purchase Price</th>
-                    <th class="p-3">Sale Price</th>
-                    <th class="p-3">Stock</th>
-                    <th class="p-3">Status</th>
-                    <th class="p-3">Action</th>
+            <thead class="bg-white text-black">
+                <tr class="bg-gradient-to-r from-indigo-600 to-indigo-700 text-black text-left">
+                    <th class="px-6 py-4 font-semibold">ID</th>
+                    {{-- <th class="px-6 py-4 font-semibold">Image</th> --}}
+                    <th class="px-6 py-4 font-semibold">Name</th>
+                    {{-- <th class="px-6 py-4 font-semibold">SKU</th> --}}
+                    {{-- <th class="px-6 py-4 font-semibold">Barcode</th> --}}
+                    <th class="px-6 py-4 font-semibold">Category</th>
+                    <th class="px-6 py-4 font-semibold">Purchase Price</th>
+                    <th class="px-6 py-4 font-semibold">Sale Price</th>
+                    <th class="px-6 py-4 font-semibold">Stock</th>
+                    <th class="px-6 py-4 font-semibold">Status</th>
+                    <th class="px-6 py-4 font-semibold text-right">Action</th>
                 </tr>
             </thead>
 
-            <tbody>
+            <tbody class="divide-y divide-slate-200">
                 @forelse($products as $product)
-                    <tr class="border-t hover:bg-gray-50">
-                        <td class="p-3">{{ $product->id }}</td>
+                    <tr class="hover:bg-indigo-50 transition-colors">
+                        <td class="px-6 py-4 text-sm text-slate-600">{{ $product->id }}</td>
 
                         {{-- IMAGE --}}
-                        <td class="p-3">
+                        {{-- <td class="px-6 py-4">
                             @if($product->image)
                                 <img src="{{ asset('storage/'.$product->image) }}"
-                                    class="w-10 h-10 rounded object-cover">
+                                    class="w-10 h-10 rounded-full object-cover shadow-sm">
                             @else
-                                <span class="text-gray-400">No Image</span>
+                                <span class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-200 text-slate-400 text-xs font-bold">N/A</span>
                             @endif
-                        </td>
+                        </td> --}}
 
                         {{-- NAME --}}
-                        <td class="p-3 font-semibold">{{ $product->name }}</td>
+                        <td class="px-6 py-4 font-semibold text-slate-900">{{ $product->name }}</td>
 
                         {{-- SKU --}}
-                        <td class="p-3">{{ $product->sku }}</td>
+                        {{-- <td class="px-6 py-4 text-sm text-slate-600">{{ $product->sku }}</td> --}}
 
                         {{-- BARCODE --}}
-                        <td class="px-4 py-3">{{ $product->barcode }}</td>
+                        {{-- <td class="px-6 py-4 text-sm text-slate-600">{{ $product->barcode }}</td> --}}
 
                         {{-- CATEGORY --}}
-                        <td class="p-3">
-                            {{ $product->category->name ?? '-' }}
+                        <td class="px-6 py-4">
+                            <span class="inline-flex rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700">
+                                {{ $product->category->name ?? '-' }}
+                            </span>
                         </td>
 
                         {{-- BRAND --}}
-                        <td class="p-3">
-                            {{ $product->brand->name ?? 'No Brand' }}
-                        </td>
+                        {{-- <td class="px-6 py-4">
+                            <span class="inline-flex rounded-full bg-purple-100 px-3 py-1 text-xs font-semibold text-purple-700">
+                                {{ $product->brand->name ?? 'None' }}
+                            </span>
+                        </td> --}}
 
                         {{-- PURCHASE PRICE --}}
-                        <td class="p-3">
-                            {{ number_format($product->purchase_price, 2) }}
+                        <td class="px-6 py-4 text-sm font-medium text-slate-900">
+                            PKR {{ number_format($product->purchase_price, 0) }}
                         </td>
 
                         {{-- SALE PRICE --}}
-                        <td class="p-3">
-                            {{ number_format($product->sale_price, 2) }}
+                        <td class="px-6 py-4 text-sm font-medium text-green-600 font-bold">
+                            PKR {{ number_format($product->sale_price, 0) }}
                         </td>
 
                         {{-- STOCK --}}
-                        <td class="p-3">
+                        <td class="px-6 py-4">
                             @if($product->stock > 10)
-                                <span class="text-green-600">{{ $product->stock }}</span>
+                                <span class="inline-flex rounded-full bg-green-100 px-3 py-1 text-xs font-bold text-green-700">{{ $product->stock }}</span>
                             @elseif($product->stock > 0)
-                                <span class="text-yellow-600">{{ $product->stock }}</span>
+                                <span class="inline-flex rounded-full bg-yellow-100 px-3 py-1 text-xs font-bold text-yellow-700">{{ $product->stock }}</span>
                             @else
-                                <span class="text-red-600">Out</span>
+                                <span class="inline-flex rounded-full bg-red-100 px-3 py-1 text-xs font-bold text-red-700">Out</span>
                             @endif
                         </td>
 
                         {{-- STATUS --}}
-                        <td class="p-3">
-                            <span class="{{ $product->status ? 'text-green-600' : 'text-red-600' }}">
-                                {{ $product->status ? 'Active' : 'Inactive' }}
-                            </span>
+                        <td class="px-6 py-4">
+                            @if($product->status)
+                                <span class="inline-flex rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-700">Active</span>
+                            @else
+                                <span class="inline-flex rounded-full bg-slate-200 px-3 py-1 text-xs font-bold text-slate-700">Inactive</span>
+                            @endif
                         </td>
 
                         {{-- ACTION --}}
-                        <td class="p-3 flex gap-2">
-                            <a href="{{ route('products.edit', $product->id) }}" class="bg-yellow-500 px-3 py-1 text-white rounded">
-                                Edit
-                            </a>
-                            
-                            <a href="{{ route('products.show', $product->id) }}" class="bg-blue-500 px-3 py-1 text-white rounded">
-                                View
-                            </a>
+                        <td class="px-6 py-4 text-right">
+                            <div class="flex items-center justify-end gap-2">
+                                <a href="{{ route('products.edit', $product->id) }}" class="inline-flex items-center gap-1 bg-blue-500 hover:bg-blue-600 text-white text-xs font-semibold px-3 py-2 rounded-lg transition">
+                                    ✎ Edit
+                                </a>
+                                
+                                <a href="{{ route('products.show', $product->id) }}" class="inline-flex items-center gap-1 bg-slate-500 hover:bg-slate-600 text-white text-xs font-semibold px-3 py-2 rounded-lg transition">
+                                    👁 Show
+                                </a>
 
-                            <form method="POST" action="{{ route('products.destroy', $product->id) }}">
-                                @csrf
-                                @method('DELETE')
+                                <form method="POST" action="{{ route('products.destroy', $product->id) }}" style="display:inline;">
+                                    @csrf
+                                    @method('DELETE')
 
-                                <button onclick="return confirm('Delete this product?')" class="bg-red-500 px-3 py-1 text-white rounded">
-                                    Delete
-                                </button>
-                            </form>
+                                    <button onclick="return confirm('Delete this product?')" class="inline-flex items-center gap-1 bg-red-500 hover:bg-red-600 text-white text-xs font-semibold px-3 py-2 rounded-lg transition">
+                                        🗑 Delete
+                                    </button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="12" class="p-4 text-center text-gray-500">
-                            No products found
+                        <td colspan="12" class="px-6 py-8 text-center text-slate-500 font-medium">
+                            📦 No products found. Start by adding a new product!
                         </td>
                     </tr>
                 @endforelse
             </tbody>
         </table>
+        </div>
     </div>
 
     <div class="mt-4">

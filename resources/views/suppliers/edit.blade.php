@@ -1,8 +1,13 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="mb-5">
-        <h2 class="text-2xl font-bold">Edit Supplier</h2>
+    <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center gap-4">
+            @include('partials.back-button', ['href' => route('suppliers.index')])
+            <div>
+                <h2 class="text-2xl font-bold">Edit Supplier</h2>
+            </div>
+        </div>
     </div>
 
     <form action="{{ route('suppliers.update', $supplier->id) }}" method="POST" class="bg-white p-6 rounded shadow">

@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreSupplierRequest;
+use App\Http\Requests\UpdateSupplierRequest;
 use App\Services\SupplierService;
-use Illuminate\Http\Request;
 
 class SupplierController extends Controller
 {
@@ -35,15 +36,9 @@ class SupplierController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreSupplierRequest $request)
     {
-        $data = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'company' => ['nullable', 'string', 'max:255'],
-            'phone' => ['nullable', 'string', 'max:255'],
-            'address' => ['nullable', 'string'],
-            'status' => ['required', 'boolean'],
-        ]);
+        $data = $request->validated();
 
         $this->supplierService->createSupplier($data);
 
@@ -65,15 +60,9 @@ class SupplierController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateSupplierRequest $request, string $id)
     {
-        $data = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'company' => ['nullable', 'string', 'max:255'],
-            'phone' => ['nullable', 'string', 'max:255'],
-            'address' => ['nullable', 'string'],
-            'status' => ['required', 'boolean'],
-        ]);
+        $data = $request->validated();
 
         $this->supplierService->updateSupplier($id, $data);
 

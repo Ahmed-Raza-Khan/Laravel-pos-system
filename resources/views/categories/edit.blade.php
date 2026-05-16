@@ -2,18 +2,29 @@
 
 @section('content')
 
-<div class="mb-5">
-    <h2 class="text-2xl font-bold">Edit Category</h2>
+<div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-8">
+    <div>
+        <h2 class="text-3xl font-bold text-slate-900">Edit Category</h2>
+        <p class="text-slate-500 mt-1">Update the category name and visibility in your inventory.</p>
+    </div>
+    <a href="{{ route('categories.index') }}" class="inline-flex items-center gap-2 rounded-2xl bg-slate-900 px-4 py-2 text-white transition hover:bg-slate-800">
+        Back to categories
+    </a>
 </div>
 
-<form action="{{ route('categories.update', $category->id) }}" method="POST" class="bg-white p-6 rounded shadow">
+<form action="{{ route('categories.update', $category->id) }}" method="POST" class="bg-white p-6 rounded-3xl shadow-lg">
     @csrf
     @method('PUT')
 
     <!-- Name -->
-    <div class="mb-4">
-        <label class="block mb-1">Name</label>
-        <input type="text" name="name"
+    <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center gap-4">
+            @include('partials.back-button', ['href' => route('categories.index')])
+            <div>
+                <h2 class="text-2xl font-bold">Edit Category</h2>
+            </div>
+        </div>
+    </div>
                class="w-full border p-2 rounded"
                value="{{ old('name', $category->name) }}">
 

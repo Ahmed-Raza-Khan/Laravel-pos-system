@@ -15,17 +15,17 @@
         <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans antialiased">
-        <div class="flex min-h-screen bg-gray-100">
-            <!-- Sidebar -->
-            <div class="w-64 bg-white border-r">
+    <body class="min-h-screen font-sans antialiased bg-slate-100 text-slate-900">
+        <div class="min-h-screen bg-slate-100">
+            <!-- Sidebar (fixed) -->
+            <div class="fixed left-0 top-0 h-screen w-72 bg-slate-950 text-slate-100 border-r border-slate-800 shadow-lg">
                 @include('layouts.sidebar')
             </div>
             
-            <!-- Main Wrapper -->
-            <div class="flex-1 flex flex-col">
+            <!-- Main Wrapper (content scrolls) -->
+            <div class="flex-1 flex flex-col ml-72">
                 <!-- Top Navbar -->
-                <div class="bg-white shadow">
+                <div class="sticky top-0 z-30 bg-white/95 backdrop-blur border-b border-slate-200 shadow-sm">
                     @include('layouts.navbar')
                 </div>
                 <!-- Page Content -->

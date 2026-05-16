@@ -16,9 +16,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -34,10 +31,8 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('brands', BrandController::class);
     Route::resource('purchases', PurchaseController::class);
     Route::get('/dashboard',[DashboardController::class, 'index'])->middleware(['auth'])->name('dashboard');
-    Route::get('/products/{id}/barcode', [ProductController::class, 'barcode'])
-        ->name('products.barcode');
-    Route::get('/products/{id}', [ProductController::class, 'show'])
-        ->name('products.show');
+    Route::get('/products/{id}/barcode', [ProductController::class, 'barcode'])->name('products.barcode');
+    Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
 });
 
 Route::prefix('sales')->name('sales.')->group(function () {
@@ -56,7 +51,5 @@ Route::prefix('inventory')->name('inventory.')->group(function () {
     Route::post('/adjust/{id}',[InventoryController::class, 'adjust'])->name('adjust');
     Route::get('/history',[InventoryController::class, 'history'])->name('history');
 });
-
-Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
 
 require __DIR__.'/auth.php';

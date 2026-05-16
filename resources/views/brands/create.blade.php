@@ -2,10 +2,13 @@
 
 @section('content')
 
-<div class="mb-5">
-    <h2 class="text-2xl font-bold">
-        Create Brand
-    </h2>
+<div class="flex items-center justify-between mb-6">
+    <div class="flex items-center gap-4">
+        @include('partials.back-button', ['href' => route('brands.index')])
+        <div>
+            <h2 class="text-2xl font-bold">Create Brand</h2>
+        </div>
+    </div>
 </div>
 
 <form action="{{ route('brands.store') }}"
@@ -20,10 +23,10 @@
             Brand Name
         </label>
 
-        <input type="text"
-               name="name"
-               value="{{ old('name') }}"
-               class="w-full border p-2 rounded">
+         <input type="text"
+             name="name"
+             value="{{ old('name') }}"
+             class="w-full border border-slate-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
 
         @error('name')
             <p class="text-red-500 text-sm mt-1">
@@ -39,9 +42,7 @@
             Description
         </label>
 
-        <textarea name="description"
-                  rows="4"
-                  class="w-full border p-2 rounded">{{ old('description') }}</textarea>
+        <textarea name="description" rows="4" class="w-full border border-slate-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none">{{ old('description') }}</textarea>
 
         @error('description')
             <p class="text-red-500 text-sm mt-1">
@@ -57,8 +58,7 @@
             Status
         </label>
 
-        <select name="status"
-                class="w-full border p-2 rounded">
+        <select name="status" class="w-full border border-slate-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
 
             <option value="1"
                 {{ old('status') == '1' ? 'selected' : '' }}>

@@ -2,20 +2,19 @@
 
 @section('content')
 
-<div class="flex items-center justify-between mb-5">
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
     <div>
-        <h2 class="text-2xl font-bold">
+        <h2 class="text-3xl font-bold text-slate-900">
             Purchases
         </h2>
 
-        <p class="text-gray-500 text-sm">
-            Manage all purchase records
+        <p class="text-slate-500 text-sm mt-1">
+            Manage all purchase records and invoices
         </p>
     </div>
 
-    <a href="{{ route('purchases.create') }}"
-       class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg">
-        Add Purchase
+    <a href="{{ route('purchases.create') }}" class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-2xl shadow-sm transition mt-4 sm:mt-0">
+        ➕ Add Purchase
     </a>
 </div>
 
@@ -31,83 +30,75 @@
     </div>
 @endif
 
-<div class="bg-white rounded-xl shadow overflow-hidden">
+<div class="bg-gradient-to-br from-white to-slate-50 rounded-3xl shadow-lg overflow-hidden border border-slate-100">
 
     <div class="overflow-x-auto">
         <table class="w-full">
 
             <thead>
-                <tr class="bg-gray-100 text-left">
-                    <th class="p-4">#</th>
-                    <th class="p-4">Invoice</th>
-                    <th class="p-4">Supplier</th>
-                    <th class="p-4">Purchase Date</th>
-                    <th class="p-4">Total Amount</th>
-                    <th class="p-4">Status</th>
-                    <th class="p-4 text-center">Action</th>
+                <tr class="bg-white text-black text-left">
+                    <th class="px-6 py-4 font-semibold">#</th>
+                    <th class="px-6 py-4 font-semibold">Invoice</th>
+                    <th class="px-6 py-4 font-semibold">Supplier</th>
+                    <th class="px-6 py-4 font-semibold">Purchase Date</th>
+                    <th class="px-6 py-4 font-semibold">Total Amount</th>
+                    <th class="px-6 py-4 font-semibold">Status</th>
+                    <th class="px-6 py-4 font-semibold text-right">Action</th>
                 </tr>
             </thead>
 
-            <tbody>
+            <tbody class="divide-y divide-slate-200">
 
                 @forelse($purchases as $purchase)
 
-                    <tr class="border-t hover:bg-gray-50">
+                    <tr class="hover:bg-rose-50 transition-colors">
 
-                        <td class="p-4">
+                        <td class="px-6 py-4 text-sm text-slate-600">
                             {{ $purchase->id }}
                         </td>
 
-                        <td class="p-4 font-semibold text-blue-600">
-                            {{ $purchase->invoice_no }}
+                        <td class="px-6 py-4 font-bold text-indigo-600">
+                            <a href="{{ route('purchases.show', $purchase->id) }}" class="hover:text-indigo-800 hover:underline">
+                                {{ $purchase->invoice_no }}
+                            </a>
                         </td>
 
-                        <td class="p-4">
+                        <td class="px-6 py-4 text-slate-600">
                             {{ $purchase->supplier->name ?? 'N/A' }}
                         </td>
 
-                        <td class="p-4">
+                        <td class="px-6 py-4 text-sm text-slate-600">
                             {{ \Carbon\Carbon::parse($purchase->purchase_date)->format('d M Y') }}
                         </td>
 
-                        <td class="p-4 font-semibold">
-                            Rs. {{ number_format($purchase->total_amount, 2) }}
+                        <td class="px-6 py-4 font-bold text-slate-900">
+                            PKR {{ number_format($purchase->total_amount, 0) }}
                         </td>
 
-                        <td class="p-4">
-                            @if($purchase->status == 1)
-                                <span class="bg-green-100 text-green-700 text-xs px-3 py-1 rounded-full">
-                                    Active
-                                </span>
-                            @else
-                                <span class="bg-red-100 text-red-700 text-xs px-3 py-1 rounded-full">
-                                    Inactive
-                                </span>
-                            @endif
+                        <td class="px-6 py-4">
+                            <span class="inline-flex bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-xs font-bold">
+                                ✓ Active
+                            </span>
                         </td>
 
-                        <td class="p-4">
-                            <div class="flex items-center justify-center gap-2">
-
-                                <a href="{{ route('purchases.edit', $purchase->id) }}"
-                                   class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-2 rounded">
-                                    Edit
+                        <td class="px-6 py-4 text-right">
+                            <div class="inline-flex items-center gap-2">
+                                <a href="{{ route('purchases.show', $purchase->id) }}" class="inline-flex items-center gap-1 bg-slate-600 hover:bg-slate-700 text-white text-xs font-semibold px-3 py-2 rounded-lg transition">
+                                    👁 View
                                 </a>
 
-                                <form action="{{ route('purchases.destroy', $purchase->id) }}"
-                                      method="POST"
-                                      onsubmit="return confirm('Are you sure you want to delete this purchase?')">
+                                <a href="{{ route('purchases.edit', $purchase->id) }}" class="inline-flex items-center gap-1 bg-blue-500 hover:bg-blue-600 text-white text-xs font-semibold px-3 py-2 rounded-lg transition">
+                                    ✎ Edit
+                                </a>
 
+                                <form action="{{ route('purchases.destroy', $purchase->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Delete this purchase?')">
                                     @csrf
                                     @method('DELETE')
 
-                                    <button type="submit"
-                                            class="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded">
-                                        Delete
+                                    <button type="submit" class="inline-flex items-center gap-1 bg-red-500 hover:bg-red-600 text-white text-xs font-semibold px-3 py-2 rounded-lg transition">
+                                        🗑 Delete
                                     </button>
-
                                 </form>
-
                             </div>
                         </td>
 
@@ -116,8 +107,8 @@
                 @empty
 
                     <tr>
-                        <td colspan="7" class="text-center p-6 text-gray-500">
-                            No purchases found
+                        <td colspan="7" class="px-6 py-8 text-center text-slate-500 font-medium">
+                            📦 No purchases found. Create a new purchase!
                         </td>
                     </tr>
 

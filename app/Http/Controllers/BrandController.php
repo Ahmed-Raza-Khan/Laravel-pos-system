@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\StoreBrandRequest;
+use App\Http\Requests\UpdateBrandRequest;
 use Illuminate\Support\Str;
 use App\Services\BrandService;
 
@@ -35,13 +36,9 @@ class BrandController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreBrandRequest $request)
     {
-        $data = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'description' => ['nullable', 'string'],
-            'status' => ['required', 'boolean'],
-        ]);
+        $data = $request->validated();
 
         $data['slug'] = Str::slug($data['name']);
 
@@ -72,13 +69,9 @@ class BrandController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateBrandRequest $request, string $id)
     {
-        $data = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'description' => ['nullable', 'string'],
-            'status' => ['required', 'boolean'],
-        ]);
+        $data = $request->validated();
 
         $data['slug'] = Str::slug($data['name']);
 

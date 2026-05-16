@@ -2,6 +2,10 @@
 
 @section('content')
     <div class="w-full mx-auto px-4 sm:px-6 lg:px-1 py-1">
+        <div class="flex items-center justify-between mb-4">
+            @include('partials.back-button', ['href' => route('sales.index')])
+            <div class="text-sm text-slate-500">Create Sale</div>
+        </div>
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <!-- Products Section -->
             <div class="lg:col-span-2">
@@ -26,6 +30,9 @@
                                 <h3 class="font-semibold text-gray-800 text-sm mb-1">
                                     {{ $product->name }}
                                 </h3>
+                                @if($product->brand)
+                                    <div class="text-xs text-slate-500 mb-1">{{ $product->brand->name }}</div>
+                                @endif
                                 <p class="text-green-600 font-bold mb-1">
                                     PKR {{ number_format($product->sale_price, 2) }}
                                 </p>

@@ -1,117 +1,83 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="max-w-7xl mx-auto px-4 py-6">
-
-        <div class="flex items-center justify-between mb-6">
-
-            <h2 class="text-2xl font-bold">
-                Inventory Management
-            </h2>
-
-            <a href="{{ route('inventory.history') }}"
-                class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg">
-                Inventory History
-            </a>
-
+    <div class="w-full mx-auto px-1 py-1">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
+                <div>
+                    <h2 class="text-3xl font-bold text-slate-900">Inventory Management</h2>
+                    <p class="text-slate-500 mt-1">Adjust stock levels and view complete inventory history</p>
+                </div>
+                <a href="{{ route('inventory.history') }}" class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-2xl shadow-sm transition mt-4 sm:mt-0">
+                    📊 Inventory History
+                </a>
         </div>
 
-        <div class="bg-white shadow rounded-xl overflow-hidden">
-
-            <div class="overflow-x-auto">
-
-                <table class="min-w-full divide-y divide-gray-200">
-
-                    <thead class="bg-gray-100">
-
+        <div class="bg-gradient-to-br from-white to-slate-50 rounded-3xl shadow-lg overflow-hidden border border-slate-100">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-slate-200">
+                    <thead class="bg-white text-black">
                         <tr>
-
-                            <th class="px-6 py-3 text-left">
+                            <th class="px-6 py-4 text-left font-semibold">
                                 Product
                             </th>
-
-                            <th class="px-6 py-3 text-left">
+                            <th class="px-6 py-4 text-left font-semibold">
                                 Stock
                             </th>
-
-                            <th class="px-6 py-3 text-left">
-                                Adjust
+                            <th class="px-6 py-4 text-left font-semibold">
+                                Adjust Stock
                             </th>
-
                         </tr>
-
                     </thead>
 
-                    <tbody class="divide-y divide-gray-200">
-
+                    <tbody class="divide-y divide-slate-200">
                         @foreach ($products as $product)
-                            <tr>
-
-                                <td class="px-6 py-4">
+                            <tr class="hover:bg-lime-50 transition-colors">
+                                <td class="px-6 py-4 font-semibold text-slate-900">
                                     {{ $product->name }}
                                 </td>
-
                                 <td class="px-6 py-4">
-
                                     @if ($product->stock <= 5)
-                                        <span class="text-red-600 font-bold">
-                                            {{ $product->stock }}
+                                        <span class="inline-flex rounded-full bg-red-100 px-3 py-1 text-sm font-bold text-red-700">
+                                            {{ $product->stock }} Left
                                         </span>
                                     @else
-                                        <span class="text-green-600 font-semibold">
-                                            {{ $product->stock }}
+                                        <span class="inline-flex rounded-full bg-emerald-100 px-3 py-1 text-sm font-bold text-emerald-700">
+                                            {{ $product->stock }} Units
                                         </span>
                                     @endif
-
                                 </td>
 
                                 <td class="px-6 py-4">
-
                                     <form method="POST" action="{{ route('inventory.adjust', $product->id) }}"
                                         class="flex flex-wrap gap-2">
-
                                         @csrf
 
-                                        <select name="type" class="border rounded-lg px-3 py-2">
+                                        <select name="type" class="border border-slate-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-lime-500 focus:outline-none">
                                             <option value="add">
                                                 Add
                                             </option>
-
                                             <option value="subtract">
                                                 Subtract
                                             </option>
                                         </select>
+                                        <input type="number" name="quantity" placeholder="Qty" class="border border-slate-200 rounded-lg px-3 py-2 w-20 text-sm focus:ring-2 focus:ring-lime-500 focus:outline-none" required>
 
-                                        <input type="number" name="quantity" placeholder="Qty"
-                                            class="border rounded-lg px-3 py-2 w-24" required>
+                                        <input type="text" name="notes" placeholder="Notes" class="border border-slate-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-lime-500 focus:outline-none">
 
-                                        <input type="text" name="notes" placeholder="Notes"
-                                            class="border rounded-lg px-3 py-2">
-
-                                        <button class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg">
-                                            Save
+                                        <button class="bg-lime-600 hover:bg-lime-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">
+                                            ✓ Save
                                         </button>
-
                                     </form>
-
                                 </td>
-
                             </tr>
                         @endforeach
-
                     </tbody>
-
                 </table>
-
             </div>
-
         </div>
 
         <div class="mt-6">
-
             {{ $products->links() }}
-
         </div>
-
     </div>
 @endsection

@@ -1,8 +1,14 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="mb-5">
-        <h2 class="text-2xl font-bold">Edit Product</h2>
+    <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-8">
+            <div class="flex items-center gap-4">
+                @include('partials.back-button', ['href' => route('products.index')])
+                <div>
+                    <h2 class="text-3xl font-bold text-slate-900">Edit Product</h2>
+                    <p class="text-slate-500 mt-1">Update product details, pricing, inventory, and image.</p>
+                </div>
+            </div>
     </div>
 
     <form method="POST" action="{{ route('products.update', $product->id) }}" enctype="multipart/form-data"

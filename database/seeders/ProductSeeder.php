@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 use App\Models\Product;
 use App\Models\Brand;
 
@@ -71,17 +72,27 @@ class ProductSeeder extends Seeder
         }
 
         foreach ($products as $p) {
+            $slug = Str::slug($p['name']);
+            $sku = 'SKU-' . rand(10000, 99999);
+            $barcode = 'BC-' . rand(1000000000, 9999999999);
+            $imagePath = "products/{$slug}.svg";
+
+            if (!Storage::disk('public')->exists($imagePath)) {
+                $svg = '<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 800 800"><rect width="800" height="800" rx="48" fill="#eef2ff"/><rect x="48" y="48" width="704" height="704" rx="32" fill="rgba(59,130,246,0.08)"/><text x="50%" y="42%" dominant-baseline="middle" text-anchor="middle" font-family="Arial, sans-serif" font-size="48" fill="#0f172a">' . addslashes($p['name']) . '</text><text x="50%" y="58%" dominant-baseline="middle" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" fill="#475569">SKU: ' . addslashes($sku) . '</text><text x="50%" y="68%" dominant-baseline="middle" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" fill="#64748b">' . addslashes('Barcode: ' . $barcode) . '</text></svg>';
+                Storage::disk('public')->put($imagePath, $svg);
+            }
+
             Product::create([
                 'category_id' => $p['category_id'],
                 'brand_id' => $brandIds[array_rand($brandIds)],
                 'name' => $p['name'],
-                'slug' => Str::slug($p['name']),
-                'sku' => 'SKU-' . rand(10000, 99999),
-                'barcode' => 'BC-' . rand(1000000000, 9999999999),
+                'slug' => $slug,
+                'sku' => $sku,
+                'barcode' => $barcode,
                 'purchase_price' => $p['purchase_price'],
                 'sale_price' => $p['sale_price'],
                 'stock' => $p['stock'],
-                'image' => null,
+                'image' => $imagePath,
                 'description' => fake()->sentence(),
                 'status' => 1,
             ]);

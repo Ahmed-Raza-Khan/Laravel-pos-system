@@ -46,7 +46,7 @@ class ProductController extends Controller
         $categories = Category::where('status', 1)->get();
         $brands = Brand::where('status', 1)->get();
 
-        return view('products.create', ['categories' => Category::all(),'brands' => Brand::all(),]);
+        return view('products.create', compact('categories', 'brands'));
     }
 
     public function store(StoreProductRequest $request)
@@ -71,7 +71,7 @@ class ProductController extends Controller
         $categories = Category::where('status', 1)->get();
         $brands = Brand::where('status', 1)->get();
 
-        return view('products.edit', ['product' => Product::findOrFail($id),'categories' => Category::all(),'brands' => Brand::all(),]);
+        return view('products.edit', compact('product', 'categories', 'brands'));
     }
 
 
