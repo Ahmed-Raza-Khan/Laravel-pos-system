@@ -10,6 +10,7 @@ use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ReportController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -33,6 +34,16 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard',[DashboardController::class, 'index'])->middleware(['auth'])->name('dashboard');
     Route::get('/products/{id}/barcode', [ProductController::class, 'barcode'])->name('products.barcode');
     Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
+
+    Route::prefix('reports')->name('reports.')->group(function () {
+        Route::get('/', [ReportController::class, 'index'])->name('index');
+        Route::get('/sales', [ReportController::class, 'sales'])->name('sales');
+        Route::get('/purchases', [ReportController::class, 'purchases'])->name('purchases');
+        Route::get('/stock', [ReportController::class, 'stock'])->name('stock');
+        Route::get('/profit-loss', [ReportController::class, 'profitLoss'])->name('profit-loss');
+        Route::get('/customers', [ReportController::class, 'customers'])->name('customers');
+        Route::get('/suppliers', [ReportController::class, 'suppliers'])->name('suppliers');
+    });
 });
 
 Route::prefix('sales')->name('sales.')->group(function () {

@@ -20,15 +20,16 @@
                 ['route' => 'purchases.index', 'label' => 'Purchases'],
                 ['route' => 'sales.index', 'label' => 'Sales'],
                 ['route' => 'inventory.index', 'label' => 'Inventory'],
+                ['route' => 'reports.index', 'label' => 'Reports'],
             ];
         @endphp
 
         @foreach ($items as $item)
             <a href="{{ route($item['route']) }}"
                class="flex items-center justify-between rounded-3xl px-4 py-3 transition
-                    {{ request()->routeIs($item['route']) || request()->routeIs(str_replace('.index', '.*', $item['route'])) ? 'bg-slate-800 text-white shadow-lg' : 'text-slate-300 hover:bg-slate-800/80 hover:text-white' }}">
+                    {{ request()->routeIs($item['route']) || request()->routeIs(str_replace('.index', '.*', $item['route'])) || ($item['route'] === 'reports.index' && request()->routeIs('reports.*')) ? 'bg-slate-800 text-white shadow-lg' : 'text-slate-300 hover:bg-slate-800/80 hover:text-white' }}">
                 <span>{{ $item['label'] }}</span>
-                @if(request()->routeIs($item['route']) || request()->routeIs(str_replace('.index', '.*', $item['route'])))
+                @if(request()->routeIs($item['route']) || request()->routeIs(str_replace('.index', '.*', $item['route'])) || ($item['route'] === 'reports.index' && request()->routeIs('reports.*')))
                     <span class="inline-flex h-2 w-2 rounded-full bg-emerald-400"></span>
                 @endif
             </a>

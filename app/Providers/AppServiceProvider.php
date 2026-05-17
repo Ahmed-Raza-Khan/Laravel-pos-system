@@ -39,6 +39,11 @@ use App\Repositories\SaleRepository;
 use App\Services\InventoryService;
 use App\Services\SaleService;
 
+// Report interface repository service
+use App\Interfaces\ReportRepositoryInterface;
+use App\Repositories\ReportRepository;
+use App\Services\ReportService;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -115,6 +120,17 @@ class AppServiceProvider extends ServiceProvider
             return new SaleService(
                 $app->make(SaleRepositoryInterface::class),
                 $app->make(InventoryService::class)
+            );
+        });
+
+        $this->app->bind(
+            ReportRepositoryInterface::class,
+            ReportRepository::class
+        );
+
+        $this->app->singleton(ReportService::class, function ($app) {
+            return new ReportService(
+                $app->make(ReportRepositoryInterface::class)
             );
         });
     }
