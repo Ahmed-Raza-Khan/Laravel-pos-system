@@ -4,7 +4,7 @@
     <div class="w-full mx-auto px-4 sm:px-6 lg:px-1 py-1">
         <div class="bg-white shadow rounded-2xl overflow-hidden">
             <div class="p-6 border-b">
-                <div class="flex items-center justify-between">
+                <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                     <div>
                         <h2 class="text-2xl font-bold text-gray-800">
                             Invoice
@@ -13,10 +13,14 @@
                             {{ $sale->invoice_no }}
                         </p>
                     </div>
-                    <button onclick="window.print()"
-                        class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition">
-                        Print
-                    </button>
+                    <div class="flex items-center gap-3">
+                        <a href="{{ route('sales.index') }}" class="inline-flex items-center gap-2 bg-slate-600 hover:bg-slate-700 text-white px-4 py-2 rounded-lg transition">
+                            ← Back
+                        </a>
+                        <button onclick="window.print()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition">
+                            Print
+                        </button>
+                    </div>
                 </div>
             </div>
             <div class="p-6">

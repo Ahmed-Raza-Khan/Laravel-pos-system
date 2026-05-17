@@ -1,11 +1,17 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="w-full mx-auto px-4 py-6">
-        <h2 class="text-2xl font-bold mb-6">
-            Inventory History
-            {{-- @include('partials.back-button', ['href' => route('dashboard')]) --}}
-        </h2>
+    <div class="w-full mx-auto px-1 py-1">
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
+            <div>
+                <h2 class="text-3xl font-bold text-slate-900">Inventory History</h2>
+                <p class="text-slate-500 mt-1">Review inventory changes and stock movement over time.</p>
+            </div>
+            <a href="{{ route('inventory.index') }}" class="inline-flex items-center gap-2 rounded-2xl bg-slate-900 px-4 py-2 text-white hover:bg-slate-800 transition">
+                ← Back to Inventory
+            </a>
+        </div>
+
         <div class="bg-white shadow rounded-xl overflow-hidden">
             <div class="overflow-x-auto">
                 <table class="min-w-full divide-y divide-gray-200">
