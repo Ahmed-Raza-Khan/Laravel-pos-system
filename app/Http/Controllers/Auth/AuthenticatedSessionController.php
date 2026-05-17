@@ -28,7 +28,15 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        $user = $request->user();
+
+        $default = $user->can('view dashboard')
+            ? route('dashboard', absolute: false)
+            : ($user->can('manage sales')
+                ? route('sales.index', absolute: false)
+                : route('profile.edit', absolute: false));
+
+        return redirect()->intended($default);
     }
 
     /**

@@ -2,22 +2,44 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
 use App\Models\User;
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        User::create([
-            'name' => 'Ahmed Raza',
-            'email' => 'arahmed212214@gmail.com',
-            'password' => Hash::make('12345678'),
-        ]);
+        $admin = User::firstOrCreate(
+            ['email' => 'admin@pos.test'],
+            [
+                'name' => 'Admin User',
+                'password' => Hash::make('password'),
+            ]
+        );
+        $admin->syncRoles(['Admin']);
+
+        $manager = User::firstOrCreate(
+            ['email' => 'manager@pos.test'],
+            [
+                'name' => 'Manager User',
+                'password' => Hash::make('password'),
+            ]
+        );
+        $manager->syncRoles(['Manager']);
+
+        $cashier = User::firstOrCreate(
+            ['email' => 'cashier@pos.test'],
+            [
+                'name' => 'Cashier User',
+                'password' => Hash::make('password'),
+            ]
+        );
+        $cashier->syncRoles(['Cashier']);
+
+        $legacy = User::where('email', 'arahmed212214@gmail.com')->first();
+        if ($legacy) {
+            $legacy->syncRoles(['Admin']);
+        }
     }
 }

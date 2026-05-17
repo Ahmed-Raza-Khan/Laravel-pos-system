@@ -11,12 +11,12 @@ use App\Http\Controllers\SaleController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
 });
-
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -24,17 +24,37 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'permission:view dashboard'])->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+});
+
+Route::middleware(['auth', 'permission:manage categories'])->group(function () {
     Route::resource('categories', CategoryController::class);
-    Route::resource('products', ProductController::class);
-    Route::resource('customers', CustomerController::class);
-    Route::resource('suppliers', SupplierController::class);
+});
+
+Route::middleware(['auth', 'permission:manage brands'])->group(function () {
     Route::resource('brands', BrandController::class);
-    Route::resource('purchases', PurchaseController::class);
-    Route::get('/dashboard',[DashboardController::class, 'index'])->middleware(['auth'])->name('dashboard');
+});
+
+Route::middleware(['auth', 'permission:manage products'])->group(function () {
+    Route::resource('products', ProductController::class);
     Route::get('/products/{id}/barcode', [ProductController::class, 'barcode'])->name('products.barcode');
     Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
+});
 
+Route::middleware(['auth', 'permission:manage customers'])->group(function () {
+    Route::resource('customers', CustomerController::class);
+});
+
+Route::middleware(['auth', 'permission:manage suppliers'])->group(function () {
+    Route::resource('suppliers', SupplierController::class);
+});
+
+Route::middleware(['auth', 'permission:manage purchases'])->group(function () {
+    Route::resource('purchases', PurchaseController::class);
+});
+
+Route::middleware(['auth', 'permission:manage reports'])->group(function () {
     Route::prefix('reports')->name('reports.')->group(function () {
         Route::get('/', [ReportController::class, 'index'])->name('index');
         Route::get('/sales', [ReportController::class, 'sales'])->name('sales');
@@ -46,7 +66,7 @@ Route::middleware(['auth'])->group(function () {
     });
 });
 
-Route::prefix('sales')->name('sales.')->group(function () {
+Route::middleware(['auth', 'permission:manage sales'])->prefix('sales')->name('sales.')->group(function () {
     Route::get('/', [SaleController::class, 'index'])->name('index');
     Route::get('/create', [SaleController::class, 'create'])->name('create');
     Route::post('/store', [SaleController::class, 'store'])->name('store');
@@ -57,10 +77,14 @@ Route::prefix('sales')->name('sales.')->group(function () {
     Route::delete('/clear-cart', [SaleController::class, 'clearCart'])->name('clearCart');
 });
 
-Route::prefix('inventory')->name('inventory.')->group(function () {
-    Route::get('/',[InventoryController::class, 'index'])->name('index');
-    Route::post('/adjust/{id}',[InventoryController::class, 'adjust'])->name('adjust');
-    Route::get('/history',[InventoryController::class, 'history'])->name('history');
+Route::middleware(['auth', 'permission:manage inventory'])->prefix('inventory')->name('inventory.')->group(function () {
+    Route::get('/', [InventoryController::class, 'index'])->name('index');
+    Route::post('/adjust/{id}', [InventoryController::class, 'adjust'])->name('adjust');
+    Route::get('/history', [InventoryController::class, 'history'])->name('history');
+});
+
+Route::middleware(['auth', 'permission:manage users'])->group(function () {
+    Route::resource('users', UserController::class)->except(['show']);
 });
 
 require __DIR__.'/auth.php';
