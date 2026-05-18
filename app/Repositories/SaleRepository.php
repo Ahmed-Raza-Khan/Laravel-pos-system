@@ -3,13 +3,18 @@
 namespace App\Repositories;
 
 use App\Models\Sale;
+use App\Support\IndexTable;
 use App\Interfaces\SaleRepositoryInterface;
 
 class SaleRepository implements SaleRepositoryInterface
 {
     public function getAll()
     {
-        return Sale::with(['customer', 'items'])->latest()->paginate(10);
+        return IndexTable::apply(
+            Sale::with(['customer', 'items']),
+            ['invoice_no', 'customer.name', 'grand_total', 'status', 'sale_date'],
+            'sale_date'
+        );
     }
 
     public function findById(int $id)

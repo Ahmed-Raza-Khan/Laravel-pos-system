@@ -54,7 +54,10 @@ class BrandController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $brand = $this->brandService->getBrand($id);
+        $brand->loadCount('products');
+
+        return view('brands.show', compact('brand'));
     }
 
     /**

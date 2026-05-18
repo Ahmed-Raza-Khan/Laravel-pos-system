@@ -9,18 +9,14 @@
             </div>
         </div>
     </div>
-    <form action="{{ route('customers.update', $customer->id) }}" method="POST" class="bg-white p-6 rounded shadow">
-
+    <form action="{{ route('customers.update', $customer->id) }}" method="POST" class="bg-white p-6 rounded-3xl shadow-lg">
         @csrf
         @method('PUT')
 
         <div class="mb-4">
             <label class="block mb-1">Name</label>
 
-            <input type="text"
-                name="name"
-                class="w-full border p-2 rounded"
-                value="{{ old('name', $customer->name) }}">
+            <input type="text" name="name" class="w-full border p-2 rounded" value="{{ old('name', $customer->name) }}">
         </div>
 
         <div class="mb-4">
@@ -67,8 +63,7 @@
             </select>
         </div>
 
-        <button type="submit"
-                class="bg-yellow-500 text-white px-4 py-2 rounded">
+        <button type="submit" class="bg-slate-900 hover:bg-slate-800 text-white px-5 py-3 rounded-2xl shadow-sm transition mt-4">
             Update Customer
         </button>
     </form>

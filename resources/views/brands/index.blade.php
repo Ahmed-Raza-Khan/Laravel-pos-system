@@ -7,10 +7,12 @@
             <p class="text-sm text-slate-500">Manage product brands</p>
         </div>
 
-        <a href="{{ route('brands.create') }}" class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-2xl">
+        <a href="{{ route('brands.create') }}" class="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-2xl">
             Add Brand
         </a>
     </div>
+
+    @include('partials.index-toolbar', ['placeholder' => 'Search brands...'])
 
     @if(session('success'))
         <div class="bg-green-100 text-green-700 p-3 rounded mb-4">

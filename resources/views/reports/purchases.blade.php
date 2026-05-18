@@ -28,7 +28,7 @@
                 @endforeach
             </select>
         </div>
-        <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-2xl text-sm font-semibold">Apply</button>
+        <button type="submit" class="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-2xl text-sm font-semibold">Apply</button>
     </form>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">

@@ -10,7 +10,7 @@
         </div>
     </div>
 
-    <form action="{{ route('suppliers.update', $supplier->id) }}" method="POST" class="bg-white p-6 rounded shadow">
+    <form action="{{ route('suppliers.update', $supplier->id) }}" method="POST" class="bg-white p-6 rounded-3xl shadow-lg">
         @csrf
         @method('PUT')
 
@@ -46,7 +46,7 @@
             </select>
         </div>
 
-        <button type="submit" class="bg-yellow-500 text-white px-4 py-2 rounded">
+        <button type="submit" class="bg-slate-900 hover:bg-slate-800 text-white px-5 py-3 rounded-2xl mt-4">
             Update Supplier
         </button>
     </form>

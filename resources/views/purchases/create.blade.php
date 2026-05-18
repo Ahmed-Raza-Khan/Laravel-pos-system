@@ -8,14 +8,14 @@
     </h2>
 
     <a href="{{ route('purchases.index') }}"
-       class="bg-gray-500 text-white px-4 py-2 rounded">
+       class="bg-slate-900 hover:bg-slate-800 text-white px-5 py-3 rounded-2xl shadow-sm transition">
         Back
     </a>
 </div>
 
 <form action="{{ route('purchases.store') }}"
       method="POST"
-      class="bg-white p-6 rounded shadow">
+      class="bg-white p-6 rounded-3xl shadow-lg">
 
     @csrf
 
@@ -148,7 +148,7 @@
     <div class="mt-4">
         <button type="button"
                 onclick="addRow()"
-                class="bg-gray-600 text-white px-4 py-2 rounded">
+                class="bg-slate-900 hover:bg-slate-800 text-white px-5 py-3 rounded-2xl shadow-sm transition">
             Add More Product
         </button>
     </div>
@@ -167,7 +167,7 @@
 
     <div class="mt-5">
         <button type="submit"
-                class="bg-blue-600 text-white px-6 py-3 rounded">
+                class="bg-slate-900 hover:bg-slate-800 text-white px-5 py-3 rounded-2xl shadow-sm transition">
             Save Purchase
         </button>
     </div>

@@ -12,7 +12,7 @@
     </div>
 
     <form method="POST" action="{{ route('products.update', $product->id) }}" enctype="multipart/form-data"
-        class="bg-white p-6 rounded shadow">
+        class="bg-white p-6 rounded-3xl shadow-lg">
         @csrf
         @method('PUT')
 
@@ -168,12 +168,12 @@
 
         <div class="flex gap-3 mt-5">
             <button type="submit"
-                class="bg-yellow-500 text-white px-4 py-2 rounded">
+                class="bg-slate-900 hover:bg-slate-800 text-white px-4 py-3  rounded-2xl">
                 Update Product
             </button>
 
             <a href="{{ route('products.index') }}"
-                class="bg-gray-500 text-white px-4 py-2 rounded">
+                class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-3 rounded-2xl">
                 Cancel
             </a>
         </div>

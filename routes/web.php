@@ -29,7 +29,7 @@ Route::middleware(['auth', 'permission:view dashboard'])->group(function () {
 });
 
 Route::middleware(['auth', 'permission:manage categories'])->group(function () {
-    Route::resource('categories', CategoryController::class);
+    Route::resource('categories', CategoryController::class)->except(['show']);
 });
 
 Route::middleware(['auth', 'permission:manage brands'])->group(function () {
@@ -37,20 +37,25 @@ Route::middleware(['auth', 'permission:manage brands'])->group(function () {
 });
 
 Route::middleware(['auth', 'permission:manage products'])->group(function () {
+    Route::get('/products/export', [ProductController::class, 'export'])->name('products.export');
+    Route::get('/products/import', [ProductController::class, 'importForm'])->name('products.import');
+    Route::post('/products/import', [ProductController::class, 'import'])->name('products.import.store');
     Route::resource('products', ProductController::class);
     Route::get('/products/{id}/barcode', [ProductController::class, 'barcode'])->name('products.barcode');
     Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
 });
 
 Route::middleware(['auth', 'permission:manage customers'])->group(function () {
-    Route::resource('customers', CustomerController::class);
+    Route::resource('customers', CustomerController::class)->except(['show']);
 });
 
 Route::middleware(['auth', 'permission:manage suppliers'])->group(function () {
-    Route::resource('suppliers', SupplierController::class);
+    Route::resource('suppliers', SupplierController::class)->except(['show']);
 });
 
 Route::middleware(['auth', 'permission:manage purchases'])->group(function () {
+    Route::post('/purchases/{id}/approve', [PurchaseController::class, 'approve'])->name('purchases.approve');
+    Route::post('/purchases/{id}/cancel', [PurchaseController::class, 'cancel'])->name('purchases.cancel');
     Route::resource('purchases', PurchaseController::class);
 });
 
@@ -63,6 +68,7 @@ Route::middleware(['auth', 'permission:manage reports'])->group(function () {
         Route::get('/profit-loss', [ReportController::class, 'profitLoss'])->name('profit-loss');
         Route::get('/customers', [ReportController::class, 'customers'])->name('customers');
         Route::get('/suppliers', [ReportController::class, 'suppliers'])->name('suppliers');
+        Route::get('/suppliers/{supplier}/statement', [ReportController::class, 'supplierStatement'])->name('suppliers.statement');
     });
 });
 
@@ -70,6 +76,12 @@ Route::middleware(['auth', 'permission:manage sales'])->prefix('sales')->name('s
     Route::get('/', [SaleController::class, 'index'])->name('index');
     Route::get('/create', [SaleController::class, 'create'])->name('create');
     Route::post('/store', [SaleController::class, 'store'])->name('store');
+    Route::get('/{id}/edit', [SaleController::class, 'edit'])->name('edit');
+    Route::put('/{id}', [SaleController::class, 'update'])->name('update');
+    Route::post('/{id}/void', [SaleController::class, 'void'])->name('void');
+    Route::post('/{id}/payment', [SaleController::class, 'recordPayment'])->name('payment');
+    Route::post('/hold-cart', [SaleController::class, 'holdCart'])->name('holdCart');
+    Route::post('/resume-cart/{id}', [SaleController::class, 'resumeCart'])->name('resumeCart');
     Route::get('/show/{id}', [SaleController::class, 'show'])->name('show');
     Route::post('/add-to-cart/{id}', [SaleController::class, 'addToCart'])->name('addToCart');
     Route::post('/update-cart/{id}', [SaleController::class, 'updateCart'])->name('updateCart');

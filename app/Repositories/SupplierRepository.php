@@ -4,12 +4,13 @@ namespace App\Repositories;
 
 use App\Interfaces\SupplierRepositoryInterface;
 use App\Models\Supplier;
+use App\Support\IndexTable;
 
 class SupplierRepository implements SupplierRepositoryInterface
 {
     public function getAll()
     {
-        return Supplier::latest()->paginate(5);
+        return IndexTable::apply(Supplier::query(), ['name', 'company', 'phone'], 'name', 10);
     }
 
     public function store(array $data)

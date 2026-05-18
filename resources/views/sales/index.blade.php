@@ -1,76 +1,55 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="w-full mx-auto px-4 sm:px-6 lg:px-1 py-1">
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
-            <div>
-                <h2 class="text-3xl font-bold text-slate-900">
-                    Sales List
-                </h2>
-                <p class="text-slate-500 mt-1">Manage all sales transactions and invoices</p>
-            </div>
-            <a href="{{ route('sales.create') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-2xl transition mt-4 sm:mt-0">
-                ➕ New Sale
-            </a>
-        </div>
+<section class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
+    <section>
+        <h2 class="text-3xl font-bold text-slate-900">Sales</h2>
+        <p class="text-slate-500 mt-1">Invoices, dues, voids, and payment history</p>
+    </section>
+    <a href="{{ route('sales.create') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white text-sm font-semibold rounded-2xl mt-4 sm:mt-0">New Sale</a>
+</section>
 
-        <div class="bg-gradient-to-br from-white to-slate-50 rounded-3xl shadow-lg overflow-hidden border border-slate-100">
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-slate-200">
-                    <thead class="bg-white text-black">
-                        <tr>
-                            <th class="px-6 py-4 text-left font-semibold">#</th>
-                            <th class="px-6 py-4 text-left font-semibold">Invoice</th>
-                            <th class="px-6 py-4 text-left font-semibold">Customer</th>
-                            <th class="px-6 py-4 text-left font-semibold">Total</th>
-                            <th class="px-6 py-4 text-left font-semibold">Payment</th>
-                            <th class="px-6 py-4 text-left font-semibold">Date</th>
-                            <th class="px-6 py-4 text-right font-semibold">Action</th>
-                        </tr>
-                    </thead>
+@include('partials.index-toolbar', ['placeholder' => 'Search invoice, customer...'])
 
-                    <tbody class="divide-y divide-slate-200">
-                        @forelse($sales as $sale)
-                            <tr class="hover:bg-teal-50 transition-colors">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">
-                                    {{ $sale->id }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-indigo-600">
-                                    {{ $sale->invoice_no }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-700">
-                                    {{ $sale->customer?->name ?? 'Walk-in Customer' }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-emerald-600">
-                                    PKR {{ number_format($sale->grand_total, 0) }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="inline-flex px-3 py-1 text-xs font-bold rounded-full bg-blue-100 text-blue-700">
-                                        {{ ucfirst(str_replace('_', ' ', $sale->payment_method)) }}
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">
-                                    {{ $sale->sale_date->format('d M Y') }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-right">
-                                    <a href="{{ route('sales.show', $sale->id) }}" class="inline-flex items-center gap-1 px-3 py-2 bg-slate-600 hover:bg-slate-700 text-white text-xs font-semibold rounded-lg transition">
-                                        👁 View
-                                    </a>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="7" class="px-6 py-8 text-center text-slate-500 font-medium">
-                                    💰 No sales found. Create your first sale!
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="mt-6">
-            {{ $sales->links() }}
-        </div>
-    </div>
+<section class="bg-white rounded-3xl shadow-lg border border-slate-100 overflow-hidden">
+    <table class="w-full text-sm">
+        <thead class="bg-slate-50 text-left">
+            <tr>
+                @include('partials.sortable-th', ['field' => 'id', 'label' => '#'])
+                @include('partials.sortable-th', ['field' => 'invoice_no', 'label' => 'Invoice'])
+                <th class="px-6 py-4 font-semibold">Customer</th>
+                @include('partials.sortable-th', ['field' => 'grand_total', 'label' => 'Total'])
+                @include('partials.sortable-th', ['field' => 'status', 'label' => 'Status'])
+                @include('partials.sortable-th', ['field' => 'sale_date', 'label' => 'Date'])
+                <th class="px-6 py-4 font-semibold text-right">Action</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100">
+            @forelse($sales as $sale)
+                <tr class="hover:bg-indigo-50/50">
+                    <td class="px-6 py-4">{{ $sale->id }}</td>
+                    <td class="px-6 py-4 font-semibold text-indigo-600">{{ $sale->invoice_no }}</td>
+                    <td class="px-6 py-4">{{ $sale->customer?->name ?? 'Walk-in' }}</td>
+                    <td class="px-6 py-4 font-bold">PKR {{ number_format($sale->grand_total, 0) }}</td>
+                    <td class="px-6 py-4">
+                        @if($sale->status === 'voided')
+                            <span class="text-xs font-bold text-red-600 bg-red-50 px-2 py-1 rounded-full">Voided</span>
+                        @elseif($sale->due_amount > 0)
+                            <span class="text-xs font-bold text-amber-700 bg-amber-50 px-2 py-1 rounded-full">Due PKR {{ number_format($sale->due_amount, 0) }}</span>
+                        @else
+                            <span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-1 rounded-full">Paid</span>
+                        @endif
+                    </td>
+                    <td class="px-6 py-4">{{ $sale->sale_date->format('d M Y') }}</td>
+                    <td class="px-6 py-4 text-right">
+                        <a href="{{ route('sales.show', $sale->id) }}" class="px-3 py-1.5 rounded-lg bg-slate-800 text-white text-xs font-semibold">View</a>
+                    </td>
+                </tr>
+            @empty
+                <tr><td colspan="7" class="px-6 py-8 text-center text-slate-500">No sales yet.</td></tr>
+            @endforelse
+        </tbody>
+    </table>
+    <section class="p-4">{{ $sales->links() }}</section>
+</section>
 @endsection

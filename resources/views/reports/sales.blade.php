@@ -12,11 +12,11 @@
 
     <div class="flex gap-2 mb-8">
         <a href="{{ route('reports.sales', ['tab' => 'daily']) }}"
-           class="px-4 py-2 rounded-2xl text-sm font-semibold {{ $tab === 'daily' ? 'bg-indigo-600 text-white' : 'bg-white border border-slate-200 text-slate-600' }}">
+           class="px-4 py-2 rounded-2xl text-sm font-semibold {{ $tab === 'daily' ? 'bg-slate-900 text-white' : 'bg-white border border-slate-200 text-slate-600' }}">
             Daily Sales
         </a>
         <a href="{{ route('reports.sales', ['tab' => 'monthly']) }}"
-           class="px-4 py-2 rounded-2xl text-sm font-semibold {{ $tab === 'monthly' ? 'bg-indigo-600 text-white' : 'bg-white border border-slate-200 text-slate-600' }}">
+           class="px-4 py-2 rounded-2xl text-sm font-semibold {{ $tab === 'monthly' ? 'bg-slate-900 text-white' : 'bg-white border border-slate-200 text-slate-600' }}">
             Monthly Sales
         </a>
     </div>
@@ -38,7 +38,7 @@
                     class="bg-slate-700 hover:bg-slate-800 text-white px-4 py-2 rounded-2xl text-sm font-semibold">
                 Today
             </button>
-            <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-2xl text-sm font-semibold">
+            <button type="submit" class="bg-slate-900 text-white px-4 py-2 rounded-2xl text-sm font-semibold">
                 Apply Filter
             </button>
         </form>
@@ -130,7 +130,7 @@
                     @endfor
                 </select>
             </div>
-            <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-2xl text-sm font-semibold">
+            <button type="submit" class="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-2xl text-sm font-semibold">
                 Apply
             </button>
         </form>

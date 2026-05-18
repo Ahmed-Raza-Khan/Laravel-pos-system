@@ -4,12 +4,13 @@ namespace App\Repositories;
 
 use App\Interfaces\CustomerRepositoryInterface;
 use App\Models\Customer;
+use App\Support\IndexTable;
 
 class CustomerRepository implements CustomerRepositoryInterface
 {
     public function getAll()
     {
-        return Customer::latest()->paginate(5);
+        return IndexTable::apply(Customer::query(), ['name', 'email', 'phone'], 'name', 10);
     }
 
     public function store(array $data)

@@ -7,7 +7,7 @@
                 <h2 class="text-3xl font-bold text-slate-900">Edit Brand</h2>
                 <p class="text-slate-500 mt-1">Update the brand name, description and status.</p>
             </div>
-            <a href="{{ route('brands.index') }}" class="inline-flex items-center gap-2 rounded-2xl bg-slate-900 px-4 py-2 text-white transition hover:bg-slate-800">
+            <a href="{{ route('brands.index') }}" class="inline-flex items-center gap-2 rounded-2xl bg-slate-900 px-5 py-3 text-white transition hover:bg-slate-800">
                 ← Back to Brands
             </a>
         </div>
@@ -44,7 +44,7 @@
             </div>
 
             <div class="flex justify-end">
-                <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-3 rounded-2xl transition">
+                <button type="submit" class="bg-slate-900 hover:bg-slate-800 text-white font-semibold px-6 py-3 rounded-2xl transition">
                     Update Brand
                 </button>
             </div>

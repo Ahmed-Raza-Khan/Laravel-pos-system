@@ -7,10 +7,12 @@
             <p class="text-sm text-slate-500">Manage product categories</p>
         </div>
 
-        <a href="{{ route('categories.create') }}" class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-2xl">
+        <a href="{{ route('categories.create') }}" class="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white px-5 py-3 rounded-2xl">
             Add Category
         </a>
     </div>
+
+    @include('partials.index-toolbar', ['placeholder' => 'Search categories...'])
 
     <div class="bg-gradient-to-br from-white to-slate-50 rounded-3xl shadow-lg overflow-hidden border border-slate-100">
         <div class="overflow-x-auto">

@@ -13,7 +13,7 @@
 
 <form action="{{ route('customers.store') }}"
       method="POST"
-      class="bg-white p-6 rounded shadow">
+      class="bg-white p-6 rounded-3xl shadow-lg">
     @csrf
 
     <div class="mb-4">
@@ -53,8 +53,7 @@
         </select>
     </div>
 
-    <button type="submit"
-            class="bg-blue-500 text-white px-4 py-2 rounded">
+    <button type="submit" class="bg-slate-900 hover:bg-slate-800 text-white px-5 py-3 rounded-2xl shadow-sm transition mt-4">
         Save Customer
     </button>
 </form>

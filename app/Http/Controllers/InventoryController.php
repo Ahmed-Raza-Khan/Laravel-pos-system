@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Support\IndexTable;
 use Illuminate\Http\Request;
 use App\Services\InventoryService;
 
@@ -21,7 +22,11 @@ class InventoryController extends Controller
      */
     public function index()
     {
-        $products = Product::latest()->paginate(10);
+        $products = IndexTable::apply(
+            Product::with(['category', 'brand']),
+            ['name', 'sku', 'barcode', 'stock'],
+            'name'
+        );
 
         return view('inventory.index',compact('products'));
     }

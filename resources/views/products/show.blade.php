@@ -8,7 +8,7 @@
                 <p class="text-slate-500 mt-1">A full overview of this product with image, pricing, stock, barcode and metadata.</p>
             </div>
 
-            <a href="{{ route('products.index') }}" class="inline-flex items-center gap-2 bg-slate-700 hover:bg-slate-800 text-white px-4 py-2 rounded-2xl shadow-sm transition">
+            <a href="{{ route('products.index') }}" class="inline-flex items-center gap-2 rounded-2xl bg-slate-900 px-5 py-3 text-white transition hover:bg-slate-800">
                 ← Back to Products
             </a>
         </div>
@@ -58,20 +58,20 @@
             </div>
 
             <div class="space-y-6">
-                <div class="bg-gradient-to-br from-white to-slate-50 rounded-3xl border border-slate-200 shadow-lg p-6">
+                <div class="bg-white rounded-3xl border border-slate-200 shadow-lg p-6">
                     <h2 class="text-xl font-semibold text-slate-900">Pricing & Inventory</h2>
                     <div class="mt-6 grid gap-4 sm:grid-cols-2">
-                        <div class="rounded-3xl bg-white p-5 shadow-sm">
+                        <div class="rounded-3xl bg-slate-100 p-5 shadow-sm">
                             <p class="text-sm text-slate-500">Purchase Price</p>
                             <p class="mt-2 text-lg font-semibold text-slate-900">PKR {{ number_format($product->purchase_price, 0) }}</p>
                         </div>
-                        <div class="rounded-3xl bg-white p-5 shadow-sm">
+                        <div class="rounded-3xl bg-slate-100 p-5 shadow-sm">
                             <p class="text-sm text-slate-500">Sale Price</p>
                             <p class="mt-2 text-lg font-semibold text-emerald-700">PKR {{ number_format($product->sale_price, 0) }}</p>
                         </div>
                     </div>
 
-                    <div class="mt-6 rounded-3xl bg-slate-50 p-5">
+                    <div class="mt-6 rounded-3xl bg-slate-100 p-5">
                         <div class="flex items-center justify-between text-sm text-slate-500">
                             <span>Created</span>
                             <span>{{ $product->created_at->format('d M Y') }}</span>
@@ -87,13 +87,13 @@
                     <h2 class="text-xl font-semibold text-slate-900">Barcode</h2>
                     <p class="text-sm text-slate-500 mt-2">Scan or print this barcode for inventory labels and receipts.</p>
 
-                    <div class="mt-5 rounded-3xl bg-slate-50 p-5 text-center">
+                    <div class="mt-5 rounded-3xl bg-slate-100 p-5 text-center">
                         {!! DNS1D::getBarcodeHTML($product->barcode, 'C128', 2, 60) !!}
                         <p class="mt-4 text-sm font-semibold text-slate-900">{{ $product->barcode }}</p>
                     </div>
 
                     <div class="mt-6 text-right">
-                        <a href="{{ route('products.barcode', $product->id) }}" target="_blank" class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-2xl transition">
+                        <a href="{{ route('products.barcode', $product->id) }}" target="_blank" class="inline-flex items-center gap-2 rounded-2xl bg-slate-900 px-5 py-3 text-white transition hover:bg-slate-800">
                             Print Barcode
                         </a>
                     </div>

@@ -43,7 +43,10 @@
                             <td class="px-6 py-4">{{ $supplier->company ?? '—' }}</td>
                             <td class="px-6 py-4 text-right">{{ $supplier->purchases_count }}</td>
                             <td class="px-6 py-4 text-right">{{ number_format($supplier->total_supplied_products) }}</td>
-                            <td class="px-6 py-4 text-right font-bold">PKR {{ number_format($supplier->total_purchase_amount ?? 0, 0) }}</td>
+                            <td class="px-6 py-4 text-right">
+                                <span class="font-bold block">PKR {{ number_format($supplier->total_purchase_amount ?? 0, 0) }}</span>
+                                <a href="{{ route('reports.suppliers.statement', $supplier->id) }}" class="text-xs text-indigo-600 font-semibold hover:underline">Statement →</a>
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>

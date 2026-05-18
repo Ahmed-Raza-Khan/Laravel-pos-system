@@ -14,7 +14,7 @@
     @foreach ($links as $link)
         <a href="{{ route($link['route']) }}"
            class="px-4 py-2 rounded-2xl text-sm font-semibold transition
-                {{ request()->routeIs($link['route']) ? 'bg-indigo-600 text-white shadow-md' : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50' }}">
+                {{ request()->routeIs($link['route']) ? 'bg-slate-900 text-white shadow-md' : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50' }}">
             {{ $link['label'] }}
         </a>
     @endforeach

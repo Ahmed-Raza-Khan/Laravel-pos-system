@@ -3,13 +3,14 @@
 namespace App\Repositories;
 
 use App\Models\Brand;
+use App\Support\IndexTable;
 use App\Interfaces\BrandRepositoryInterface;
 
 class BrandRepository implements BrandRepositoryInterface
 {
     public function getAll()
     {
-        return Brand::latest()->paginate(10);
+        return IndexTable::apply(Brand::query(), ['name', 'slug'], 'name');
     }
 
     public function store(array $data)

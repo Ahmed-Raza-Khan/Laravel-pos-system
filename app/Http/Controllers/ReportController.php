@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Purchase;
+use App\Models\Supplier;
 use App\Services\ReportService;
 use Illuminate\Http\Request;
 
@@ -84,5 +86,22 @@ class ReportController extends Controller
         $data = $this->reportService->supplierReport();
 
         return view('reports.suppliers', $data);
+    }
+
+    public function supplierStatement(Supplier $supplier)
+    {
+        $purchases = Purchase::with(['items.product'])
+            ->where('supplier_id', $supplier->id)
+            ->orderByDesc('purchase_date')
+            ->get();
+
+        $totals = [
+            'count' => $purchases->count(),
+            'approved' => $purchases->where('status', 'approved')->sum('total_amount'),
+            'pending' => $purchases->where('status', 'pending')->sum('total_amount'),
+            'items' => $purchases->sum(fn ($p) => $p->items->sum('quantity')),
+        ];
+
+        return view('reports.supplier-statement', compact('supplier', 'purchases', 'totals'));
     }
 }

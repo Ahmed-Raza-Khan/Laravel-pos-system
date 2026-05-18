@@ -10,15 +10,12 @@
         </div>
     </div>
 
-    <form action="{{ route('suppliers.store') }}"
-        method="POST"
-        class="bg-white p-6 rounded shadow">
+    <form action="{{ route('suppliers.store') }}" method="POST" class="bg-white p-6 rounded-3xl shadow-lg">
         @csrf
 
         <div class="mb-4">
             <label class="block mb-1">Name</label>
                 <input type="text" name="name" class="w-full border border-slate-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none" value="{{ old('name') }}">
-
             @error('name')
                 <p class="text-red-500 text-sm">{{ $message }}</p>
             @enderror
@@ -47,7 +44,7 @@
             </select>
         </div>
 
-        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">
+        <button type="submit" class="bg-slate-900 rounded-2xl mt-4 text-white px-4 py-2 rounded">
             Save Supplier
         </button>
     </form>

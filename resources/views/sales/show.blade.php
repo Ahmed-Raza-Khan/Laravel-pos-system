@@ -1,133 +1,97 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="w-full mx-auto px-4 sm:px-6 lg:px-1 py-1">
-        <div class="bg-white shadow rounded-2xl overflow-hidden">
-            <div class="p-6 border-b">
-                <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                    <div>
-                        <h2 class="text-2xl font-bold text-gray-800">
-                            Invoice
-                        </h2>
-                        <p class="text-gray-500 mt-1">
-                            {{ $sale->invoice_no }}
-                        </p>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <a href="{{ route('sales.index') }}" class="inline-flex items-center gap-2 bg-slate-600 hover:bg-slate-700 text-white px-4 py-2 rounded-lg transition">
-                            ← Back
-                        </a>
-                        <button onclick="window.print()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition">
-                            Print
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="p-6">
-                <!-- Customer & Date -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                    <div>
-                        <h3 class="text-lg font-semibold text-gray-800 mb-2">
-                            Customer
-                        </h3>
-                        <p class="text-gray-600">
-                            {{ $sale->customer?->name ?? 'Walk-in Customer' }}
-                        </p>
-                    </div>
-                    <div class="md:text-right">
-                        <h3 class="text-lg font-semibold text-gray-800 mb-2">
-                            Date
-                        </h3>
-                        <p class="text-gray-600">
-                            {{ $sale->sale_date->format('d M Y') }}
-                        </p>
-                    </div>
-                </div>
-                <!-- Invoice Table -->
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-100">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">
-                                    Product
-                                </th>
-                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">
-                                    Qty
-                                </th>
-                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">
-                                    Price
-                                </th>
-                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">
-                                    Total
-                                </th>
-                            </tr>
-                        </thead>
+<section class="w-full mx-auto">
+    <section class="bg-white rounded-3xl shadow-lg border border-slate-100 overflow-hidden">
+        <section class="p-6 border-b border-slate-100 flex flex-wrap gap-3 justify-between items-start">
+            <section>
+                <h2 class="text-2xl font-bold text-slate-900">Invoice {{ $sale->invoice_no }}</h2>
+                <p class="text-slate-500 mt-1">{{ $sale->sale_date->format('d M Y') }} · {{ ucfirst($sale->status) }}</p>
+            </section>
 
-                        <tbody class="bg-white divide-y divide-gray-200">
-                            @foreach ($sale->items as $item)
-                                <tr>
-                                    <td class="px-6 py-4 text-sm text-gray-800">
-                                        {{ $item->product->name }}
-                                    </td>
-                                    <td class="px-6 py-4 text-sm text-gray-600">
-                                        {{ $item->quantity }}
-                                    </td>
-                                    <td class="px-6 py-4 text-sm text-gray-600">
-                                        PKR {{ number_format($item->price, 2) }}
-                                    </td>
-                                    <td class="px-6 py-4 text-sm font-semibold text-green-600">
-                                        PKR {{ number_format($item->total, 2) }}
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
+            <section class="flex flex-wrap gap-2">
+                <a href="{{ route('sales.index') }}" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-sm font-semibold">← Back</a>
+                @if($sale->status !== 'voided')
+                    <a href="{{ route('sales.edit', $sale->id) }}" class="px-4 py-2 rounded-xl bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700">Edit</a>
 
-                <!-- Totals -->
-                <div class="flex justify-end mt-8">
-                    <div class="w-full md:w-96">
-                        <div class="bg-gray-50 rounded-xl p-5">
-                            <div class="flex justify-between py-2 border-b">
-                                <span class="text-gray-600">Subtotal</span>
-                                <span class="font-medium">
-                                    PKR {{ number_format($sale->subtotal, 2) }}
-                                </span>
-                            </div>
-                            <div class="flex justify-between py-2 border-b">
-                                <span class="text-gray-600">Discount</span>
-                                <span class="font-medium text-red-500">
-                                    - PKR {{ number_format($sale->discount_amount, 2) }}
-                                </span>
-                            </div>
-                            <div class="flex justify-between py-2 border-b">
-                                <span class="text-gray-600">Tax</span>
-                                <span class="font-medium">
-                                    PKR {{ number_format($sale->tax_amount, 2) }}
-                                </span>
-                            </div>
-                            <div class="flex justify-between py-3 border-b text-lg font-bold">
-                                <span>Grand Total</span>
-                                <span class="text-indigo-600">
-                                    PKR {{ number_format($sale->grand_total, 2) }}
-                                </span>
-                            </div>
-                            <div class="flex justify-between py-2 border-b">
-                                <span class="text-gray-600">Paid</span>
-                                <span class="font-medium text-green-600">
-                                    PKR {{ number_format($sale->paid_amount, 2) }}
-                                </span>
-                            </div>
-                            <div class="flex justify-between py-2 text-red-600 font-semibold">
-                                <span>Due</span>
-                                <span>
-                                    PKR {{ number_format($sale->due_amount, 2) }}
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+                    <form method="POST" action="{{ route('sales.void', $sale->id) }}" onsubmit="return confirm('Void this sale and restore stock?')">
+                        @csrf
+
+                        <button class="px-4 py-2 rounded-xl bg-red-600 text-white text-sm font-semibold hover:bg-red-700">Void</button>
+                    </form>
+                @endif
+                <button onclick="window.print()" class="px-4 py-2 rounded-xl bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700">Print</button>
+            </section>
+        </section>
+
+        <section class="p-6 grid md:grid-cols-2 gap-6 border-b border-slate-100">
+            <section>
+                <p class="text-xs font-semibold uppercase text-slate-400">Customer</p>
+                <p class="font-medium">{{ $sale->customer?->name ?? 'Walk-in Customer' }}</p>
+            </section>
+            
+            <section class="md:text-right">
+                <p class="text-xs font-semibold uppercase text-slate-400">Payment</p>
+                <p class="font-medium capitalize">{{ str_replace('_', ' ', $sale->payment_method) }}</p>
+            </section>
+        </section>
+
+        <section class="p-6 overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead><tr class="border-b text-left text-slate-500"><th class="py-2">Product</th><th class="py-2 text-right">Qty</th><th class="py-2 text-right">Price</th><th class="py-2 text-right">Total</th></tr></thead>
+                <tbody class="divide-y">
+                    @foreach($sale->items as $item)
+                        <tr><td class="py-3">{{ $item->product?->name }}</td><td class="py-3 text-right">{{ $item->quantity }}</td><td class="py-3 text-right">PKR {{ number_format($item->price, 2) }}</td><td class="py-3 text-right font-semibold">PKR {{ number_format($item->total, 2) }}</td></tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </section>
+
+        <section class="p-6 bg-slate-50 grid sm:grid-cols-2 gap-4 text-sm">
+            <p>Subtotal: <strong>PKR {{ number_format($sale->subtotal, 2) }}</strong></p>
+            <p>Discount: <strong>PKR {{ number_format($sale->discount_amount, 2) }}</strong></p>
+            <p>Tax: <strong>PKR {{ number_format($sale->tax_amount, 2) }}</strong></p>
+            <p class="text-lg">Grand Total: <strong class="text-indigo-600">PKR {{ number_format($sale->grand_total, 2) }}</strong></p>
+            <p>Paid: <strong class="text-emerald-600">PKR {{ number_format($sale->paid_amount, 2) }}</strong></p>
+            <p>Due: <strong class="text-red-600">PKR {{ number_format($sale->due_amount, 2) }}</strong></p>
+        </section>
+
+        @if($sale->payments->isNotEmpty())
+            <section class="p-6 border-t">
+                <h3 class="font-bold text-slate-900 mb-3">Payment History</h3>
+                <table class="w-full text-sm">
+                    @foreach($sale->payments as $payment)
+                        <tr class="border-b"><td class="py-2">{{ $payment->paid_at->format('d M Y H:i') }}</td><td class="py-2 capitalize">{{ str_replace('_',' ',$payment->payment_method) }}</td><td class="py-2 text-right font-semibold">PKR {{ number_format($payment->amount, 2) }}</td></tr>
+                    @endforeach
+                </table>
+            </section>
+        @endif
+
+        @if($sale->status !== 'voided' && $sale->due_amount > 0)
+            <section class="p-6 border-t bg-emerald-50/50">
+                <h3 class="font-bold text-slate-900 mb-4">Collect Due Payment</h3>
+                <form method="POST" action="{{ route('sales.payment', $sale->id) }}" class="grid sm:grid-cols-3 gap-4 max-w-2xl">
+                    @csrf
+                    <section>
+                        <label class="text-xs font-semibold text-slate-600">Amount (max {{ number_format($sale->due_amount, 2) }})</label>
+                        <input type="number" step="0.01" name="amount" max="{{ $sale->due_amount }}" required class="mt-1 w-full rounded-xl border-slate-200 text-sm">
+                    </section>
+                    <section>
+                        <label class="text-xs font-semibold text-slate-600">Method</label>
+                        <select name="payment_method" class="mt-1 w-full rounded-xl border-slate-200 text-sm">
+                            <option value="cash">Cash</option>
+                            <option value="card">Card</option>
+                            <option value="bank_transfer">Bank Transfer</option>
+                            <option value="easypaisa">Easypaisa</option>
+                            <option value="jazzcash">JazzCash</option>
+                        </select>
+                    </section>
+                    <section class="flex items-end">
+                        <button class="w-full rounded-xl bg-emerald-600 py-2.5 text-sm font-semibold text-white hover:bg-emerald-700">Record Payment</button>
+                    </section>
+                </form>
+            </section>
+        @endif
+    </section>
+</section>
 @endsection

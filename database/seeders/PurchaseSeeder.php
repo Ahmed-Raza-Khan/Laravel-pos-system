@@ -30,7 +30,7 @@ class PurchaseSeeder extends Seeder
 
                 'note' => 'Dummy purchase data',
 
-                'status' => 1,
+                'status' => 'approved',
             ]);
 
             $total = 0;

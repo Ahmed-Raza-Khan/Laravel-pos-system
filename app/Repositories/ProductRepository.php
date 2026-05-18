@@ -4,12 +4,17 @@ namespace App\Repositories;
 
 use App\Interfaces\ProductRepositoryInterface;
 use App\Models\Product;
+use App\Support\IndexTable;
 
 class ProductRepository implements ProductRepositoryInterface
 {
     public function getAll()
     {
-        return Product::with(['category','brand'])->latest()->paginate(10);
+        return IndexTable::apply(
+            Product::with(['category', 'brand']),
+            ['name', 'sku', 'barcode', 'category.name', 'brand.name', 'sale_price', 'stock'],
+            'name'
+        );
     }
 
     public function store(array $data)

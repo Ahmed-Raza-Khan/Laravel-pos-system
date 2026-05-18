@@ -7,26 +7,29 @@
             <p class="text-slate-500 mt-1">Manage product catalog, stock, and pricing from one place.</p>
         </div>
 
-        <a href="{{ route('products.create') }}"
-           class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-2xl shadow-sm transition">
-            Add Product
-        </a>
+        <section class="flex flex-wrap gap-2 mt-4 sm:mt-0">
+            <a href="{{ route('products.export') }}" class="inline-flex items-center gap-2 bg-slate-700 hover:bg-slate-800 text-white px-4 py-2 rounded-2xl text-sm font-semibold">Export CSV</a>
+            <a href="{{ route('products.import') }}" class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-2xl text-sm font-semibold">Import CSV</a>
+            <a href="{{ route('products.create') }}" class="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-2xl text-sm font-semibold">Add Product</a>
+        </section>
     </div>
+
+    @include('partials.index-toolbar', ['placeholder' => 'Search name, SKU, barcode...'])
 
     <div class="bg-gradient-to-br from-white to-slate-50 rounded-3xl shadow-lg overflow-hidden border border-slate-100">
         <div class="overflow-x-auto">
         <table class="w-full min-w-[1200px]">
             <thead class="bg-white text-black">
                 <tr class="bg-gradient-to-r from-indigo-600 to-indigo-700 text-black text-left">
-                    <th class="px-6 py-4 font-semibold">ID</th>
+                    @include('partials.sortable-th', ['field' => 'id', 'label' => 'ID'])
                     {{-- <th class="px-6 py-4 font-semibold">Image</th> --}}
-                    <th class="px-6 py-4 font-semibold">Name</th>
+                    @include('partials.sortable-th', ['field' => 'name', 'label' => 'Name'])
                     {{-- <th class="px-6 py-4 font-semibold">SKU</th> --}}
                     {{-- <th class="px-6 py-4 font-semibold">Barcode</th> --}}
                     <th class="px-6 py-4 font-semibold">Category</th>
                     <th class="px-6 py-4 font-semibold">Purchase Price</th>
                     <th class="px-6 py-4 font-semibold">Sale Price</th>
-                    <th class="px-6 py-4 font-semibold">Stock</th>
+                    @include('partials.sortable-th', ['field' => 'stock', 'label' => 'Stock'])
                     <th class="px-6 py-4 font-semibold">Status</th>
                     <th class="px-6 py-4 font-semibold text-right">Action</th>
                 </tr>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
+use App\Support\IndexTable;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 
@@ -12,7 +13,7 @@ class UserController extends Controller
 {
     public function index()
     {
-        $users = User::with('roles')->latest()->get();
+        $users = IndexTable::apply(User::with('roles'), ['name', 'email'], 'name', 10);
 
         return view('users.index', compact('users'));
     }

@@ -4,12 +4,13 @@ namespace App\Repositories;
 
 use App\Interfaces\CategoryRepositoryInterface;
 use App\Models\Category;
+use App\Support\IndexTable;
 
 class CategoryRepository implements CategoryRepositoryInterface
 {
     public function getAll()
     {
-        return Category::latest()->paginate(10);
+        return IndexTable::apply(Category::query(), ['name', 'slug'], 'name');
     }
 
     public function store(array $data)

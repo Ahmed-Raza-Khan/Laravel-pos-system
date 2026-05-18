@@ -46,7 +46,29 @@ class PurchaseController extends Controller
         $this->purchaseService
             ->createPurchase($request->validated());
 
-        return redirect()->route('purchases.index')->with('success', 'Purchase created successfully');
+        return redirect()->route('purchases.index')->with('success', 'Purchase created. Approve it to add stock.');
+    }
+
+    public function approve(string $id)
+    {
+        try {
+            $this->purchaseService->approvePurchase($id);
+
+            return back()->with('success', 'Purchase approved and stock updated.');
+        } catch (\Exception $e) {
+            return back()->with('error', $e->getMessage());
+        }
+    }
+
+    public function cancel(string $id)
+    {
+        try {
+            $this->purchaseService->cancelPurchase($id);
+
+            return back()->with('success', 'Purchase cancelled.');
+        } catch (\Exception $e) {
+            return back()->with('error', $e->getMessage());
+        }
     }
 
     /**

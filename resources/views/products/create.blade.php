@@ -84,7 +84,7 @@
                 </select>
             </div>
         </div>
-        <button class="mt-5 inline-flex items-center justify-center rounded-2xl bg-indigo-600 px-5 py-3 text-white shadow-lg transition hover:bg-indigo-700">
+        <button class="mt-5 inline-flex items-center gap-2 rounded-2xl bg-slate-900 px-5 py-3 text-white transition hover:bg-slate-800">
             Save Product
         </button>
     </form>

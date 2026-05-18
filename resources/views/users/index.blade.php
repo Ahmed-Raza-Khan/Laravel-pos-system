@@ -8,10 +8,12 @@
         <p class="text-slate-500 mt-1">Manage staff accounts and roles</p>
     </section>
 
-    <a href="{{ route('users.create') }}" class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-2xl shadow-sm transition mt-4 sm:mt-0">
-        ➕ Add User
+    <a href="{{ route('users.create') }}" class="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-2xl shadow-sm transition mt-4 sm:mt-0">
+        Add User
     </a>
 </div>
+
+@include('partials.index-toolbar', ['placeholder' => 'Search users...'])
 
 @if(session('success'))
     <section class="bg-green-100 border border-green-300 text-green-700 px-4 py-3 rounded mb-4">{{ session('success') }}</section>

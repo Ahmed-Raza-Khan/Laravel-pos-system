@@ -25,10 +25,14 @@ class Sale extends Model
         'sale_date',
         'created_by',
         'notes',
+        'status',
+        'voided_at',
+        'voided_by',
     ];
 
     protected $casts = [
         'sale_date' => 'date',
+        'voided_at' => 'datetime',
     ];
 
     public function customer()
@@ -44,5 +48,15 @@ class Sale extends Model
     public function items()
     {
         return $this->hasMany(SaleItem::class);
+    }
+
+    public function payments()
+    {
+        return $this->hasMany(SalePayment::class);
+    }
+
+    public function voidedBy()
+    {
+        return $this->belongsTo(User::class, 'voided_by');
     }
 }

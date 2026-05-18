@@ -7,10 +7,12 @@
             <p class="text-slate-500 mt-1">Manage supplier information and contact details</p>
         </div>
 
-        <a href="{{ route('suppliers.create') }}" class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-2xl shadow-sm transition mt-4 sm:mt-0">
-            ➕ Add Supplier
+        <a href="{{ route('suppliers.create') }}" class="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white px-5 py-3 rounded-2xl shadow-sm transition mt-4 sm:mt-0">
+            Add Supplier
         </a>
     </div>
+
+    @include('partials.index-toolbar', ['placeholder' => 'Search suppliers...'])
 
     <div class="bg-gradient-to-br from-white to-slate-50 rounded-3xl shadow-lg overflow-hidden border border-slate-100">
         <div class="overflow-x-auto">

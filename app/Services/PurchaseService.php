@@ -37,4 +37,14 @@ class PurchaseService
     {
         return $this->repo->delete($id);
     }
+
+    public function approvePurchase(int $id)
+    {
+        return $this->repo->approve($id);
+    }
+
+    public function cancelPurchase(int $id)
+    {
+        return $this->repo->cancel($id);
+    }
 }

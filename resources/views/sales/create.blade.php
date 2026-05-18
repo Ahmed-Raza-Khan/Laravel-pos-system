@@ -41,7 +41,8 @@
                                 </p>
                                 <form method="POST" action="{{ route('sales.addToCart', $product->id) }}">
                                     @csrf
-                                    <button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium py-2 rounded-lg transition">
+
+                                    <button class="w-full bg-slate-900 hover:bg-slate-800 text-white text-sm font-medium py-2 rounded-lg transition">
                                         Add To Cart
                                     </button>
                                 </form>
@@ -67,17 +68,33 @@
                             @csrf
                             @method('DELETE')
 
-                            <button class="bg-red-500 hover:bg-red-600 text-white text-xs px-3 py-1 rounded-lg transition">
+                            <button class="bg-red-500 hover:bg-red-600 text-white text-sm px-4 py-2 rounded-2xl transition">
                                 Clear
                             </button>
                         </form>
                     </div>
 
+                    @if($heldCarts->isNotEmpty())
+                        <section class="px-4 py-3 border-b bg-amber-50">
+                            @foreach($heldCarts as $held)
+                                <form method="POST" action="{{ route('sales.resumeCart', $held->id) }}" class="flex justify-between gap-2 mb-2 text-sm">
+                                    @csrf
+
+                                    <span>{{ $held->reference }}</span>
+                                    <button type="submit" class="text-xs bg-amber-600 text-white px-3 py-2 rounded-xl">Resume</button>
+                                </form>
+                            @endforeach
+                        </section>
+                    @endif
+                    <form method="POST" action="{{ route('sales.holdCart') }}" class="px-4 py-2 border-b flex gap-2">
+                        @csrf
+
+                        <input type="text" name="reference" placeholder="Hold label" class="flex-1 rounded border-slate-200 text-sm">
+                        <button type="submit" class="bg-amber-400 text-white text-xs px-2 py-1 rounded">Hold</button>
+                    </form>
                     <!-- Body -->
-                    <div class="p-4">
-                        @php
-                            $subtotal = 0;
-                        @endphp
+                    <section class="p-4">
+                        @php $subtotal = 0; @endphp
                         @forelse($cart as $item)
                             @php
                                 $subtotal += $item['total'];
@@ -96,6 +113,7 @@
                                     <form method="POST" action="{{ route('sales.removeCart', $item['product_id']) }}">
                                         @csrf
                                         @method('DELETE')
+
                                         <button class="text-red-500 hover:text-red-700 text-sm">
                                             ✕
                                         </button>
@@ -105,6 +123,7 @@
                                 <div class="mt-3">
                                     <form method="POST" action="{{ route('sales.updateCart', $item['product_id']) }}">
                                         @csrf
+
                                         <div class="flex gap-2">
                                             <input type="number" name="qty" min="1" value="{{ $item['qty'] }}" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
                                             <button class="bg-green-600 hover:bg-green-700 text-white text-sm px-3 rounded-lg transition">
@@ -146,16 +165,13 @@
                                     <label class="block text-sm font-medium text-gray-700 mb-1">
                                         Customer
                                     </label>
-                                    <select name="customer_id"
-                                        class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                                    <select name="customer_id" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
                                         <option value="">
                                             Walk-in Customer
                                         </option>
 
                                         @foreach ($customers as $customer)
-                                            <option value="{{ $customer->id }}">
-                                                {{ $customer->name }}
-                                            </option>
+                                            <option value="{{ $customer->id }}" {{ (old('customer_id', $checkoutMeta['customer_id'] ?? '') == $customer->id) ? 'selected' : '' }}>{{ $customer->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -183,7 +199,7 @@
                                         <label class="block text-sm font-medium text-gray-700 mb-1">
                                             Discount Value
                                         </label>
-                                        <input type="number" step="0.01" name="discount_value" value="0"
+                                        <input type="number" step="0.01" name="discount_value" value="{{ old('discount_value', $checkoutMeta['discount_value'] ?? 0) }}"
                                             class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
                                     </div>
                                 </div>
@@ -192,7 +208,7 @@
                                     <label class="block text-sm font-medium text-gray-700 mb-1">
                                         Tax %
                                     </label>
-                                    <input type="number" step="0.01" name="tax_percentage" value="0"
+                                    <input type="number" step="0.01" name="tax_percentage" value="{{ old('tax_percentage', $checkoutMeta['tax_percentage'] ?? 0) }}"
                                         class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
                                 </div>
 
@@ -200,7 +216,7 @@
                                     <label class="block text-sm font-medium text-gray-700 mb-1">
                                         Paid Amount
                                     </label>
-                                    <input type="number" step="0.01" name="paid_amount" required
+                                    <input type="number" step="0.01" name="paid_amount" value="{{ old('paid_amount', $checkoutMeta['paid_amount'] ?? '') }}" required
                                         class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
                                 </div>
 
