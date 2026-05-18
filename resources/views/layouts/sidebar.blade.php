@@ -21,6 +21,7 @@
                 ['route' => 'sales.index', 'label' => 'Sales', 'permission' => 'manage sales'],
                 ['route' => 'inventory.index', 'label' => 'Inventory', 'permission' => 'manage inventory'],
                 ['route' => 'reports.index', 'label' => 'Reports', 'permission' => 'manage reports'],
+                ['route' => 'settings.index', 'label' => 'Settings', 'permission' => 'manage settings'],
                 ['route' => 'users.index', 'label' => 'Users', 'permission' => 'manage users'],
             ];
         @endphp

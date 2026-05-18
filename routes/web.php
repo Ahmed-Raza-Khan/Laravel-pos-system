@@ -11,6 +11,7 @@ use App\Http\Controllers\SaleController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\SettingController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -57,6 +58,11 @@ Route::middleware(['auth', 'permission:manage purchases'])->group(function () {
     Route::post('/purchases/{id}/approve', [PurchaseController::class, 'approve'])->name('purchases.approve');
     Route::post('/purchases/{id}/cancel', [PurchaseController::class, 'cancel'])->name('purchases.cancel');
     Route::resource('purchases', PurchaseController::class);
+});
+
+Route::middleware(['auth', 'permission:manage settings'])->group(function () {
+    Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
+    Route::post('/settings', [SettingController::class, 'update'])->name('settings.update');
 });
 
 Route::middleware(['auth', 'permission:manage reports'])->group(function () {

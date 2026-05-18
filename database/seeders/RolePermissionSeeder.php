@@ -20,6 +20,7 @@ class RolePermissionSeeder extends Seeder
         'manage purchases',
         'manage inventory',
         'manage reports',
+        'manage settings',
         'manage users',
     ];
 
