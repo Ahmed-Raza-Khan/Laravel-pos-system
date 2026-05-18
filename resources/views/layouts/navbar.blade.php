@@ -3,13 +3,13 @@
     $initials = collect(explode(' ', $user->name ?? 'U'))->map(fn ($w) => strtoupper(substr($w, 0, 1)))->take(2)->join('');
     $roleName = $user->roles->first()?->name ?? 'User';
 @endphp
-<nav class="flex items-center justify-between gap-4 px-6 py-4">
+<nav class="flex items-center justify-between w-full gap-4">
     <section>
         <p class="text-xs font-semibold uppercase tracking-wider text-indigo-600">POS Panel</p>
         <h1 class="text-lg font-bold text-slate-900 capitalize">{{ str_replace(['.', '-'], ' ', request()->route()?->getName() ?? 'dashboard') }}</h1>
     </section>
 
-    <section class="flex items-center gap-4">
+    <section class="flex items-center gap-4 ml-auto">
         {{-- <a href="{{ route('profile.edit') }}" class="hidden md:flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-2 hover:border-indigo-300 hover:bg-indigo-50 transition">
             <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 text-sm font-bold text-white shadow">{{ $initials }}</span>
             <span class="text-left">

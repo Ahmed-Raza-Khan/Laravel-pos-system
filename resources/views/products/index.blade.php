@@ -79,7 +79,7 @@
                         </td>
 
                         {{-- SALE PRICE --}}
-                        <td class="px-6 py-4 text-sm font-medium text-green-600 font-bold">
+                        <td class="px-6 py-4 text-sm font-medium text-green-600">
                             PKR {{ number_format($product->sale_price, 0) }}
                         </td>
 
@@ -106,20 +106,20 @@
                         {{-- ACTION --}}
                         <td class="px-6 py-4 text-right">
                             <div class="flex items-center justify-end gap-2">
-                                <a href="{{ route('products.edit', $product->id) }}" class="inline-flex items-center gap-1 bg-blue-500 hover:bg-blue-600 text-white text-xs font-semibold px-3 py-2 rounded-lg transition">
-                                    ✎ Edit
+                                <a href="{{ route('products.edit', $product->id) }}" class="inline-flex items-center gap-1 bg-blue-500 hover:bg-blue-600 text-white text-xs font-semibold px-4 py-3 rounded-lg transition">
+                                    <i class="fa-regular fa-pen-to-square"></i>
                                 </a>
                                 
-                                <a href="{{ route('products.show', $product->id) }}" class="inline-flex items-center gap-1 bg-slate-500 hover:bg-slate-600 text-white text-xs font-semibold px-3 py-2 rounded-lg transition">
-                                    👁 Show
+                                <a href="{{ route('products.show', $product->id) }}" class="inline-flex items-center gap-1 bg-slate-500 hover:bg-slate-600 text-white text-xs font-semibold px-4 py-3 rounded-lg transition">
+                                    <i class="fa-regular fa-eye"></i>
                                 </a>
 
                                 <form method="POST" action="{{ route('products.destroy', $product->id) }}" style="display:inline;">
                                     @csrf
                                     @method('DELETE')
 
-                                    <button onclick="return confirm('Delete this product?')" class="inline-flex items-center gap-1 bg-red-500 hover:bg-red-600 text-white text-xs font-semibold px-3 py-2 rounded-lg transition">
-                                        🗑 Delete
+                                    <button onclick="return confirm('Delete this product?')" class="inline-flex items-center gap-1 bg-red-500 hover:bg-red-600 text-white text-xs font-semibold px-4 py-3 rounded-lg transition">
+                                        <i class="fa-solid fa-trash"></i>
                                     </button>
                                 </form>
                             </div>

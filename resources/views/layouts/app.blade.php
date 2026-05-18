@@ -9,17 +9,21 @@
     <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700&display=swap" rel="stylesheet" />
 
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://kit.fontawesome.com/2c65a5c594.js" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <style>body{font-family:'Instrument Sans',ui-sans-serif,system-ui,sans-serif}</style>
 </head>
-<body class="min-h-screen bg-slate-100 text-slate-900 antialiased">
+<body class="min-h-screen bg-slate-100 text-slate-900 antialiased" x-data="{ sidebarOpen: localStorage.getItem('sidebarOpen') !== 'false' }">
     <section class="flex min-h-screen">
-        <aside class="fixed inset-y-0 left-0 z-40 w-72 bg-slate-900 text-white border-r border-slate-800 shadow-2xl">
+        <aside class="fixed inset-y-0 left-0 z-40 w-72 bg-slate-900 text-white border-r border-slate-800 shadow-2xl" :class="sidebarOpen ? 'sidebar-expanded' : 'sidebar-collapsed'" @mouseenter="sidebarOpen = true" @mouseleave="sidebarOpen = localStorage.getItem('sidebarOpen') === 'true'">
             @include('layouts.sidebar')
         </aside>
         
-        <section class="flex flex-1 flex-col ml-72 min-h-screen w-full">
-            <header class="sticky top-0 z-30 border-b border-slate-200/80 bg-white/90 backdrop-blur-xl shadow-sm">
+        <section class="flex flex-1 flex-col min-h-screen w-full" :class="sidebarOpen ? 'ml-expanded' : 'ml-collapsed'">
+            <header class="sticky top-0 z-30 border-b border-slate-200/80 bg-white/90 backdrop-blur-xl shadow-sm flex items-center gap-4 px-6 h-22">
+                <button @click="sidebarOpen = !sidebarOpen; localStorage.setItem('sidebarOpen', sidebarOpen)" class="p-2 hover:bg-slate-100 rounded-lg transition">
+                    <i :class="sidebarOpen ? 'fas fa-chevron-left' : 'fas fa-chevron-right'" class="text-slate-600"></i>
+                </button>
                 @include('layouts.navbar')
             </header>
             

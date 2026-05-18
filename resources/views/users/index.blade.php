@@ -8,7 +8,7 @@
         <p class="text-slate-500 mt-1">Manage staff accounts and roles</p>
     </section>
 
-    <a href="{{ route('users.create') }}" class="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-2xl shadow-sm transition mt-4 sm:mt-0">
+    <a href="{{ route('users.create') }}" class="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white px-5 py-3 rounded-2xl">
         Add User
     </a>
 </div>
@@ -45,12 +45,12 @@
                         </td>
                         <td class="px-6 py-4 text-right">
                             <section class="inline-flex items-center gap-2">
-                                <a href="{{ route('users.edit', $user) }}" class="inline-flex items-center gap-1 bg-blue-500 hover:bg-blue-600 text-white text-xs font-semibold px-3 py-2 rounded-lg transition">✎ Edit</a>
+                                <a href="{{ route('users.edit', $user) }}" class="inline-flex items-center gap-1 bg-blue-500 hover:bg-blue-600 text-white text-xs font-semibold px-4 py-3 rounded-lg transition"><i class="fa-regular fa-pen-to-square"></i></a>
                                 @if($user->id !== auth()->id())
                                     <form action="{{ route('users.destroy', $user) }}" method="POST" onsubmit="return confirm('Delete this user?')">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="inline-flex items-center gap-1 bg-red-500 hover:bg-red-600 text-white text-xs font-semibold px-3 py-2 rounded-lg transition">🗑 Delete</button>
+                                        <button type="submit" class="inline-flex items-center gap-1 bg-red-500 hover:bg-red-600 text-white text-xs font-semibold px-4 py-3 rounded-lg transition"><i class="fa-solid fa-trash"></i></button>
                                     </form>
                                 @endif
                             </section>

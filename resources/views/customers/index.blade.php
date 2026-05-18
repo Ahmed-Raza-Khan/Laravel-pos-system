@@ -47,16 +47,16 @@
 
                     <td class="px-6 py-4 text-right">
                         <div class="inline-flex items-center gap-2">
-                            <a href="{{ route('customers.edit', $customer->id) }}" class="inline-flex items-center gap-1 bg-blue-500 hover:bg-blue-600 text-white text-xs font-semibold px-3 py-2 rounded-lg transition">
-                                ✎ Edit
+                            <a href="{{ route('customers.edit', $customer->id) }}" class="inline-flex items-center gap-1 bg-blue-500 hover:bg-blue-600 text-white text-xs font-semibold px-4 py-3 rounded-lg transition">
+                                <i class="fa-regular fa-pen-to-square"></i>
                             </a>
 
                             <form action="{{ route('customers.destroy', $customer->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure?')">
                                 @csrf
                                 @method('DELETE')
 
-                                <button type="submit" class="inline-flex items-center gap-1 bg-red-500 hover:bg-red-600 text-white text-xs font-semibold px-3 py-2 rounded-lg transition">
-                                    🗑 Delete
+                                <button type="submit" class="inline-flex items-center gap-1 bg-red-500 hover:bg-red-600 text-white text-xs font-semibold px-4 py-3 rounded-lg transition">
+                                    <i class="fa-solid fa-trash"></i>
                                 </button>
                             </form>
                         </div>

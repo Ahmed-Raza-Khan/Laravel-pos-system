@@ -7,7 +7,7 @@
                     <h2 class="text-3xl font-bold text-slate-900">Inventory Management</h2>
                     <p class="text-slate-500 mt-1">Adjust stock levels and view complete inventory history</p>
                 </div>
-                <a href="{{ route('inventory.history') }}" class="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-2xl shadow-sm transition mt-4 sm:mt-0">
+                <a href="{{ route('inventory.history') }}" class="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white px-5 py-3 rounded-2xl">
                     Inventory History
                 </a>
         </div>

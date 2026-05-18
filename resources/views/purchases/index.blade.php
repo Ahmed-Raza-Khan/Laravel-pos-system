@@ -37,22 +37,42 @@
                         <td class="px-6 py-4 font-bold">PKR {{ number_format($purchase->total_amount, 0) }}</td>
                         <td class="px-6 py-4">
                             @if($purchase->status === 'approved')
-                                <span class="rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-700">Approved</span>
+                                <span class="rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-700">
+                                    Approved
+                                </span>
                             @elseif($purchase->status === 'cancelled')
-                                <span class="rounded-full bg-red-100 px-3 py-1 text-xs font-bold text-red-700">Cancelled</span>
+                                <span class="rounded-full bg-red-100 px-3 py-1 text-xs font-bold text-red-700">
+                                    Cancelled
+                                </span>
                             @else
-                                <span class="rounded-full bg-amber-100 px-3 py-1 text-xs font-bold text-amber-700">Pending</span>
+                                <span class="rounded-full bg-amber-100 px-3 py-1 text-xs font-bold text-amber-700">
+                                    Pending
+                                </span>
                             @endif
                         </td>
                         <td class="px-6 py-4 text-right">
                             <section class="inline-flex flex-wrap justify-end gap-1">
-                                <a href="{{ route('purchases.show', $purchase->id) }}" class="px-2 py-1 rounded bg-slate-800 text-white text-xs">View</a>
+                                <a href="{{ route('purchases.show', $purchase->id) }}" class="px-3 py-2 rounded bg-slate-800 text-white text-xs" title="View">
+                                    <i class="fa-regular fa-eye"></i>
+                                </a>
                                 @if($purchase->status === 'pending')
-                                    <form method="POST" action="{{ route('purchases.approve', $purchase->id) }}">@csrf<button class="px-2 py-1 rounded bg-emerald-600 text-white text-xs">Approve</button></form>
-                                    <a href="{{ route('purchases.edit', $purchase->id) }}" class="px-2 py-1 rounded bg-blue-600 text-white text-xs">Edit</a>
+                                    <form method="POST" action="{{ route('purchases.approve', $purchase->id) }}">
+                                        @csrf
+                                    
+                                        <button title="Approve" class="px-3 py-2 rounded bg-emerald-600 text-white text-xs">
+                                            <i class="fa-solid fa-check"></i>
+                                        </button>
+                                    </form>
+                                    <a href="{{ route('purchases.edit', $purchase->id) }}" title="Edit" class="px-3 py-2 rounded bg-blue-600 text-white text-xs">
+                                        <i class="fa-regular fa-pen-to-square"></i>
+                                    </a>
                                 @endif
                                 @if($purchase->status !== 'cancelled')
-                                    <form method="POST" action="{{ route('purchases.cancel', $purchase->id) }}" onsubmit="return confirm('Cancel this purchase?')">@csrf<button class="px-2 py-1 rounded bg-red-600 text-white text-xs">Cancel</button></form>
+                                    <form method="POST" action="{{ route('purchases.cancel', $purchase->id) }}" onsubmit="return confirm('Cancel this purchase?')">
+                                        @csrf
+                                        
+                                        <button class="px-3 py-2 rounded bg-red-600 text-white text-xs" title="Cancel"><i class="fa-solid fa-xmark"></i></button>
+                                    </form>
                                 @endif
                             </section>
                         </td>

@@ -12,7 +12,9 @@
             <section class="flex flex-wrap gap-2">
                 <a href="{{ route('sales.index') }}" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-sm font-semibold">← Back</a>
                 @if($sale->status !== 'voided')
-                    <a href="{{ route('sales.edit', $sale->id) }}" class="px-4 py-2 rounded-xl bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700">Edit</a>
+                    <a href="{{ route('sales.edit', $sale->id) }}" class="px-4 py-2 rounded-xl bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700">
+                        <i class="fa-regular fa-pen-to-square"></i>
+                    </a>
 
                     <form method="POST" action="{{ route('sales.void', $sale->id) }}" onsubmit="return confirm('Void this sale and restore stock?')">
                         @csrf
@@ -20,7 +22,9 @@
                         <button class="px-4 py-2 rounded-xl bg-red-600 text-white text-sm font-semibold hover:bg-red-700">Void</button>
                     </form>
                 @endif
-                <button onclick="window.print()" class="px-4 py-2 rounded-xl bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700">Print</button>
+                <button onclick="window.print()" class="px-4 py-2 rounded-xl bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700">
+                    <i class="fa-solid fa-print" style="color: rgb(255, 255, 255);"></i>
+                </button>
             </section>
         </section>
 

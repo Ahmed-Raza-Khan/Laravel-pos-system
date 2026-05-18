@@ -7,7 +7,7 @@
             <p class="text-slate-500 mt-1">Manage supplier information and contact details</p>
         </div>
 
-        <a href="{{ route('suppliers.create') }}" class="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white px-5 py-3 rounded-2xl shadow-sm transition mt-4 sm:mt-0">
+        <a href="{{ route('suppliers.create') }}" class="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white px-5 py-3 rounded-2xl">
             Add Supplier
         </a>
     </div>
@@ -48,16 +48,16 @@
 
                         <td class="px-6 py-4 text-right">
                             <div class="inline-flex items-center gap-2">
-                                <a href="{{ route('suppliers.edit', $supplier->id) }}" class="inline-flex items-center gap-1 bg-blue-500 hover:bg-blue-600 text-white text-xs font-semibold px-3 py-2 rounded-lg transition">
-                                    ✎ Edit
+                                <a href="{{ route('suppliers.edit', $supplier->id) }}" class="inline-flex items-center gap-1 bg-blue-500 hover:bg-blue-600 text-white text-xs font-semibold px-4 py-3 rounded-lg transition">
+                                    <i class="fa-regular fa-pen-to-square"></i>
                                 </a>
 
                                 <form action="{{ route('suppliers.destroy', $supplier->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure?')">
                                     @csrf
                                     @method('DELETE')
 
-                                    <button type="submit" class="inline-flex items-center gap-1 bg-red-500 hover:bg-red-600 text-white text-xs font-semibold px-3 py-2 rounded-lg transition">
-                                        🗑 Delete
+                                    <button type="submit" class="inline-flex items-center gap-1 bg-red-500 hover:bg-red-600 text-white text-xs font-semibold px-4 py-3 rounded-lg transition">
+                                        <i class="fa-solid fa-trash"></i>
                                     </button>
                                 </form>
                             </div>

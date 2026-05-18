@@ -6,7 +6,7 @@
         <h2 class="text-3xl font-bold text-slate-900">Sales</h2>
         <p class="text-slate-500 mt-1">Invoices, dues, voids, and payment history</p>
     </section>
-    <a href="{{ route('sales.create') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white text-sm font-semibold rounded-2xl mt-4 sm:mt-0">New Sale</a>
+    <a href="{{ route('sales.create') }}" class="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white px-5 py-3 rounded-2xl">New Sale</a>
 </section>
 
 @include('partials.index-toolbar', ['placeholder' => 'Search invoice, customer...'])
@@ -42,7 +42,9 @@
                     </td>
                     <td class="px-6 py-4">{{ $sale->sale_date->format('d M Y') }}</td>
                     <td class="px-6 py-4 text-right">
-                        <a href="{{ route('sales.show', $sale->id) }}" class="px-3 py-1.5 rounded-lg bg-slate-800 text-white text-xs font-semibold">View</a>
+                        <a href="{{ route('sales.show', $sale->id) }}" class="px-4 py-3 rounded-lg bg-slate-800 text-white text-xs font-semibold">
+                            <i class="fa-regular fa-eye"></i>
+                        </a>
                     </td>
                 </tr>
             @empty
