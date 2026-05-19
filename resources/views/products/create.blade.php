@@ -17,7 +17,7 @@
         <div class="grid grid-cols-2 gap-4">
             <div>
                 <label class="block mb-2 text-sm font-semibold text-slate-700">Category</label>
-                <select name="category_id" class="w-full border border-slate-200 p-3 rounded-xl shadow-sm focus:border-indigo-500 focus:ring-indigo-200 focus:ring-opacity-50">
+                <select name="category_id" class="select2 w-full border border-slate-200 p-3 rounded-xl shadow-sm focus:border-indigo-500 focus:ring-indigo-200 focus:ring-opacity-50">
                     @foreach($categories as $cat)
                         <option value="{{ $cat->id }}">{{ $cat->name }}</option>
                     @endforeach
@@ -26,7 +26,7 @@
 
             <div>
                 <label class="block mb-2 text-sm font-semibold text-slate-700">Brand</label>
-                <select name="brand_id" class="w-full border border-slate-200 p-3 rounded-xl shadow-sm focus:border-indigo-500 focus:ring-indigo-200 focus:ring-opacity-50">
+                <select name="brand_id" class="select2 w-full border border-slate-200 p-3 rounded-xl shadow-sm focus:border-indigo-500 focus:ring-indigo-200 focus:ring-opacity-50">
                     <option value="">Select Brand</option>
                     @foreach($brands as $brand)
                         <option value="{{ $brand->id }}">
