@@ -205,9 +205,9 @@ class ReportRepository implements ReportRepositoryInterface
             ->groupBy('sale_items.product_id')
             ->orderByRaw('SUM(sale_items.total) - SUM(sale_items.quantity * products.purchase_price) DESC')
             ->with('product')
-            ->take(20)
-            ->get()
-            ->map(function ($row) {
+            ->paginate(10)
+            ->withQueryString()
+            ->through(function ($row) {
                 $row->profit = $row->revenue - $row->cost;
 
                 return $row;
@@ -231,14 +231,12 @@ class ReportRepository implements ReportRepositoryInterface
             ->withSum('sales as total_purchases', 'grand_total')
             ->withSum('sales as total_due', 'due_amount')
             ->orderByDesc('total_purchases')
-            ->take(10)
-            ->get();
+            ->paginate(10, ['*'], 'top_customers_page');
 
         $recentOrders = Sale::with('customer')
             ->orderByDesc('sale_date')
             ->orderByDesc('id')
-            ->take(15)
-            ->get();
+            ->paginate(10, ['*'], 'recent_orders_page');
 
         $summary = [
             'total_customers' => Customer::count(),
@@ -251,7 +249,7 @@ class ReportRepository implements ReportRepositoryInterface
             ->withSum('sales as total_purchases', 'grand_total')
             ->withSum('sales as total_due', 'due_amount')
             ->orderBy('name')
-            ->get();
+            ->paginate(10, ['*'], 'customers_page');
 
         return [
             'summary' => $summary,
@@ -270,20 +268,20 @@ class ReportRepository implements ReportRepositoryInterface
                 $query->with('items')->latest('purchase_date')->take(5);
             }])
             ->orderByDesc('total_purchase_amount')
-            ->get()
-            ->map(function ($supplier) {
-                $supplier->total_supplied_products = PurchaseItem::query()
-                    ->join('purchases', 'purchases.id', '=', 'purchase_items.purchase_id')
-                    ->where('purchases.supplier_id', $supplier->id)
-                    ->sum('purchase_items.quantity');
+            ->paginate(10, ['*'], 'suppliers_page');
 
-                return $supplier;
-            });
+        $suppliers->getCollection()->transform(function ($supplier) {
+            $supplier->total_supplied_products = PurchaseItem::query()
+                ->join('purchases', 'purchases.id', '=', 'purchase_items.purchase_id')
+                ->where('purchases.supplier_id', $supplier->id)
+                ->sum('purchase_items.quantity');
+
+            return $supplier;
+        });
 
         $purchaseHistory = Purchase::with(['supplier', 'items.product'])
             ->orderByDesc('purchase_date')
-            ->take(20)
-            ->get();
+            ->paginate(10, ['*'], 'purchase_history_page');
 
         return [
             'suppliers' => $suppliers,

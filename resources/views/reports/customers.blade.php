@@ -48,6 +48,9 @@
                     @endforeach
                 </tbody>
             </table>
+            <div class="mt-4">
+                {{ $top_customers->links() }}
+            </div>
         </section>
 
         <section class="bg-white rounded-3xl shadow-lg p-8 border border-slate-100">
@@ -72,6 +75,9 @@
                     @endforeach
                 </tbody>
             </table>
+            <div class="mt-4">
+                {{ $recent_orders->links() }}
+            </div>
         </section>
     </section>
 
@@ -103,6 +109,9 @@
                 </tbody>
             </table>
         </section>
+        <div class="px-6 py-4 bg-slate-50 border-t border-slate-100">
+            {{ $customers->links() }}
+        </div>
     </section>
 </section>
 @endsection

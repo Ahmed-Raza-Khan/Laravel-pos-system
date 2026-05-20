@@ -80,9 +80,14 @@ class ReportController extends Controller
 
     public function profitLoss(Request $request)
     {
+        $validated = $request->validate([
+            'from' => ['nullable', 'date', 'before_or_equal:today'],
+            'to' => ['nullable', 'date', 'before_or_equal:today', 'after_or_equal:from'],
+        ]);
+
         $data = $this->reportService->profitLossReport(
-            $request->get('from'),
-            $request->get('to')
+            $validated['from'] ?? null,
+            $validated['to'] ?? null
         );
 
         return view('reports.profit-loss', $data);

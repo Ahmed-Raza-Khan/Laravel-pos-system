@@ -2,14 +2,12 @@
 
 @section('content')
 <section class="w-full mx-auto px-4 py-6">
-
     <section class="mb-8">
         <h1 class="text-3xl font-bold text-gray-800">Supplier Report</h1>
         <p class="text-gray-500 mt-1">Purchase history and supplied products</p>
     </section>
 
     @include('reports.partials.nav')
-
     <section class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         <section class="bg-gradient-to-br from-pink-50 to-pink-100 rounded-3xl shadow-lg p-6 border border-pink-200">
             <p class="text-pink-600 text-sm font-semibold uppercase">Total Suppliers</p>
@@ -52,6 +50,9 @@
                 </tbody>
             </table>
         </section>
+        <div class="px-6 py-4 bg-slate-50 border-t border-slate-100">
+            {{ $suppliers->links() }}
+        </div>
     </section>
 
     <section class="bg-white rounded-3xl shadow-lg overflow-hidden border border-slate-100">
@@ -84,6 +85,9 @@
                 </tbody>
             </table>
         </section>
+        <div class="px-6 py-4 bg-slate-50 border-t border-slate-100">
+            {{ $purchase_history->links() }}
+        </div>
     </section>
 </section>
 @endsection
