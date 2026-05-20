@@ -9,8 +9,8 @@
 
 <section class="grid md:grid-cols-4 gap-4 mb-8">
     <section class="rounded-2xl bg-white border p-4"><p class="text-xs text-slate-500 uppercase">Purchases</p><p class="text-2xl font-bold">{{ $totals['count'] }}</p></section>
-    <section class="rounded-2xl bg-white border p-4"><p class="text-xs text-slate-500 uppercase">Approved Total</p><p class="text-2xl font-bold text-emerald-600">PKR {{ number_format($totals['approved'], 0) }}</p></section>
-    <section class="rounded-2xl bg-white border p-4"><p class="text-xs text-slate-500 uppercase">Pending Total</p><p class="text-2xl font-bold text-amber-600">PKR {{ number_format($totals['pending'], 0) }}</p></section>
+    <section class="rounded-2xl bg-white border p-4"><p class="text-xs text-slate-500 uppercase">Approved Total</p><p class="text-2xl font-bold text-emerald-600">{{ $setting->currency ?? 'PKR' }} {{ number_format($totals['approved'], 0) }}</p></section>
+    <section class="rounded-2xl bg-white border p-4"><p class="text-xs text-slate-500 uppercase">Pending Total</p><p class="text-2xl font-bold text-amber-600">{{ $setting->currency ?? 'PKR' }} {{ number_format($totals['pending'], 0) }}</p></section>
     <section class="rounded-2xl bg-white border p-4"><p class="text-xs text-slate-500 uppercase">Units Received</p><p class="text-2xl font-bold">{{ number_format($totals['items']) }}</p></section>
 </section>
 
@@ -32,7 +32,7 @@
                     <td class="px-6 py-3">{{ $purchase->purchase_date?->format('d M Y') }}</td>
                     <td class="px-6 py-3 capitalize">{{ $purchase->status }}</td>
                     <td class="px-6 py-3 text-right">{{ $purchase->items->sum('quantity') }}</td>
-                    <td class="px-6 py-3 text-right font-semibold">PKR {{ number_format($purchase->total_amount, 0) }}</td>
+                    <td class="px-6 py-3 text-right font-semibold">{{ $setting->currency ?? 'PKR' }} {{ number_format($purchase->total_amount, 0) }}</td>
                 </tr>
             @endforeach
         </tbody>

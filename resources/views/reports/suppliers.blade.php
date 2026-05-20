@@ -17,7 +17,7 @@
         </section>
         <section class="bg-gradient-to-br from-orange-50 to-orange-100 rounded-3xl shadow-lg p-6 border border-orange-200">
             <p class="text-orange-600 text-sm font-semibold uppercase">Total Purchase Amount</p>
-            <p class="text-3xl font-bold text-slate-900 mt-2">PKR {{ number_format($total_purchase_amount, 0) }}</p>
+            <p class="text-3xl font-bold text-slate-900 mt-2">{{ $setting->currency ?? 'PKR' }} {{ number_format($total_purchase_amount, 0) }}</p>
         </section>
     </section>
 
@@ -44,7 +44,7 @@
                             <td class="px-6 py-4 text-right">{{ $supplier->purchases_count }}</td>
                             <td class="px-6 py-4 text-right">{{ number_format($supplier->total_supplied_products) }}</td>
                             <td class="px-6 py-4 text-right">
-                                <span class="font-bold block">PKR {{ number_format($supplier->total_purchase_amount ?? 0, 0) }}</span>
+                                <span class="font-bold block">{{ $setting->currency ?? 'PKR' }} {{ number_format($supplier->total_purchase_amount ?? 0, 0) }}</span>
                                 <a href="{{ route('reports.suppliers.statement', $supplier->id) }}" class="text-xs text-indigo-600 font-semibold hover:underline">Statement →</a>
                             </td>
                         </tr>
@@ -78,7 +78,7 @@
                             <td class="px-6 py-4">{{ $purchase->supplier?->name ?? 'N/A' }}</td>
                             <td class="px-6 py-4">{{ $purchase->purchase_date?->format('d M Y') }}</td>
                             <td class="px-6 py-4 text-right">{{ $purchase->items->sum('quantity') }}</td>
-                            <td class="px-6 py-4 text-right font-bold">PKR {{ number_format($purchase->total_amount, 0) }}</td>
+                            <td class="px-6 py-4 text-right font-bold">{{ $setting->currency ?? 'PKR' }} {{ number_format($purchase->total_amount, 0) }}</td>
                         </tr>
                     @endforeach
                 </tbody>

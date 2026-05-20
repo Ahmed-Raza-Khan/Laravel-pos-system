@@ -3,40 +3,60 @@
 @section('content')
 <section class="w-full mx-auto">
     <section class="bg-white rounded-3xl shadow-lg border border-slate-100 overflow-hidden">
-        <section class="p-6 border-b border-slate-100 flex flex-wrap gap-3 justify-between items-start">
-            <section>
-                <h2 class="text-2xl font-bold text-slate-900">Invoice {{ $sale->invoice_no }}</h2>
-                <p class="text-slate-500 mt-1">{{ $sale->sale_date->format('d M Y') }} · {{ ucfirst($sale->status) }}</p>
-            </section>
+        <section class="p-6 border-b border-slate-100">
+            <div class="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+                <div class="flex items-center gap-4">
+                    @if($setting->invoice_logo)
+                        <img src="{{ asset('storage/' . $setting->invoice_logo) }}" alt="{{ $setting->store_name }}" class="h-20 object-contain" />
+                    @endif
+                    <div>
+                        <h1 class="text-2xl font-bold text-slate-900">{{ $setting->store_name ?? config('app.name', 'Laravel POS') }}</h1>
+                        <p class="text-sm text-slate-500">{{ $setting->store_address }}</p>
+                        <p class="text-sm text-slate-500">Email: {{ $setting->contact_email }} | Phone: {{ $setting->contact_phone }}</p>
+                    </div>
+                </div>
 
-            <section class="flex flex-wrap gap-2">
-                <a href="{{ route('sales.index') }}" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-sm font-semibold">← Back</a>
-                @if($sale->status !== 'voided')
-                    <a href="{{ route('sales.edit', $sale->id) }}" class="px-4 py-2 rounded-xl bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700">
-                        <i class="fa-regular fa-pen-to-square"></i>
-                    </a>
+                <div class="space-y-2 text-left lg:text-right">
+                    <p class="text-xs uppercase tracking-[0.2em] text-slate-400">Invoice</p>
+                    <p class="text-3xl font-bold text-slate-900">{{ $sale->invoice_no }}</p>
+                    <p class="text-sm text-slate-500">{{ $sale->sale_date->format('d M Y') }}</p>
+                    <p class="text-sm text-slate-500 capitalize">Status: {{ $sale->status }}</p>
+                </div>
+            </div>
 
-                    <form method="POST" action="{{ route('sales.void', $sale->id) }}" onsubmit="return confirm('Void this sale and restore stock?')">
-                        @csrf
-
-                        <button class="px-4 py-2 rounded-xl bg-red-600 text-white text-sm font-semibold hover:bg-red-700">Void</button>
-                    </form>
-                @endif
+            <div class="mt-6 flex flex-wrap gap-3 justify-between items-center no-print">
+                <div class="flex flex-wrap gap-3">
+                    <a href="{{ route('sales.index') }}" class="px-4 py-2 rounded-xl bg-slate-900 text-white text-sm font-semibold hover:bg-slate-800">← Back</a>
+                    @if($sale->status !== 'voided')
+                        <a href="{{ route('sales.edit', $sale->id) }}" class="px-4 py-2 rounded-xl bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700">
+                            <i class="fa-regular fa-pen-to-square"></i>
+                        </a>
+                        <form method="POST" action="{{ route('sales.void', $sale->id) }}" onsubmit="return confirm('Void this sale and restore stock?')" class="inline-block">
+                            @csrf
+                            <button type="submit" class="px-4 py-2 rounded-xl bg-red-600 text-white text-sm font-semibold hover:bg-red-700">Void</button>
+                        </form>
+                    @endif
+                </div>
                 <button onclick="window.print()" class="px-4 py-2 rounded-xl bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700">
-                    <i class="fa-solid fa-print" style="color: rgb(255, 255, 255);"></i>
+                    <i class="fa-solid fa-print"></i> Print
                 </button>
-            </section>
+            </div>
         </section>
 
         <section class="p-6 grid md:grid-cols-2 gap-6 border-b border-slate-100">
             <section>
                 <p class="text-xs font-semibold uppercase text-slate-400">Customer</p>
                 <p class="font-medium">{{ $sale->customer?->name ?? 'Walk-in Customer' }}</p>
+                @if($sale->customer)
+                    <p class="text-sm text-slate-500">{{ $sale->customer->phone ?? '' }}</p>
+                    <p class="text-sm text-slate-500">{{ $sale->customer->email ?? '' }}</p>
+                @endif
             </section>
             
             <section class="md:text-right">
                 <p class="text-xs font-semibold uppercase text-slate-400">Payment</p>
                 <p class="font-medium capitalize">{{ str_replace('_', ' ', $sale->payment_method) }}</p>
+                <p class="text-sm text-slate-500">Currency: {{ $setting->currency ?? 'PKR' }}</p>
             </section>
         </section>
 
@@ -45,27 +65,40 @@
                 <thead><tr class="border-b text-left text-slate-500"><th class="py-2">Product</th><th class="py-2 text-right">Qty</th><th class="py-2 text-right">Price</th><th class="py-2 text-right">Total</th></tr></thead>
                 <tbody class="divide-y">
                     @foreach($sale->items as $item)
-                        <tr><td class="py-3">{{ $item->product?->name }}</td><td class="py-3 text-right">{{ $item->quantity }}</td><td class="py-3 text-right">PKR {{ number_format($item->price, 2) }}</td><td class="py-3 text-right font-semibold">PKR {{ number_format($item->total, 2) }}</td></tr>
+                        <tr><td class="py-3">{{ $item->product?->name }}</td><td class="py-3 text-right">{{ $item->quantity }}</td><td class="py-3 text-right">{{ $setting->currency ?? 'PKR' }} {{ number_format($item->price, 2) }}</td><td class="py-3 text-right font-semibold">{{ $setting->currency ?? 'PKR' }} {{ number_format($item->total, 2) }}</td></tr>
                     @endforeach
                 </tbody>
             </table>
         </section>
 
         <section class="p-6 bg-slate-50 grid sm:grid-cols-2 gap-4 text-sm">
-            <p>Subtotal: <strong>PKR {{ number_format($sale->subtotal, 2) }}</strong></p>
-            <p>Discount: <strong>PKR {{ number_format($sale->discount_amount, 2) }}</strong></p>
-            <p>Tax: <strong>PKR {{ number_format($sale->tax_amount, 2) }}</strong></p>
-            <p class="text-lg">Grand Total: <strong class="text-indigo-600">PKR {{ number_format($sale->grand_total, 2) }}</strong></p>
-            <p>Paid: <strong class="text-emerald-600">PKR {{ number_format($sale->paid_amount, 2) }}</strong></p>
-            <p>Due: <strong class="text-red-600">PKR {{ number_format($sale->due_amount, 2) }}</strong></p>
+            <p>Subtotal: <strong>{{ $setting->currency ?? 'PKR' }} {{ number_format($sale->subtotal, 2) }}</strong></p>
+            <p>Discount: <strong>{{ $setting->currency ?? 'PKR' }} {{ number_format($sale->discount_amount, 2) }}</strong></p>
+            <p>Tax ({{ $sale->tax_percentage }}%): <strong>{{ $setting->currency ?? 'PKR' }} {{ number_format($sale->tax_amount, 2) }}</strong></p>
+            <p class="text-lg">Grand Total: <strong class="text-indigo-600">{{ $setting->currency ?? 'PKR' }} {{ number_format($sale->grand_total, 2) }}</strong></p>
+            <p>Paid: <strong class="text-emerald-600">{{ $setting->currency ?? 'PKR' }} {{ number_format($sale->paid_amount, 2) }}</strong></p>
+            <p>Due: <strong class="text-red-600">{{ $setting->currency ?? 'PKR' }} {{ number_format($sale->due_amount, 2) }}</strong></p>
         </section>
+
+        @if($setting->invoice_terms)
+            <section class="p-6 border-t">
+                <h3 class="font-semibold text-slate-900">Invoice Terms</h3>
+                <p class="text-sm text-slate-500 whitespace-pre-line">{{ $setting->invoice_terms }}</p>
+            </section>
+        @endif
+
+        @if($setting->invoice_footer)
+            <section class="p-6 border-t bg-slate-50 text-sm text-slate-500">
+                {!! nl2br(e($setting->invoice_footer)) !!}
+            </section>
+        @endif
 
         @if($sale->payments->isNotEmpty())
             <section class="p-6 border-t">
                 <h3 class="font-bold text-slate-900 mb-3">Payment History</h3>
                 <table class="w-full text-sm">
                     @foreach($sale->payments as $payment)
-                        <tr class="border-b"><td class="py-2">{{ $payment->paid_at->format('d M Y H:i') }}</td><td class="py-2 capitalize">{{ str_replace('_',' ',$payment->payment_method) }}</td><td class="py-2 text-right font-semibold">PKR {{ number_format($payment->amount, 2) }}</td></tr>
+                        <tr class="border-b"><td class="py-2">{{ $payment->paid_at->format('d M Y H:i') }}</td><td class="py-2 capitalize">{{ str_replace('_',' ',$payment->payment_method) }}</td><td class="py-2 text-right font-semibold">{{ $setting->currency ?? 'PKR' }} {{ number_format($payment->amount, 2) }}</td></tr>
                     @endforeach
                 </table>
             </section>

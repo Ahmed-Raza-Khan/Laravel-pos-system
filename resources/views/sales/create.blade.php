@@ -33,7 +33,7 @@
                                     <div class="text-xs text-slate-500 mb-1">{{ $product->brand->name }}</div>
                                 @endif
                                 <p class="text-green-600 font-bold mb-1">
-                                    PKR {{ number_format($product->sale_price, 2) }}
+                                    {{ $setting->currency ?? 'PKR' }} {{ number_format($product->sale_price, 2) }}
                                 </p>
                                 <p class="text-xs text-gray-500 mb-3">
                                     Stock: {{ $product->stock }}
@@ -105,7 +105,7 @@
                                             {{ $item['name'] }}
                                         </h4>
                                         <p class="text-sm text-green-600 mt-1">
-                                            PKR {{ number_format($item['price'], 2) }}
+                                            {{ $setting->currency ?? 'PKR' }} {{ number_format($item['price'], 2) }}
                                         </p>
                                     </div>
 
@@ -134,7 +134,7 @@
                                 <div class="mt-3 text-sm font-semibold text-gray-700">
                                     Total:
                                     <span class="text-indigo-600">
-                                        PKR {{ number_format($item['total'], 2) }}
+                                        {{ $setting->currency ?? 'PKR' }} {{ number_format($item['total'], 2) }}
                                     </span>
                                 </div>
                             </div>
@@ -151,7 +151,7 @@
                                     Subtotal
                                 </span>
                                 <span class="text-lg font-bold text-indigo-600">
-                                    PKR {{ number_format($subtotal, 2) }}
+                                    {{ $setting->currency ?? 'PKR' }} {{ number_format($subtotal, 2) }}
                                 </span>
                             </div>
                         </div>
@@ -207,10 +207,7 @@
                                     <label class="block text-sm font-medium text-gray-700 mb-1">
                                         Tax %
                                     </label>
-                                    <input type="number" step="0.01" name="tax_percentage" value="{{ old('tax_percentage', $checkoutMeta['tax_percentage'] ?? 0) }}"
-                                        class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                                </div>
-
+                                <input type="number" step="0.01" name="tax_percentage" value="{{ old('tax_percentage', $checkoutMeta['tax_percentage'] ?? $setting->tax_percentage ?? 0) }}"
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">
                                         Paid Amount

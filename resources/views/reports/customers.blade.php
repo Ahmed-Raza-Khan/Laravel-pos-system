@@ -17,11 +17,11 @@
         </section>
         <section class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-3xl shadow-lg p-6 border border-blue-200">
             <p class="text-blue-600 text-sm font-semibold uppercase">Total Purchases</p>
-            <p class="text-3xl font-bold text-slate-900 mt-2">PKR {{ number_format($summary['total_sales_amount'], 0) }}</p>
+            <p class="text-3xl font-bold text-slate-900 mt-2">{{ $setting->currency ?? 'PKR' }} {{ number_format($summary['total_sales_amount'], 0) }}</p>
         </section>
         <section class="bg-gradient-to-br from-red-50 to-red-100 rounded-3xl shadow-lg p-6 border border-red-200">
             <p class="text-red-600 text-sm font-semibold uppercase">Total Due Amount</p>
-            <p class="text-3xl font-bold text-slate-900 mt-2">PKR {{ number_format($summary['total_due_amount'], 0) }}</p>
+            <p class="text-3xl font-bold text-slate-900 mt-2">{{ $setting->currency ?? 'PKR' }} {{ number_format($summary['total_due_amount'], 0) }}</p>
         </section>
     </section>
 
@@ -42,8 +42,8 @@
                         <tr>
                             <td class="py-3 font-medium">{{ $customer->name }}</td>
                             <td class="py-3 text-right">{{ $customer->sales_count }}</td>
-                            <td class="py-3 text-right font-semibold">PKR {{ number_format($customer->total_purchases ?? 0, 0) }}</td>
-                            <td class="py-3 text-right text-red-600">PKR {{ number_format($customer->total_due ?? 0, 0) }}</td>
+                            <td class="py-3 text-right font-semibold">{{ $setting->currency ?? 'PKR' }} {{ number_format($customer->total_purchases ?? 0, 0) }}</td>
+                            <td class="py-3 text-right text-red-600">{{ $setting->currency ?? 'PKR' }} {{ number_format($customer->total_due ?? 0, 0) }}</td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -67,7 +67,7 @@
                                 <a href="{{ route('sales.show', $sale->id) }}" class="text-indigo-600 hover:underline">{{ $sale->invoice_no }}</a>
                             </td>
                             <td class="py-3">{{ $sale->customer?->name ?? 'Walk-in' }}</td>
-                            <td class="py-3 text-right font-semibold">PKR {{ number_format($sale->grand_total, 0) }}</td>
+                            <td class="py-3 text-right font-semibold">{{ $setting->currency ?? 'PKR' }} {{ number_format($sale->grand_total, 0) }}</td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -96,8 +96,8 @@
                             <td class="px-6 py-4 font-medium">{{ $customer->name }}</td>
                             <td class="px-6 py-4">{{ $customer->phone ?? '—' }}</td>
                             <td class="px-6 py-4 text-right">{{ $customer->sales_count }}</td>
-                            <td class="px-6 py-4 text-right">PKR {{ number_format($customer->total_purchases ?? 0, 0) }}</td>
-                            <td class="px-6 py-4 text-right text-red-600">PKR {{ number_format($customer->total_due ?? 0, 0) }}</td>
+                            <td class="px-6 py-4 text-right">{{ $setting->currency ?? 'PKR' }} {{ number_format($customer->total_purchases ?? 0, 0) }}</td>
+                            <td class="px-6 py-4 text-right text-red-600">{{ $setting->currency ?? 'PKR' }} {{ number_format($customer->total_due ?? 0, 0) }}</td>
                         </tr>
                     @endforeach
                 </tbody>

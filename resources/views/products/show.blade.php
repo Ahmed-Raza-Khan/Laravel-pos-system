@@ -63,11 +63,11 @@
                     <div class="mt-6 grid gap-4 sm:grid-cols-2">
                         <div class="rounded-3xl bg-slate-100 p-5 shadow-sm">
                             <p class="text-sm text-slate-500">Purchase Price</p>
-                            <p class="mt-2 text-lg font-semibold text-slate-900">PKR {{ number_format($product->purchase_price, 0) }}</p>
+                            <p class="mt-2 text-lg font-semibold text-slate-900">{{ $setting->currency ?? 'PKR' }} {{ number_format($product->purchase_price, 0) }}</p>
                         </div>
                         <div class="rounded-3xl bg-slate-100 p-5 shadow-sm">
                             <p class="text-sm text-slate-500">Sale Price</p>
-                            <p class="mt-2 text-lg font-semibold text-emerald-700">PKR {{ number_format($product->sale_price, 0) }}</p>
+                            <p class="mt-2 text-lg font-semibold text-emerald-700">{{ $setting->currency ?? 'PKR' }} {{ number_format($product->sale_price, 0) }}</p>
                         </div>
                     </div>
 

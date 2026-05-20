@@ -38,7 +38,7 @@
         </div>
         <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-3xl shadow-lg p-6 border border-blue-200">
             <p class="text-blue-600 text-sm font-semibold uppercase">Total Purchase Amount</p>
-            <p class="text-3xl font-bold text-slate-900 mt-2">PKR {{ number_format($total_purchase_amount, 0) }}</p>
+            <p class="text-3xl font-bold text-slate-900 mt-2">{{ $setting->currency ?? 'PKR' }} {{ number_format($total_purchase_amount, 0) }}</p>
         </div>
     </div>
 
@@ -63,7 +63,7 @@
                             <td class="px-6 py-4">{{ $purchase->supplier?->name ?? 'N/A' }}</td>
                             <td class="px-6 py-4">{{ $purchase->purchase_date?->format('d M Y') }}</td>
                             <td class="px-6 py-4">{{ $purchase->items->sum('quantity') }}</td>
-                            <td class="px-6 py-4 text-right font-bold">PKR {{ number_format($purchase->total_amount, 0) }}</td>
+                            <td class="px-6 py-4 text-right font-bold">{{ $setting->currency ?? 'PKR' }} {{ number_format($purchase->total_amount, 0) }}</td>
                         </tr>
                     @empty
                         <tr><td colspan="5" class="px-6 py-8 text-center text-slate-500">No purchases found for selected filters.</td></tr>

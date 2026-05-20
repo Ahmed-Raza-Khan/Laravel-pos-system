@@ -44,6 +44,10 @@ use App\Interfaces\ReportRepositoryInterface;
 use App\Repositories\ReportRepository;
 use App\Services\ReportService;
 
+// Setting updates
+use App\Models\Setting;
+use Illuminate\Support\Facades\View;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -140,6 +144,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        $setting = Setting::first();
+
+        if (! $setting) {
+            $setting = new Setting([
+                'currency' => 'PKR',
+                'tax_percentage' => 0,
+            ]);
+        }
+
+        View::share('setting', $setting);
     }
 }

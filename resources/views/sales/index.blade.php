@@ -30,12 +30,12 @@
                     <td class="px-6 py-4">{{ $sale->id }}</td>
                     <td class="px-6 py-4 font-semibold text-indigo-600">{{ $sale->invoice_no }}</td>
                     <td class="px-6 py-4">{{ $sale->customer?->name ?? 'Walk-in' }}</td>
-                    <td class="px-6 py-4 font-bold">PKR {{ number_format($sale->grand_total, 0) }}</td>
+                    <td class="px-6 py-4 font-bold">{{ $setting->currency ?? 'PKR' }} {{ number_format($sale->grand_total, 0) }}</td>
                     <td class="px-6 py-4">
                         @if($sale->status === 'voided')
                             <span class="text-xs font-bold text-red-600 bg-red-50 px-2 py-1 rounded-full">Voided</span>
                         @elseif($sale->due_amount > 0)
-                            <span class="text-xs font-bold text-amber-700 bg-amber-50 px-2 py-1 rounded-full">Due PKR {{ number_format($sale->due_amount, 0) }}</span>
+                            <span class="text-xs font-bold text-amber-700 bg-amber-50 px-2 py-1 rounded-full">Due {{ $setting->currency ?? 'PKR' }} {{ number_format($sale->due_amount, 0) }}</span>
                         @else
                             <span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-1 rounded-full">Paid</span>
                         @endif

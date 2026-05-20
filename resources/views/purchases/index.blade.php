@@ -34,7 +34,7 @@
                         </td>
                         <td class="px-6 py-4">{{ $purchase->supplier?->name ?? 'N/A' }}</td>
                         <td class="px-6 py-4">{{ $purchase->purchase_date?->format('d M Y') }}</td>
-                        <td class="px-6 py-4 font-bold">PKR {{ number_format($purchase->total_amount, 0) }}</td>
+                        <td class="px-6 py-4 font-bold">{{ $setting->currency ?? 'PKR' }} {{ number_format($purchase->total_amount, 0) }}</td>
                         <td class="px-6 py-4">
                             @if($purchase->status === 'approved')
                                 <span class="rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-700">

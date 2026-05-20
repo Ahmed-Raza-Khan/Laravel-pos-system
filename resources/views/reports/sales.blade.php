@@ -46,7 +46,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-3xl shadow-lg p-6 border border-blue-200">
                 <p class="text-blue-600 text-sm font-semibold uppercase">Total Sales</p>
-                <p class="text-3xl font-bold text-slate-900 mt-2">PKR {{ number_format($daily['total_sales'], 0) }}</p>
+                <p class="text-3xl font-bold text-slate-900 mt-2">{{ $setting->currency ?? 'PKR' }} {{ number_format($daily['total_sales'], 0) }}</p>
             </div>
             <div class="bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-3xl shadow-lg p-6 border border-emerald-200">
                 <p class="text-emerald-600 text-sm font-semibold uppercase">Invoices</p>
@@ -54,15 +54,15 @@
             </div>
             <div class="bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-3xl shadow-lg p-6 border border-indigo-200">
                 <p class="text-indigo-600 text-sm font-semibold uppercase">Profit</p>
-                <p class="text-3xl font-bold text-slate-900 mt-2">PKR {{ number_format($daily['profit'], 0) }}</p>
+                <p class="text-3xl font-bold text-slate-900 mt-2">{{ $setting->currency ?? 'PKR' }} {{ number_format($daily['profit'], 0) }}</p>
             </div>
             <div class="bg-gradient-to-br from-amber-50 to-amber-100 rounded-3xl shadow-lg p-6 border border-amber-200">
                 <p class="text-amber-600 text-sm font-semibold uppercase">Taxes</p>
-                <p class="text-3xl font-bold text-slate-900 mt-2">PKR {{ number_format($daily['taxes'], 0) }}</p>
+                <p class="text-3xl font-bold text-slate-900 mt-2">{{ $setting->currency ?? 'PKR' }} {{ number_format($daily['taxes'], 0) }}</p>
             </div>
             <div class="bg-gradient-to-br from-rose-50 to-rose-100 rounded-3xl shadow-lg p-6 border border-rose-200">
                 <p class="text-rose-600 text-sm font-semibold uppercase">Discounts</p>
-                <p class="text-3xl font-bold text-slate-900 mt-2">PKR {{ number_format($daily['discounts'], 0) }}</p>
+                <p class="text-3xl font-bold text-slate-900 mt-2">{{ $setting->currency ?? 'PKR' }} {{ number_format($daily['discounts'], 0) }}</p>
             </div>
         </div>
 
@@ -82,7 +82,7 @@
                             <tr>
                                 <td class="py-3 capitalize">{{ str_replace('_', ' ', $method->payment_method) }}</td>
                                 <td class="py-3 text-right">{{ $method->count }}</td>
-                                <td class="py-3 text-right font-semibold">PKR {{ number_format($method->total, 0) }}</td>
+                                <td class="py-3 text-right font-semibold">{{ $setting->currency ?? 'PKR' }} {{ number_format($method->total, 0) }}</td>
                             </tr>
                         @empty
                             <tr><td colspan="3" class="py-4 text-slate-500 text-center">No sales for this period</td></tr>
@@ -109,7 +109,7 @@
                                         <a href="{{ route('sales.show', $sale->id) }}" class="text-indigo-600 font-medium hover:underline">{{ $sale->invoice_no }}</a>
                                     </td>
                                     <td class="py-3">{{ $sale->customer?->name ?? 'Walk-in' }}</td>
-                                    <td class="py-3 text-right font-semibold">PKR {{ number_format($sale->grand_total, 0) }}</td>
+                                    <td class="py-3 text-right font-semibold">{{ $setting->currency ?? 'PKR' }} {{ number_format($sale->grand_total, 0) }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -137,7 +137,7 @@
 
         <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-3xl shadow-lg p-8 border border-blue-200 mb-8">
             <p class="text-blue-600 text-sm font-semibold uppercase">Monthly Revenue ({{ $monthly['year'] }})</p>
-            <p class="text-4xl font-bold text-slate-900 mt-2">PKR {{ number_format($monthly['monthly_revenue'], 0) }}</p>
+            <p class="text-4xl font-bold text-slate-900 mt-2">{{ $setting->currency ?? 'PKR' }} {{ number_format($monthly['monthly_revenue'], 0) }}</p>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
@@ -161,7 +161,7 @@
                             <tr>
                                 <td class="py-3">{{ $item->product?->name ?? 'N/A' }}</td>
                                 <td class="py-3 text-right">{{ $item->total_qty }}</td>
-                                <td class="py-3 text-right font-semibold">PKR {{ number_format($item->revenue, 0) }}</td>
+                                <td class="py-3 text-right font-semibold">{{ $setting->currency ?? 'PKR' }} {{ number_format($item->revenue, 0) }}</td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -176,7 +176,7 @@
                 data: {
                     labels: {!! json_encode($monthly['month_names']->pluck('label')->values()) !!},
                     datasets: [{
-                        label: 'Sales (PKR)',
+                        label: 'Sales ({{ $setting->currency ?? 'PKR' }})',
                         data: {!! json_encode($monthly['month_names']->pluck('total')->values()) !!},
                         backgroundColor: 'rgba(99, 102, 241, 0.6)',
                         borderColor: 'rgb(99, 102, 241)',

@@ -75,12 +75,12 @@
 
                         {{-- PURCHASE PRICE --}}
                         <td class="px-6 py-4 text-sm font-medium text-slate-900">
-                            PKR {{ number_format($product->purchase_price, 0) }}
+                            {{ $setting->currency ?? 'PKR' }} {{ number_format($product->purchase_price, 0) }}
                         </td>
 
                         {{-- SALE PRICE --}}
                         <td class="px-6 py-4 text-sm font-medium text-green-600">
-                            PKR {{ number_format($product->sale_price, 0) }}
+                            {{ $setting->currency ?? 'PKR' }} {{ number_format($product->sale_price, 0) }}
                         </td>
 
                         {{-- STOCK --}}

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\Setting;
 use App\Models\Supplier;
 use App\Services\PurchaseService;
 use App\Http\Requests\StorePurchaseRequest;
@@ -92,8 +93,9 @@ class PurchaseController extends Controller
     public function show(string $id)
     {
         $purchase = $this->purchaseService->getPurchase($id);
+        $setting = Setting::first() ?: new Setting(['currency' => 'PKR']);
 
-        return view('purchases.show', compact('purchase'));
+        return view('purchases.show', compact('purchase', 'setting'));
     }
 
     /**

@@ -25,15 +25,15 @@
     <section class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
         <section class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-3xl shadow-lg p-6 border border-blue-200">
             <p class="text-blue-600 text-sm font-semibold uppercase">Revenue</p>
-            <p class="text-2xl font-bold text-slate-900 mt-2">PKR {{ number_format($revenue, 0) }}</p>
+            <p class="text-2xl font-bold text-slate-900 mt-2">{{ $setting->currency ?? 'PKR' }} {{ number_format($revenue, 0) }}</p>
         </section>
         <section class="bg-gradient-to-br from-orange-50 to-orange-100 rounded-3xl shadow-lg p-6 border border-orange-200">
             <p class="text-orange-600 text-sm font-semibold uppercase">Purchase Cost</p>
-            <p class="text-2xl font-bold text-slate-900 mt-2">PKR {{ number_format($cost, 0) }}</p>
+            <p class="text-2xl font-bold text-slate-900 mt-2">{{ $setting->currency ?? 'PKR' }} {{ number_format($cost, 0) }}</p>
         </section>
         <section class="bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-3xl shadow-lg p-6 border border-emerald-200">
             <p class="text-emerald-600 text-sm font-semibold uppercase">Profit</p>
-            <p class="text-2xl font-bold {{ $profit >= 0 ? 'text-emerald-800' : 'text-red-700' }} mt-2">PKR {{ number_format($profit, 0) }}</p>
+            <p class="text-2xl font-bold {{ $profit >= 0 ? 'text-emerald-800' : 'text-red-700' }} mt-2">{{ $setting->currency ?? 'PKR' }} {{ number_format($profit, 0) }}</p>
         </section>
         <section class="bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-3xl shadow-lg p-6 border border-indigo-200">
             <p class="text-indigo-600 text-sm font-semibold uppercase">Sold Qty</p>
@@ -62,10 +62,10 @@
                         <tr class="hover:bg-slate-50">
                             <td class="px-6 py-4 font-medium">{{ $row->product?->name ?? 'N/A' }}</td>
                             <td class="px-6 py-4 text-right">{{ $row->sold_qty }}</td>
-                            <td class="px-6 py-4 text-right">PKR {{ number_format($row->revenue, 0) }}</td>
-                            <td class="px-6 py-4 text-right">PKR {{ number_format($row->cost, 0) }}</td>
+                            <td class="px-6 py-4 text-right">{{ $setting->currency ?? 'PKR' }} {{ number_format($row->revenue, 0) }}</td>
+                            <td class="px-6 py-4 text-right">{{ $setting->currency ?? 'PKR' }} {{ number_format($row->cost, 0) }}</td>
                             <td class="px-6 py-4 text-right font-bold {{ $row->profit >= 0 ? 'text-emerald-600' : 'text-red-600' }}">
-                                PKR {{ number_format($row->profit, 0) }}
+                                {{ $setting->currency ?? 'PKR' }} {{ number_format($row->profit, 0) }}
                             </td>
                         </tr>
                     @empty

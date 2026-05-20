@@ -21,7 +21,7 @@
         </section>
         <section class="bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-3xl shadow-lg p-6 border border-indigo-200">
             <p class="text-indigo-600 text-sm font-semibold uppercase">Inventory Valuation</p>
-            <p class="text-3xl font-bold text-slate-900 mt-2">PKR {{ number_format($inventory_valuation, 0) }}</p>
+            <p class="text-3xl font-bold text-slate-900 mt-2">{{ $setting->currency ?? 'PKR' }} {{ number_format($inventory_valuation, 0) }}</p>
         </section>
     </section>
 
@@ -81,8 +81,8 @@
                             <td class="px-6 py-4 text-slate-500">{{ $product->sku }}</td>
                             <td class="px-6 py-4">{{ $product->category?->name ?? '—' }}</td>
                             <td class="px-6 py-4 text-right font-semibold">{{ $product->stock }}</td>
-                            <td class="px-6 py-4 text-right">PKR {{ number_format($product->purchase_price, 0) }}</td>
-                            <td class="px-6 py-4 text-right">PKR {{ number_format($product->stock * $product->purchase_price, 0) }}</td>
+                            <td class="px-6 py-4 text-right">{{ $setting->currency ?? 'PKR' }} {{ number_format($product->purchase_price, 0) }}</td>
+                            <td class="px-6 py-4 text-right">{{ $setting->currency ?? 'PKR' }} {{ number_format($product->stock * $product->purchase_price, 0) }}</td>
                             <td class="px-6 py-4">
                                 @if($status === 'out')
                                     <span class="bg-red-100 text-red-700 px-2 py-1 rounded-full text-xs font-bold">Out</span>

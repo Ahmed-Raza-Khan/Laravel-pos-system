@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\Customer;
 use App\Models\HeldCart;
+use App\Models\Setting;
 use App\Http\Requests\StoreSaleRequest;
 use App\Http\Requests\UpdateSaleRequest;
 use App\Http\Requests\RecordSalePaymentRequest;
@@ -41,8 +42,9 @@ class SaleController extends Controller
         $cart = session()->get('cart', []);
         $heldCarts = HeldCart::where('user_id', auth()->id())->latest()->get();
         $checkoutMeta = session()->get('checkout_meta', []);
+        $setting = Setting::first() ?: new Setting(['tax_percentage' => 0, 'currency' => 'PKR']);
 
-        return view('sales.create', compact('products', 'customers', 'cart', 'heldCarts', 'checkoutMeta'));
+        return view('sales.create', compact('products', 'customers', 'cart', 'heldCarts', 'checkoutMeta', 'setting'));
     }
 
     public function edit($id)
@@ -199,8 +201,9 @@ class SaleController extends Controller
     {
         $sale = $this->saleRepository->findById($id);
         $sale->load(['payments.receiver']);
+        $setting = Setting::first() ?: new Setting(['currency' => 'PKR']);
 
-        return view('sales.show', compact('sale'));
+        return view('sales.show', compact('sale', 'setting'));
     }
 
     public function void($id)

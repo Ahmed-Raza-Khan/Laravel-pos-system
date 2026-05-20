@@ -23,7 +23,7 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-blue-600 text-sm font-semibold uppercase tracking-wide">Total Sales</p>
-                        <p class="text-4xl font-bold text-slate-900 mt-2">PKR {{ number_format($totalSales, 0) }}</p>
+                        <p class="text-4xl font-bold text-slate-900 mt-2">{{ $setting->currency ?? 'PKR' }} {{ number_format($totalSales, 0) }}</p>
                         <p class="text-blue-700 text-sm mt-3 font-medium">All-time sales revenue</p>
                     </div>
                     <div class="bg-blue-500 rounded-full p-4 text-white opacity-20">
@@ -37,7 +37,7 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-orange-600 text-sm font-semibold uppercase tracking-wide">Total Purchases</p>
-                        <p class="text-4xl font-bold text-slate-900 mt-2">PKR {{ number_format($totalPurchases, 0) }}</p>
+                        <p class="text-4xl font-bold text-slate-900 mt-2">{{ $setting->currency ?? 'PKR' }} {{ number_format($totalPurchases, 0) }}</p>
                         <p class="text-orange-700 text-sm mt-3 font-medium">Total spending on inventory</p>
                     </div>
                     <div class="bg-orange-500 rounded-full p-4 text-white opacity-20">
@@ -126,7 +126,7 @@
                                 <tr class="hover:bg-emerald-50 transition">
                                     <td class="py-3 text-slate-700 font-medium">{{ $sale->invoice_no }}</td>
                                     <td class="py-3 text-slate-600">{{ $sale->customer?->name ?? 'Walk-in' }}</td>
-                                    <td class="py-3 text-right text-emerald-600 font-semibold">PKR {{ number_format($sale->grand_total, 0) }}</td>
+                                    <td class="py-3 text-right text-emerald-600 font-semibold">{{ $setting->currency ?? 'PKR' }} {{ number_format($sale->grand_total, 0) }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
