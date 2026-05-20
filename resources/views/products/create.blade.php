@@ -43,12 +43,12 @@
 
             <div>
                 <label>SKU</label>
-                <input type="text" name="sku" class="w-full border p-2 rounded">
+                <input type="text" value="Auto Generated" readonly class="w-full bg-gray-100 border p-2 rounded">
             </div>
 
             <div>
                 <label>Barcode</label>
-                <input type="text" name="barcode" class="w-full border p-2 rounded">
+                <input type="text" value="Auto Generated" readonly class="w-full bg-gray-100 border p-2 rounded">
             </div>
 
             <div>

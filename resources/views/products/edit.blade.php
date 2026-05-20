@@ -66,8 +66,7 @@
             {{-- SKU --}}
             <div>
                 <label class="block mb-1">SKU</label>
-                <input type="text" name="sku" class="w-full border p-2 rounded"
-                    value="{{ old('sku', $product->sku) }}">
+                <input type="text" name="sku" readonly class="w-full border bg-gray-100 p-2 rounded" value="{{ old('sku', $product->sku) }}">
 
                 @error('sku')
                     <p class="text-red-500 text-sm">{{ $message }}</p>
@@ -77,8 +76,7 @@
             {{-- Barcode --}}
             <div>
                 <label class="block mb-1">Barcode</label>
-                <input type="text" name="barcode" class="w-full border p-2 rounded"
-                    value="{{ old('barcode', $product->barcode) }}">
+                <input type="text" name="barcode" readonly class="w-full border bg-gray-100 p-2 rounded" value="{{ old('barcode', $product->barcode) }}">
 
                 @error('barcode')
                     <p class="text-red-500 text-sm">{{ $message }}</p>

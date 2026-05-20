@@ -56,6 +56,8 @@ class ProductController extends Controller
         $data = $request->validated();
 
         $data['slug'] = Str::slug($data['name']);
+        $data['sku'] = $this->generateSku();
+        $data['barcode'] = $data['barcode'] ?? $this->generateBarcode();
 
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')->store('products', 'public');
@@ -193,5 +195,23 @@ class ProductController extends Controller
         fclose($file);
 
         return redirect()->route('products.index')->with('success', "{$imported} products imported.");
+    }
+
+    private function generateSku()
+    {
+        do {
+            $sku = 'SKU-' . strtoupper(Str::random(8));
+        } while (Product::where('sku', $sku)->exists());
+
+        return $sku;
+    }
+
+    private function generateBarcode()
+    {
+        do {
+            $barcode = rand(100000000000, 999999999999);
+        } while (Product::where('barcode', $barcode)->exists());
+
+        return $barcode;
     }
 }
