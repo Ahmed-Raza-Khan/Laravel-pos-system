@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<section class="w-full mx-auto">
+<section class="w-full mx-auto print-area">
     <section class="bg-white rounded-3xl shadow-lg border border-slate-100 overflow-hidden">
         <section class="p-6 border-b border-slate-100">
             <div class="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
