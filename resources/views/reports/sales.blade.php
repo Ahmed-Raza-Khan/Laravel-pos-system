@@ -10,6 +10,16 @@
 
     @include('reports.partials.nav')
 
+    @if($errors->any())
+        <div class="bg-red-50 border border-red-200 text-red-700 rounded-3xl p-4 mb-6">
+            <ul class="list-disc list-inside space-y-1">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <div class="flex gap-2 mb-8">
         <a href="{{ route('reports.sales', ['tab' => 'daily']) }}"
            class="px-4 py-2 rounded-2xl text-sm font-semibold {{ $tab === 'daily' ? 'bg-slate-900 text-white' : 'bg-white border border-slate-200 text-slate-600' }}">
@@ -130,6 +140,15 @@
                     @endfor
                 </select>
             </div>
+            <div>
+                <label class="block text-sm font-semibold text-slate-600 mb-1">Month</label>
+                <select name="month" class="rounded-2xl border-slate-200 shadow-sm">
+                    <option value="" {{ empty(request('month')) ? 'selected' : '' }}>All Months</option>
+                    @foreach(range(1, 12) as $monthNumber)
+                        <option value="{{ $monthNumber }}" {{ request('month') == $monthNumber ? 'selected' : '' }}>{{ \Carbon\Carbon::create()->month($monthNumber)->format('F') }}</option>
+                    @endforeach
+                </select>
+            </div>
             <button type="submit" class="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-2xl text-sm font-semibold">
                 Apply
             </button>
@@ -138,6 +157,11 @@
         <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-3xl shadow-lg p-8 border border-blue-200 mb-8">
             <p class="text-blue-600 text-sm font-semibold uppercase">Monthly Revenue ({{ $monthly['year'] }})</p>
             <p class="text-4xl font-bold text-slate-900 mt-2">{{ $setting->currency ?? 'PKR' }} {{ number_format($monthly['monthly_revenue'], 0) }}</p>
+            @if($monthly['selected_month'])
+                <p class="text-slate-600 mt-2">Selected month: <span class="font-semibold">{{ $monthly['selected_month'] }}</span></p>
+                <p class="text-slate-600">Revenue: <span class="font-semibold">{{ $setting->currency ?? 'PKR' }} {{ number_format($monthly['selected_month_total'], 0) }}</span></p>
+                <p class="text-slate-600">Invoices: <span class="font-semibold">{{ $monthly['selected_month_invoices'] }}</span></p>
+            @endif
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">

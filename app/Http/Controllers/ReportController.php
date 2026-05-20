@@ -30,10 +30,18 @@ class ReportController extends Controller
         $monthly = null;
 
         if ($tab === 'monthly') {
-            $monthly = $this->reportService->monthlySalesReport($year);
+            $year = $request->integer('year') ?: (int) now()->year;
+            $month = $request->integer('month') ?: null;
+
+            $monthly = $this->reportService->monthlySalesReport($year, $month);
         } else {
-            $date = $request->get('date', now()->toDateString());
-            $endDate = $request->get('end_date');
+            $validated = $request->validate([
+                'date' => ['nullable', 'date', 'before_or_equal:today'],
+                'end_date' => ['nullable', 'date', 'before_or_equal:today', 'after_or_equal:date'],
+            ]);
+
+            $date = $validated['date'] ?? now()->toDateString();
+            $endDate = $validated['end_date'] ?? null;
 
             if ($request->boolean('today')) {
                 $date = now()->toDateString();
@@ -48,10 +56,16 @@ class ReportController extends Controller
 
     public function purchases(Request $request)
     {
+        $validated = $request->validate([
+            'from' => ['nullable', 'date', 'before_or_equal:today'],
+            'to' => ['nullable', 'date', 'before_or_equal:today', 'after_or_equal:from'],
+            'supplier_id' => ['nullable', 'integer', 'exists:suppliers,id'],
+        ]);
+
         $data = $this->reportService->purchaseReport(
-            $request->get('from'),
-            $request->get('to'),
-            $request->integer('supplier_id') ?: null
+            $validated['from'] ?? null,
+            $validated['to'] ?? null,
+            $validated['supplier_id'] ?? null
         );
 
         return view('reports.purchases', $data);

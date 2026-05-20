@@ -10,6 +10,16 @@
 
     @include('reports.partials.nav')
 
+    @if($errors->any())
+        <div class="bg-red-50 border border-red-200 text-red-700 rounded-3xl p-4 mb-6">
+            <ul class="list-disc list-inside space-y-1">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <form method="GET" class="bg-white rounded-3xl shadow-lg p-6 border border-slate-100 mb-8 flex flex-wrap gap-4 items-end">
         <div>
             <label class="block text-sm font-semibold text-slate-600 mb-1">From</label>
@@ -70,6 +80,9 @@
                     @endforelse
                 </tbody>
             </table>
+        </div>
+        <div class="px-6 py-4 bg-slate-50 border-t border-slate-100">
+            {{ $purchases->links() }}
         </div>
     </div>
 </div>

@@ -51,7 +51,7 @@ class ReportRepository implements ReportRepositoryInterface
         ];
     }
 
-    public function getMonthlySalesReport(?int $year = null): array
+    public function getMonthlySalesReport(?int $year = null, ?int $month = null): array
     {
         $year = $year ?? (int) now()->year;
 
@@ -76,15 +76,26 @@ class ReportRepository implements ReportRepositoryInterface
             ->take(10)
             ->get();
 
-        $monthNames = collect(range(1, 12))->mapWithKeys(function ($month) use ($monthlySales) {
-            $row = $monthlySales->firstWhere('month', $month);
+        $monthNames = collect(range(1, 12))->mapWithKeys(function ($monthNumber) use ($monthlySales) {
+            $row = $monthlySales->firstWhere('month', $monthNumber);
 
-            return [$month => [
-                'label' => Carbon::create()->month($month)->format('M'),
+            return [$monthNumber => [
+                'label' => Carbon::create()->month($monthNumber)->format('M'),
                 'total' => (float) ($row->total ?? 0),
                 'invoices' => (int) ($row->invoices ?? 0),
             ]];
         });
+
+        $selectedMonth = null;
+        $selectedMonthTotal = null;
+        $selectedMonthInvoices = null;
+
+        if ($month && $month >= 1 && $month <= 12) {
+            $selectedMonth = Carbon::create()->month($month)->format('F');
+            $selectedRow = $monthlySales->firstWhere('month', $month);
+            $selectedMonthTotal = (float) ($selectedRow->total ?? 0);
+            $selectedMonthInvoices = (int) ($selectedRow->invoices ?? 0);
+        }
 
         return [
             'year' => $year,
@@ -92,6 +103,10 @@ class ReportRepository implements ReportRepositoryInterface
             'month_names' => $monthNames,
             'monthly_revenue' => $monthlyRevenue,
             'best_selling_products' => $bestSellingProducts,
+            'selected_month' => $selectedMonth,
+            'selected_month_total' => $selectedMonthTotal,
+            'selected_month_invoices' => $selectedMonthInvoices,
+            'selected_month_number' => $month,
         ];
     }
 
@@ -111,16 +126,21 @@ class ReportRepository implements ReportRepositoryInterface
             $query->where('supplier_id', $supplierId);
         }
 
-        $purchases = $query->orderByDesc('purchase_date')->get();
+        $statsQuery = clone $query;
+        $allPurchases = $statsQuery->get();
 
-        $totalStock = $purchases->sum(function ($purchase) {
+        $totalStock = $allPurchases->sum(function ($purchase) {
             return $purchase->items->sum('quantity');
         });
+
+        $totalPurchaseAmount = $allPurchases->sum('total_amount');
+
+        $purchases = $query->orderByDesc('purchase_date')->paginate(10)->withQueryString();
 
         return [
             'purchases' => $purchases,
             'total_purchased_stock' => $totalStock,
-            'total_purchase_amount' => $purchases->sum('total_amount'),
+            'total_purchase_amount' => $totalPurchaseAmount,
             'from' => $from,
             'to' => $to,
             'supplier_id' => $supplierId,
@@ -130,19 +150,23 @@ class ReportRepository implements ReportRepositoryInterface
 
     public function getStockReport(): array
     {
-        $products = Product::with(['category', 'brand'])
+        $productQuery = Product::query();
+
+        $products = $productQuery->with(['category', 'brand'])
             ->orderBy('name')
-            ->get();
+            ->paginate(10);
 
         $lowStockThreshold = 5;
 
+        $allProducts = Product::query()->get();
+
         return [
             'products' => $products,
-            'current_stock_count' => $products->sum('stock'),
-            'low_stock' => $products->where('stock', '>', 0)->where('stock', '<=', $lowStockThreshold)->values(),
-            'out_of_stock' => $products->where('stock', '<=', 0)->values(),
-            'in_stock' => $products->where('stock', '>', $lowStockThreshold)->values(),
-            'inventory_valuation' => $products->sum(fn ($p) => $p->stock * $p->purchase_price),
+            'current_stock_count' => $allProducts->sum('stock'),
+            'low_stock' => $allProducts->where('stock', '>', 0)->where('stock', '<=', $lowStockThreshold)->values(),
+            'out_of_stock' => $allProducts->where('stock', '<=', 0)->values(),
+            'in_stock' => $allProducts->where('stock', '>', $lowStockThreshold)->values(),
+            'inventory_valuation' => $allProducts->sum(fn ($p) => $p->stock * $p->purchase_price),
             'low_stock_threshold' => $lowStockThreshold,
         ];
     }
