@@ -153,48 +153,53 @@ class ProductController extends Controller
         $file = fopen($request->file('file')->getRealPath(), 'r');
         $header = fgetcsv($file);
         $imported = 0;
+        $skipped = [];
 
         while (($row = fgetcsv($file)) !== false) {
             if (count($row) < 8) {
                 continue;
             }
 
-            $data = array_combine($header, $row) ?: [
-                'name' => $row[0] ?? null,
-                'sku' => $row[1] ?? null,
-                'barcode' => $row[2] ?? null,
-                'category_id' => $row[3] ?? 1,
-                'brand_id' => $row[4] ?? null,
-                'purchase_price' => $row[5] ?? 0,
-                'sale_price' => $row[6] ?? 0,
-                'stock' => $row[7] ?? 0,
-            ];
-
-            if (empty($data['name'])) {
+            $data = array_combine($header, $row);
+            if (!$data || empty($data['name'])) {
                 continue;
             }
 
-            Product::updateOrCreate(
-                ['sku' => $data['sku'] ?? Str::slug($data['name'])],
-                [
-                    'name' => $data['name'],
-                    'slug' => Str::slug($data['name']),
-                    'barcode' => $data['barcode'] ?? null,
-                    'category_id' => $data['category_id'] ?: 1,
-                    'brand_id' => $data['brand_id'] ?: null,
-                    'purchase_price' => $data['purchase_price'] ?? 0,
-                    'sale_price' => $data['sale_price'] ?? 0,
-                    'stock' => $data['stock'] ?? 0,
-                    'description' => $data['description'] ?? null,
-                    'status' => $data['status'] ?? 1,
-                ]
-            );
+            $slug = Str::slug($data['name']);
+            $exists = Product::where('slug', $slug)
+                ->orWhere('sku', $data['sku'] ?? '')
+                ->orWhere('barcode', $data['barcode'] ?? '')->exists();
+
+            if ($exists) {
+                $skipped[] = $data['name'];
+                continue;
+            }
+
+            Product::create([
+                'name' => $data['name'],
+                'slug' => $slug,
+                'sku' => $data['sku'] ?? 'SKU-' . rand(10000, 99999),
+                'barcode' => $data['barcode'] ?? 'BC-' . rand(1000000000, 9999999999),
+                'category_id' => $data['category_id'] ?: 1,
+                'brand_id' => $data['brand_id'] ?: null,
+                'purchase_price' => $data['purchase_price'] ?? 0,
+                'sale_price' => $data['sale_price'] ?? 0,
+                'stock' => $data['stock'] ?? 0,
+                'description' => $data['description'] ?? null,
+                'status' => $data['status'] ?? 1,
+            ]);
+
             $imported++;
         }
 
         fclose($file);
+        $message = "{$imported} products imported successfully.";
 
-        return redirect()->route('products.index')->with('success', "{$imported} products imported.");
+        if (count($skipped)) {
+            $message .= ' Skipped duplicate products: ' . implode(', ', $skipped);
+        }
+
+        return redirect()->route('products.index')->with('success', $message);
     }
 
     private function generateSku()
