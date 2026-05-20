@@ -28,18 +28,21 @@ class SaleRepository implements SaleRepositoryInterface
         return Sale::create($data);
     }
 
-    public function generateInvoiceNumber()
+    public function generateInvoiceNumber(): string
     {
         $setting = Setting::first();
         $prefix = $setting && $setting->invoice_prefix ? trim($setting->invoice_prefix) : 'INV';
         $prefix = rtrim($prefix, '-') . '-';
+        $date = now()->format('Ymd');
 
-        $lastSale = Sale::latest()->first();
+        $lastSale = Sale::whereDate('created_at', today())->where('invoice_no', 'like', $prefix . $date . '-%')->latest('id')->first();
+        $number = 1;
+        if ($lastSale) {
+            $parts = explode('-', $lastSale->invoice_no);
+            $lastNumber = (int) end($parts);
+            $number = $lastNumber + 1;
+        }
 
-        $number = $lastSale
-            ? $lastSale->id + 1
-            : 1;
-
-        return $prefix . date('Ymd') . '-' . str_pad($number, 4, '0', STR_PAD_LEFT);
+        return $prefix . $date . '-' . str_pad($number, 4, '0', STR_PAD_LEFT);
     }
 }

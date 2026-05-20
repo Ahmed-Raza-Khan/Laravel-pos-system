@@ -27,15 +27,26 @@ class SaleService
             }
 
             $totals = $this->buildTotals($cart, $data);
-            $sale = $this->saleRepository->create(array_merge($totals, [
-                'invoice_no' => $this->saleRepository->generateInvoiceNumber(),
-                'customer_id' => $data['customer_id'] ?? null,
-                'payment_method' => $data['payment_method'],
-                'sale_date' => now(),
-                'created_by' => auth()->id(),
-                'notes' => $data['notes'] ?? null,
-                'status' => 'completed',
-            ]));
+            $sale = null;
+            for ($attempt = 1; $attempt <= 3; $attempt++) {
+                try {
+                    $sale = $this->saleRepository->create(array_merge($totals, [
+                        'invoice_no' => $this->saleRepository->generateInvoiceNumber(),
+                        'customer_id' => $data['customer_id'] ?? null,
+                        'payment_method' => $data['payment_method'],
+                        'sale_date' => now(),
+                        'created_by' => auth()->id(),
+                        'notes' => $data['notes'] ?? null,
+                        'status' => 'completed',
+                    ]));
+
+                    break;
+                } catch (\Illuminate\Database\QueryException $e) {
+                    if ($attempt == 3) {
+                        throw new \Exception('Failed to generate unique invoice number.');
+                    }
+                }
+            }
 
             $this->applyCartItems($sale, $cart);
             session()->forget('cart');
@@ -240,7 +251,7 @@ class SaleService
         $afterDiscount = $subtotal - $discountAmount;
         $taxAmount = ($afterDiscount * ($data['tax_percentage'] ?? 0)) / 100;
         $grandTotal = $afterDiscount + $taxAmount;
-        $paidAmount = $data['paid_amount'] ?? $grandTotal;
+        $paidAmount = min((float) ($data['paid_amount'] ?? $grandTotal), $grandTotal);
         $dueAmount = max(0, $grandTotal - $paidAmount);
 
         return [
