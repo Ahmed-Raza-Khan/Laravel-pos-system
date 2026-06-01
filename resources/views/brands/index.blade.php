@@ -14,12 +14,6 @@
 
     @include('partials.index-toolbar', ['placeholder' => 'Search brands...'])
 
-    @if(session('success'))
-        <div class="bg-green-100 text-green-700 p-3 rounded mb-4">
-            {{ session('success') }}
-        </div>
-    @endif
-
     <div class="bg-gradient-to-br from-white to-slate-50 rounded-3xl shadow-lg overflow-hidden border border-slate-100">
         <div class="overflow-x-auto">
         <table class="min-w-full divide-y divide-slate-200">

@@ -78,7 +78,11 @@
                         </td>
                     </tr>
                 @empty
-                    <tr><td colspan="7" class="px-6 py-8 text-center text-slate-500">No purchases found.</td></tr>
+                    <tr>
+                        <td colspan="7" class="px-6 py-8 text-center text-slate-500 font-medium">
+                            No purchases found. Start adding purchases!
+                        </td>
+                    </tr>
                 @endforelse
             </tbody>
         </table>

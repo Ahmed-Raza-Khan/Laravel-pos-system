@@ -248,22 +248,31 @@ class SaleService
             $data['discount_type'] ?? null,
             $data['discount_value'] ?? 0
         );
+
         $afterDiscount = $subtotal - $discountAmount;
         $taxAmount = ($afterDiscount * ($data['tax_percentage'] ?? 0)) / 100;
         $grandTotal = $afterDiscount + $taxAmount;
-        $paidAmount = min((float) ($data['paid_amount'] ?? $grandTotal), $grandTotal);
-        $dueAmount = max(0, $grandTotal - $paidAmount);
+        $paidAmount = (float) ($data['paid_amount'] ?? 0);
 
+        if ($paidAmount < $grandTotal) {
+            throw new \Exception(
+                'Paid amount must be equal to or greater than Grand Total.'
+            );
+        }
+
+        $changeAmount = $paidAmount - $grandTotal;
+        
         return [
-            'subtotal' => $subtotal,
+            'subtotal' => round($subtotal, 2),
             'discount_type' => $data['discount_type'] ?? null,
             'discount_value' => $data['discount_value'] ?? 0,
-            'discount_amount' => $discountAmount,
+            'discount_amount' => round($discountAmount, 2),
             'tax_percentage' => $data['tax_percentage'] ?? 0,
-            'tax_amount' => $taxAmount,
-            'grand_total' => $grandTotal,
-            'paid_amount' => $paidAmount,
-            'due_amount' => $dueAmount,
+            'tax_amount' => round($taxAmount, 2),
+            'grand_total' => round($grandTotal, 2),
+            'paid_amount' => round($paidAmount, 2),
+            'due_amount' => 0,
+            'change_amount' => round($changeAmount, 2),
         ];
     }
 

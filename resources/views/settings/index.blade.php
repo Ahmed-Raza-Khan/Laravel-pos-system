@@ -8,11 +8,11 @@
         </div>
     </div>
 
-    @if(session('success'))
+    {{-- @if(session('success'))
         <div class="mb-6 rounded-3xl border border-emerald-200 bg-emerald-50 p-4 text-emerald-700">
             {{ session('success') }}
         </div>
-    @endif
+    @endif --}}
 
     <form action="{{ route('settings.update') }}" method="POST" enctype="multipart/form-data" class="space-y-6 bg-white p-6 rounded-3xl shadow-lg">
         @csrf

@@ -17,11 +17,11 @@
     <div class="bg-gradient-to-br from-white to-slate-50 rounded-3xl shadow-lg overflow-hidden border border-slate-100">
         <div class="overflow-x-auto">
         <table class="w-full">
-            <thead class="bg-white text-black"
-                <tr class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white text-left">
-                    <th class="px-6 py-4 font-semibold">ID</th>
-                    <th class="px-6 py-4 font-semibold">Name</th>
-                    <th class="px-6 py-4 font-semibold">Status</th>
+            <thead class="bg-white text-black">
+                <tr class="text-left">
+                    <th class="px-6 py-4 font-semibold tracking-wider">ID</th>
+                    <th class="px-6 py-4 font-semibold tracking-wider">Name</th>
+                    <th class="px-6 py-4 font-semibold tracking-wider">Status</th>
                     <th class="px-6 py-4 font-semibold text-right">Action</th>
                 </tr>
             </thead>

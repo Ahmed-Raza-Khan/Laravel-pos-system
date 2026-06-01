@@ -26,9 +26,12 @@
                     @include('partials.sortable-th', ['field' => 'name', 'label' => 'Name'])
                     {{-- <th class="px-6 py-4 font-semibold">SKU</th> --}}
                     {{-- <th class="px-6 py-4 font-semibold">Barcode</th> --}}
-                    <th class="px-6 py-4 font-semibold">Category</th>
-                    <th class="px-6 py-4 font-semibold">Purchase Price</th>
-                    <th class="px-6 py-4 font-semibold">Sale Price</th>
+                    {{-- <th class="px-6 py-4 font-semibold">Category</th> --}}
+                    @include('partials.sortable-th', ['field' => 'category', 'label' => 'Category'])
+                    {{-- <th class="px-6 py-4 font-semibold">Purchase Price</th> --}}
+                    @include('partials.sortable-th', ['field' => 'purchase_price', 'label' => 'Purchase Price'])
+                    {{-- <th class="px-6 py-4 font-semibold">Sale Price</th> --}}
+                    @include('partials.sortable-th', ['field' => 'sale_price', 'label' => 'Sale Price'])
                     @include('partials.sortable-th', ['field' => 'stock', 'label' => 'Stock'])
                     <th class="px-6 py-4 font-semibold">Status</th>
                     <th class="px-6 py-4 font-semibold text-right">Action</th>

@@ -2,9 +2,7 @@
 
 @section('content')
     <div class="w-full mx-auto px-4 py-6">
-
         <div class="mb-8">
-
             <h1 class="text-3xl font-bold text-gray-800">
                 Dashboard
             </h1>
@@ -12,12 +10,10 @@
             <p class="text-gray-500 mt-1">
                 POS analytics overview
             </p>
-
         </div>
 
         {{-- KPI CARDS --}}
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-
             <!-- Total Sales Card -->
             <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-3xl shadow-lg p-8 border border-blue-200 hover:shadow-xl transition">
                 <div class="flex items-center justify-between">
@@ -76,12 +72,10 @@
                     <p class="text-pink-700 text-sm mt-2 font-medium">Active suppliers</p>
                 </div>
             </div>
-
         </div>
 
         {{-- CHARTS --}}
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-
             {{-- SALES CHART --}}
             <div class="bg-gradient-to-br from-blue-50 to-white rounded-3xl shadow-lg p-8 border border-blue-100">
                 <h2 class="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
@@ -99,12 +93,10 @@
                 </h2>
                 <canvas id="purchaseChart"></canvas>
             </div>
-
         </div>
 
         {{-- RECENT SALES & LOW STOCK --}}
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-
             {{-- RECENT SALES --}}
             <div class="bg-gradient-to-br from-emerald-50 to-white rounded-3xl shadow-lg p-8 border border-emerald-100">
                 <h2 class="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
@@ -140,7 +132,6 @@
                     <svg class="w-5 h-5 text-red-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
                     Low Stock Alerts
                 </h2>
-
                 <div class="space-y-3">
                     @forelse($lowStockProducts as $product)
                         <div class="bg-white border-l-4 border-red-500 rounded-lg p-4 flex items-center justify-between hover:shadow-md transition">
@@ -157,7 +148,6 @@
                     @endforelse
                 </div>
             </div>
-
         </div>
 
         {{-- TOP PRODUCTS --}}

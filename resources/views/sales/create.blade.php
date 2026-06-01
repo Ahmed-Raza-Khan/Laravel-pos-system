@@ -181,7 +181,7 @@
                                         <label class="block text-sm font-medium text-gray-700 mb-1">
                                             Discount Type
                                         </label>
-                                        <select name="discount_type" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                                        <select name="discount_type" id="discount_type" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
                                             <option value="">
                                                 None
                                             </option>
@@ -198,7 +198,7 @@
                                         <label class="block text-sm font-medium text-gray-700 mb-1">
                                             Discount Value
                                         </label>
-                                        <input type="number" step="0.01" name="discount_value" value="{{ old('discount_value', $checkoutMeta['discount_value'] ?? 0) }}"
+                                        <input type="number" step="0.01" name="discount_value" id="discount_value" value="{{ old('discount_value', $checkoutMeta['discount_value'] ?? 0) }}"
                                             class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
                                     </div>
                                 </div>
@@ -207,12 +207,50 @@
                                     <label class="block text-sm font-medium text-gray-700 mb-1">
                                         Tax %
                                     </label>
-                                <input type="number" step="0.01" name="tax_percentage" value="{{ old('tax_percentage', $checkoutMeta['tax_percentage'] ?? $setting->tax_percentage ?? 0) }}"
+                                    <input type="number" step="0.01" name="tax_percentage" id="tax_percentage" value="{{ old('tax_percentage', $checkoutMeta['tax_percentage'] ?? $setting->tax_percentage ?? 0) }}" class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                                </div>
+
+                                <div class="bg-slate-100 rounded-xl p-4 space-y-2">
+                                    <div class="flex justify-between">
+                                        <span>Subtotal</span>
+                                        <span id="subtotal-preview">
+                                            {{ number_format($subtotal, 2) }}
+                                        </span>
+                                    </div>
+
+                                    <div class="flex justify-between">
+                                        <span>Discount</span>
+                                        <span id="discount-preview">0.00</span>
+                                    </div>
+
+                                    <div class="flex justify-between">
+                                        <span>Tax</span>
+                                        <span id="tax-preview">0.00</span>
+                                    </div>
+
+                                    <div class="flex justify-between text-lg font-bold border-t pt-2">
+                                        <span>Grand Total</span>
+                                        <span id="grand-total-preview">
+                                            {{ number_format($subtotal, 2) }}
+                                        </span>
+                                    </div>
+
+                                    <div class="flex justify-between">
+                                        <span>Change</span>
+                                        <span id="change-preview">0.00</span>
+                                    </div>
+
+                                    <div class="flex justify-between">
+                                        <span>Due</span>
+                                        <span id="due-preview">0.00</span>
+                                    </div>
+                                </div>
+
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">
                                         Paid Amount
                                     </label>
-                                    <input type="number" max="9999999999.99" step="0.01" name="paid_amount" value="{{ old('paid_amount', $checkoutMeta['paid_amount'] ?? '') }}" required
+                                    <input type="number" max="9999999999.99" step="0.01" name="paid_amount" id="paid_amount" value="{{ old('paid_amount', $checkoutMeta['paid_amount'] ?? '') }}" required
                                         class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
                                 </div>
 
@@ -249,4 +287,71 @@
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            const subtotal = {{ $subtotal }};
+
+            const taxInput = document.getElementById('tax_percentage');
+            const discountType = document.getElementById('discount_type');
+            const discountValue = document.getElementById('discount_value');
+            const paidAmount = document.getElementById('paid_amount');
+
+            function calculate() {
+
+                let discount = 0;
+
+                if (discountType.value === 'fixed') {
+                    discount = parseFloat(discountValue.value) || 0;
+                }
+
+                if (discountType.value === 'percentage') {
+                    discount = subtotal *
+                        ((parseFloat(discountValue.value) || 0) / 100);
+                }
+
+                let afterDiscount = subtotal - discount;
+
+                let tax =
+                    afterDiscount *
+                    ((parseFloat(taxInput.value) || 0) / 100);
+
+                let grandTotal = afterDiscount + tax;
+
+                let paid = parseFloat(paidAmount.value) || 0;
+
+                let due = 0;
+                let change = 0;
+
+                if (paid >= grandTotal) {
+                    change = paid - grandTotal;
+                } else {
+                    due = grandTotal - paid;
+                }
+
+                document.getElementById('discount-preview').innerText =
+                    discount.toFixed(2);
+
+                document.getElementById('tax-preview').innerText =
+                    tax.toFixed(2);
+
+                document.getElementById('grand-total-preview').innerText =
+                    grandTotal.toFixed(2);
+
+                document.getElementById('due-preview').innerText =
+                    due.toFixed(2);
+
+                document.getElementById('change-preview').innerText =
+                    change.toFixed(2);
+            }
+
+            taxInput.addEventListener('input', calculate);
+            discountType.addEventListener('change', calculate);
+            discountValue.addEventListener('input', calculate);
+            paidAmount.addEventListener('input', calculate);
+
+            calculate();
+        });
+    </script>
 @endsection

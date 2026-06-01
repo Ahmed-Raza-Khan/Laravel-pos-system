@@ -15,12 +15,12 @@
 
 @include('partials.index-toolbar', ['placeholder' => 'Search users...'])
 
-@if(session('success'))
+{{-- @if(session('success'))
     <section class="bg-green-100 border border-green-300 text-green-700 px-4 py-3 rounded mb-4">{{ session('success') }}</section>
 @endif
 @if(session('error'))
     <section class="bg-red-100 border border-red-300 text-red-700 px-4 py-3 rounded mb-4">{{ session('error') }}</section>
-@endif
+@endif --}}
 
 <section class="bg-gradient-to-br from-white to-slate-50 rounded-3xl shadow-lg overflow-hidden border border-slate-100">
     <section class="overflow-x-auto">
