@@ -10,7 +10,7 @@
 
     @include('reports.partials.nav')
 
-    @if($errors->any())
+    {{-- @if($errors->any())
         <div class="bg-red-50 border border-red-200 text-red-700 rounded-3xl p-4 mb-6">
             <ul class="list-disc list-inside space-y-1">
                 @foreach($errors->all() as $error)
@@ -18,7 +18,7 @@
                 @endforeach
             </ul>
         </div>
-    @endif
+    @endif --}}
 
     <form method="GET" class="bg-white rounded-3xl shadow-lg p-6 border border-slate-100 mb-8 flex flex-wrap gap-4 items-end">
         <section>

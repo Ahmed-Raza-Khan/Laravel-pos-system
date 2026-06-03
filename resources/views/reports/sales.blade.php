@@ -10,7 +10,7 @@
 
     @include('reports.partials.nav')
 
-    @if($errors->any())
+    {{-- @if($errors->any())
         <div class="bg-red-50 border border-red-200 text-red-700 rounded-3xl p-4 mb-6">
             <ul class="list-disc list-inside space-y-1">
                 @foreach($errors->all() as $error)
@@ -18,7 +18,7 @@
                 @endforeach
             </ul>
         </div>
-    @endif
+    @endif --}}
 
     <div class="flex gap-2 mb-8">
         <a href="{{ route('reports.sales', ['tab' => 'daily']) }}"
