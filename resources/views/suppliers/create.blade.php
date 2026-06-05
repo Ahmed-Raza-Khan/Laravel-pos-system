@@ -36,6 +36,26 @@
             <textarea name="address" class="w-full border border-slate-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none">{{ old('address') }}</textarea>
         </div>
 
+        <div class="col-span-2">
+            <label class="block text-sm font-medium mb-2">
+                Warehouses
+            </label>
+            <select name="warehouses[]" id="warehouseSelect" multiple class="w-full">
+                @foreach($warehouses as $warehouse)
+                    <option value="{{ $warehouse->id }}"
+                        @if(
+                            isset($supplier)
+                            &&
+                            $supplier->warehouses
+                                ->contains($warehouse->id)
+                        ) selected
+                        @endif>
+                        {{ $warehouse->name }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+
         <div class="mb-4">
             <label class="block mb-1">Status</label>
             <select name="status" class="w-full border border-slate-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none">

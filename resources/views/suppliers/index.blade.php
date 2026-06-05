@@ -24,6 +24,7 @@
                     <th class="px-6 py-4 font-semibold">Company</th>
                     <th class="px-6 py-4 font-semibold">Phone</th>
                     <th class="px-6 py-4 font-semibold">Address</th>
+                    <th class="px-6 py-4 font-semibold">Warehouses</th>
                     <th class="px-6 py-4 font-semibold">Status</th>
                     <th class="px-6 py-4 font-semibold text-right">Action</th>
                 </tr>
@@ -37,6 +38,13 @@
                         <td class="px-6 py-4 text-sm text-slate-600">{{ $supplier->company ?? 'N/A' }}</td>
                         <td class="px-6 py-4 text-sm text-slate-600">{{ $supplier->phone ?? 'N/A' }}</td>
                         <td class="px-6 py-4 text-sm text-slate-600">{{ $supplier->address ?? 'N/A' }}</td>
+                        <td>
+                            @foreach($supplier->warehouses as $warehouse)
+                                <span class="inline-flex px-2 py-1 text-xs bg-blue-100 text-blue-700 rounded">
+                                    {{ $warehouse->name }}
+                                </span>
+                            @endforeach
+                        </td>
 
                         <td class="px-6 py-4">
                             @if($supplier->status)

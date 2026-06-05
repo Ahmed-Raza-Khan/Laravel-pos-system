@@ -16,4 +16,11 @@ class Warehouse extends Model
         'address',
         'status',
     ];
+
+    public function suppliers()
+    {
+        return $this->belongsToMany(
+            Supplier::class
+        );
+    }
 }

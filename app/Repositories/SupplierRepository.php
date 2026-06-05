@@ -10,24 +10,33 @@ class SupplierRepository implements SupplierRepositoryInterface
 {
     public function getAll()
     {
-        return IndexTable::apply(Supplier::query(), ['name', 'company', 'phone'], 'name', 10);
+        return IndexTable::apply(Supplier::with('warehouses'), ['name', 'company', 'phone'], 'name', 10);
     }
 
     public function store(array $data)
     {
-        return Supplier::create($data);
+        $supplier = Supplier::create($data);
+        $supplier->warehouses()->sync(
+            $data['warehouses'] ?? []
+        );
+
+        return $supplier;
     }
 
     public function findById($id)
     {
-        return Supplier::findOrFail($id);
+        return Supplier::with('warehouses')->findOrFail($id);
     }
 
     public function update($id, array $data)
     {
         $supplier = Supplier::findOrFail($id);
+        $supplier->update($data);
+        $supplier->warehouses()->sync(
+            $data['warehouses'] ?? []
+        );
 
-        return $supplier->update($data);
+        return $supplier;
     }
 
     public function delete($id)

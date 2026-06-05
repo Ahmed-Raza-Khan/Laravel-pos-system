@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreSupplierRequest;
 use App\Http\Requests\UpdateSupplierRequest;
 use App\Services\SupplierService;
+use App\Models\Warehouse;
 
 class SupplierController extends Controller
 {
@@ -30,7 +31,9 @@ class SupplierController extends Controller
      */
     public function create()
     {
-        return view('suppliers.create');
+        $warehouses = Warehouse::where('status', true)->get();
+
+        return view('suppliers.create', compact('warehouses'));
     }
 
     /**
@@ -53,8 +56,9 @@ class SupplierController extends Controller
     public function edit(string $id)
     {
         $supplier = $this->supplierService->getSupplier($id);
+        $warehouses = Warehouse::where('status', true)->get();
 
-        return view('suppliers.edit', compact('supplier'));
+        return view('suppliers.edit', compact('supplier','warehouses'));
     }
 
     /**

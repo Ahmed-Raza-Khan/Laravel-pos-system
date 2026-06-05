@@ -19,6 +19,8 @@ class StoreSupplierRequest extends FormRequest
             'phone' => ['nullable', 'string', 'max:255'],
             'address' => ['nullable', 'string'],
             'status' => ['required', 'boolean'],
+            'warehouses' => ['nullable', 'array'],
+            'warehouses.*' => ['exists:warehouses,id'],
         ];
     }
 }
