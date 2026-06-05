@@ -20,15 +20,35 @@ class InventoryController extends Controller
     /**
      * Inventory List
      */
-    public function index()
+    public function index(Request $request)
     {
+        $query = Product::with([
+            'category',
+            'brand'
+        ]);
+
+        if ($request->filled('product_id')) {
+            $query->where('id', $request->product_id);
+        }
+
         $products = IndexTable::apply(
-            Product::with(['category', 'brand']),
+            $query,
             ['name', 'sku', 'barcode', 'stock'],
             'name'
         );
 
-        return view('inventory.index',compact('products'));
+        $allProducts = Product::select(
+            'id',
+            'name'
+        )->orderBy('name')->get();
+
+        return view(
+            'inventory.index',
+            compact(
+                'products',
+                'allProducts'
+            )
+        );
     }
 
     /**

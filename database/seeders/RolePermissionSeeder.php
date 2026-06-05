@@ -22,6 +22,7 @@ class RolePermissionSeeder extends Seeder
         'manage reports',
         'manage settings',
         'manage users',
+        'manage warehouses',
     ];
 
     public function run(): void
@@ -49,6 +50,7 @@ class RolePermissionSeeder extends Seeder
             'manage purchases',
             'manage inventory',
             'manage reports',
+            'manage warehouses',
         ]);
 
         $cashier->syncPermissions([

@@ -48,6 +48,11 @@ use App\Services\ReportService;
 use App\Models\Setting;
 use Illuminate\Support\Facades\View;
 
+// Warehouse interface repository service
+use App\Interfaces\WarehouseRepositoryInterface;
+use App\Repositories\WarehouseRepository;
+use App\Services\WarehouseService;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -135,6 +140,17 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(ReportService::class, function ($app) {
             return new ReportService(
                 $app->make(ReportRepositoryInterface::class)
+            );
+        });
+
+        $this->app->bind(
+            WarehouseRepositoryInterface::class,
+            WarehouseRepository::class
+        );
+
+        $this->app->singleton(WarehouseService::class, function ($app) {
+            return new WarehouseService(
+                $app->make(WarehouseRepositoryInterface::class)
             );
         });
     }

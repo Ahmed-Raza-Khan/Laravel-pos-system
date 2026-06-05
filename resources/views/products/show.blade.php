@@ -41,10 +41,10 @@
                             <h3 class="text-sm text-slate-500 uppercase tracking-wide">Product ID</h3>
                             <p class="mt-2 font-semibold text-slate-900">#{{ $product->id }}</p>
                         </div>
-                        <div class="rounded-3xl bg-slate-50 p-4">
+                        {{-- <div class="rounded-3xl bg-slate-50 p-4">
                             <h3 class="text-sm text-slate-500 uppercase tracking-wide">Image File</h3>
                             <p class="mt-2 font-semibold text-slate-900">{{ basename($product->image ?? '') ?: 'N/A' }}</p>
-                        </div>
+                        </div> --}}
                         <div class="rounded-3xl bg-slate-50 p-4">
                             <h3 class="text-sm text-slate-500 uppercase tracking-wide">SKU</h3>
                             <p class="mt-2 font-semibold text-slate-900">{{ $product->sku }}</p>

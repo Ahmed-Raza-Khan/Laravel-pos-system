@@ -17,6 +17,74 @@ class ProductSeeder extends Seeder
     public function run(): void
     {
         $products = [
+            // Grocery
+            ['category_id' => 4, 'name' => 'Basmati Rice 5kg', 'purchase_price' => 1800, 'sale_price' => 2200, 'stock' => 60],
+            ['category_id' => 4, 'name' => 'Basmati Rice 10kg', 'purchase_price' => 3500, 'sale_price' => 4200, 'stock' => 40],
+            ['category_id' => 4, 'name' => 'Sugar 1kg', 'purchase_price' => 130, 'sale_price' => 160, 'stock' => 200],
+            ['category_id' => 4, 'name' => 'Flour 10kg', 'purchase_price' => 1200, 'sale_price' => 1450, 'stock' => 80],
+            ['category_id' => 4, 'name' => 'Cooking Oil 5L', 'purchase_price' => 2500, 'sale_price' => 2950, 'stock' => 75],
+            ['category_id' => 4, 'name' => 'Desi Ghee 1kg', 'purchase_price' => 850, 'sale_price' => 1100, 'stock' => 90],
+            ['category_id' => 4, 'name' => 'Salt 800g', 'purchase_price' => 40, 'sale_price' => 60, 'stock' => 250],
+            ['category_id' => 4, 'name' => 'Tea 900g', 'purchase_price' => 1450, 'sale_price' => 1800, 'stock' => 65],
+            ['category_id' => 4, 'name' => 'Red Chili Powder', 'purchase_price' => 180, 'sale_price' => 250, 'stock' => 100],
+            ['category_id' => 4, 'name' => 'Turmeric Powder', 'purchase_price' => 140, 'sale_price' => 210, 'stock' => 100],
+
+            // Beverages
+            ['category_id' => 5, 'name' => 'Coca Cola 1.5L', 'purchase_price' => 180, 'sale_price' => 250, 'stock' => 150],
+            ['category_id' => 5, 'name' => 'Pepsi 1.5L', 'purchase_price' => 180, 'sale_price' => 250, 'stock' => 150],
+            ['category_id' => 5, 'name' => '7UP 1.5L', 'purchase_price' => 180, 'sale_price' => 250, 'stock' => 150],
+            ['category_id' => 5, 'name' => 'Sprite 1.5L', 'purchase_price' => 180, 'sale_price' => 250, 'stock' => 150],
+            ['category_id' => 5, 'name' => 'Nestle Water 1.5L', 'purchase_price' => 60, 'sale_price' => 100, 'stock' => 300],
+            ['category_id' => 5, 'name' => 'Pakola 1L', 'purchase_price' => 90, 'sale_price' => 140, 'stock' => 120],
+            ['category_id' => 5, 'name' => 'Mango Juice', 'purchase_price' => 80, 'sale_price' => 130, 'stock' => 140],
+            ['category_id' => 5, 'name' => 'Apple Juice', 'purchase_price' => 85, 'sale_price' => 140, 'stock' => 130],
+
+            // Personal Care
+            ['category_id' => 6, 'name' => 'Lux Soap', 'purchase_price' => 120, 'sale_price' => 180, 'stock' => 250],
+            ['category_id' => 6, 'name' => 'Dove Soap', 'purchase_price' => 180, 'sale_price' => 260, 'stock' => 180],
+            ['category_id' => 6, 'name' => 'Safeguard Soap', 'purchase_price' => 130, 'sale_price' => 190, 'stock' => 220],
+            ['category_id' => 6, 'name' => 'Colgate Toothpaste', 'purchase_price' => 180, 'sale_price' => 280, 'stock' => 170],
+            ['category_id' => 6, 'name' => 'Sensodyne Toothpaste', 'purchase_price' => 320, 'sale_price' => 450, 'stock' => 120],
+            ['category_id' => 6, 'name' => 'Head & Shoulders Shampoo', 'purchase_price' => 450, 'sale_price' => 650, 'stock' => 100],
+            ['category_id' => 6, 'name' => 'Sunsilk Shampoo', 'purchase_price' => 280, 'sale_price' => 420, 'stock' => 120],
+            ['category_id' => 6, 'name' => 'Gillette Razor', 'purchase_price' => 180, 'sale_price' => 280, 'stock' => 90],
+
+            // Household
+            ['category_id' => 7, 'name' => 'Surf Excel 1kg', 'purchase_price' => 550, 'sale_price' => 750, 'stock' => 110],
+            ['category_id' => 7, 'name' => 'Bonus Detergent', 'purchase_price' => 280, 'sale_price' => 420, 'stock' => 130],
+            ['category_id' => 7, 'name' => 'Vim Bar', 'purchase_price' => 45, 'sale_price' => 80, 'stock' => 250],
+            ['category_id' => 7, 'name' => 'Dish Wash Liquid', 'purchase_price' => 180, 'sale_price' => 290, 'stock' => 120],
+            ['category_id' => 7, 'name' => 'Glass Cleaner', 'purchase_price' => 250, 'sale_price' => 380, 'stock' => 90],
+            ['category_id' => 7, 'name' => 'Toilet Cleaner', 'purchase_price' => 210, 'sale_price' => 330, 'stock' => 95],
+
+            // Baby Care
+            ['category_id' => 8, 'name' => 'Pampers Jumbo Pack', 'purchase_price' => 1800, 'sale_price' => 2400, 'stock' => 80],
+            ['category_id' => 8, 'name' => 'Canbebe Diapers', 'purchase_price' => 1400, 'sale_price' => 1900, 'stock' => 90],
+            ['category_id' => 8, 'name' => 'Johnson Baby Powder', 'purchase_price' => 220, 'sale_price' => 340, 'stock' => 130],
+            ['category_id' => 8, 'name' => 'Johnson Baby Oil', 'purchase_price' => 250, 'sale_price' => 380, 'stock' => 120],
+            ['category_id' => 8, 'name' => 'Baby Wipes Pack', 'purchase_price' => 180, 'sale_price' => 290, 'stock' => 150],
+
+            // Stationery
+            ['category_id' => 9, 'name' => 'Dollar Ball Pen', 'purchase_price' => 20, 'sale_price' => 40, 'stock' => 500],
+            ['category_id' => 9, 'name' => 'Piano Marker', 'purchase_price' => 50, 'sale_price' => 90, 'stock' => 300],
+            ['category_id' => 9, 'name' => 'A4 Notebook', 'purchase_price' => 80, 'sale_price' => 150, 'stock' => 250],
+            ['category_id' => 9, 'name' => 'Stapler', 'purchase_price' => 180, 'sale_price' => 320, 'stock' => 80],
+            ['category_id' => 9, 'name' => 'Scientific Calculator', 'purchase_price' => 850, 'sale_price' => 1200, 'stock' => 40],
+
+            // Home Appliances
+            ['category_id' => 10, 'name' => 'Dawlance Refrigerator', 'purchase_price' => 85000, 'sale_price' => 98000, 'stock' => 12],
+            ['category_id' => 10, 'name' => 'Haier Refrigerator', 'purchase_price' => 95000, 'sale_price' => 110000, 'stock' => 10],
+            ['category_id' => 10, 'name' => 'PEL Deep Freezer', 'purchase_price' => 65000, 'sale_price' => 76000, 'stock' => 15],
+            ['category_id' => 10, 'name' => 'Orient AC 1.5 Ton', 'purchase_price' => 120000, 'sale_price' => 140000, 'stock' => 8],
+            ['category_id' => 10, 'name' => 'LED Smart TV 55 Inch', 'purchase_price' => 135000, 'sale_price' => 155000, 'stock' => 10],
+
+            // Luxury
+            ['category_id' => 11, 'name' => 'Rolex Submariner', 'purchase_price' => 2500000, 'sale_price' => 3200000, 'stock' => 2],
+            ['category_id' => 11, 'name' => 'Omega Speedmaster', 'purchase_price' => 1500000, 'sale_price' => 1900000, 'stock' => 3],
+            ['category_id' => 11, 'name' => 'Louis Vuitton Wallet', 'purchase_price' => 180000, 'sale_price' => 240000, 'stock' => 5],
+            ['category_id' => 11, 'name' => 'Gucci Belt', 'purchase_price' => 120000, 'sale_price' => 170000, 'stock' => 5],
+            ['category_id' => 11, 'name' => 'Versace Perfume', 'purchase_price' => 45000, 'sale_price' => 65000, 'stock' => 8],
+            
             // Electronics / Mobiles
             ['category_id' => 1, 'name' => 'iPhone 15 Pro Max', 'purchase_price' => 420000, 'sale_price' => 450000, 'stock' => 12],
             ['category_id' => 1, 'name' => 'Samsung Galaxy S24 Ultra', 'purchase_price' => 390000, 'sale_price' => 420000, 'stock' => 15],

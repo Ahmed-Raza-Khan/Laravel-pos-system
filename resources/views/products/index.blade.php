@@ -8,8 +8,8 @@
         </div>
 
         <section class="flex flex-wrap gap-2 mt-4 sm:mt-0">
-            <a href="{{ route('products.export') }}" class="inline-flex items-center gap-2 bg-slate-700 hover:bg-slate-800 text-white px-4 py-2 rounded-2xl text-sm font-semibold">Export CSV</a>
-            <a href="{{ route('products.import') }}" class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-2xl text-sm font-semibold">Import CSV</a>
+            <a href="{{ route('products.export') }}" class="inline-flex items-center gap-2 bg-slate-700 hover:bg-slate-800 text-white px-4 py-2 rounded-2xl text-sm font-semibold">Export Produts</a>
+            <a href="{{ route('products.import') }}" class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-2xl text-sm font-semibold">Import Produts</a>
             <a href="{{ route('products.create') }}" class="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-2xl text-sm font-semibold">Add Product</a>
         </section>
     </div>
