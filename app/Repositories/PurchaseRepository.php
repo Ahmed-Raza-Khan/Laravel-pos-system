@@ -9,16 +9,18 @@ use App\Support\IndexTable;
 use Illuminate\Support\Facades\DB;
 use App\Services\InventoryService;
 use App\Interfaces\PurchaseRepositoryInterface;
+use App\Services\Inventory\WarehouseStockService;
 
 class PurchaseRepository implements PurchaseRepositoryInterface
 {
     public function __construct(
-        protected InventoryService $inventoryService
+        protected InventoryService $inventoryService,
+        protected WarehouseStockService $warehouseStockService
     ) {}
 
     public function getAll()
     {
-        $query = Purchase::with('supplier');
+        $query = Purchase::with('supplier','warehouse');
 
         return IndexTable::apply(
             $query,
@@ -35,6 +37,7 @@ class PurchaseRepository implements PurchaseRepositoryInterface
             $purchase = Purchase::create([
                 'invoice_no' => 'PUR-' . time(),
                 'supplier_id' => $data['supplier_id'],
+                'warehouse_id' => $data['warehouse_id'],
                 'purchase_date' => $data['purchase_date'],
                 'total_amount' => 0,
                 'note' => $data['note'] ?? null,
@@ -71,6 +74,11 @@ class PurchaseRepository implements PurchaseRepositoryInterface
 
             foreach ($purchase->items as $item) {
                 $this->addStockForItem($item, "Stock added from approved purchase #{$purchase->invoice_no}.");
+                $this->warehouseStockService->increase(
+                    $purchase->warehouse_id,
+                    $item->product_id,
+                    $item->quantity
+                );
             }
 
             $purchase->update(['status' => 'approved']);
@@ -97,6 +105,11 @@ class PurchaseRepository implements PurchaseRepositoryInterface
             if ($purchase->status === 'approved') {
                 foreach ($purchase->items as $item) {
                     $this->removeStockForItem($item, "Stock reversed from cancelled purchase #{$purchase->invoice_no}.");
+                    $this->warehouseStockService->decrease(
+                        $purchase->warehouse_id,
+                        $item->product_id,
+                        $item->quantity
+                    );
                 }
             }
 
@@ -112,16 +125,14 @@ class PurchaseRepository implements PurchaseRepositoryInterface
 
     public function findById($id)
     {
-        return Purchase::with('items.product', 'supplier')->findOrFail($id);
+        return Purchase::with('items.product', 'supplier', 'warehouse')->findOrFail($id);
     }
 
     public function update($id, array $data)
     {
         DB::beginTransaction();
-
         try {
             $purchase = Purchase::with('items')->findOrFail($id);
-
             if ($purchase->status === 'cancelled') {
                 throw new \Exception('Cancelled purchases cannot be edited.');
             }
@@ -129,9 +140,13 @@ class PurchaseRepository implements PurchaseRepositoryInterface
             if ($purchase->status === 'approved') {
                 foreach ($purchase->items as $item) {
                     $this->removeStockForItem($item, 'Stock reversed before purchase update.');
+                    $this->warehouseStockService->decrease(
+                        $purchase->warehouse_id,
+                        $item->product_id,
+                        $item->quantity
+                    );
                 }
             }
-
             PurchaseItem::where('purchase_id', $purchase->id)->delete();
 
             $wasApproved = $purchase->status === 'approved';
@@ -139,11 +154,11 @@ class PurchaseRepository implements PurchaseRepositoryInterface
 
             $purchase->update([
                 'supplier_id' => $data['supplier_id'],
+                'warehouse_id' => $data['warehouse_id'],
                 'purchase_date' => $data['purchase_date'],
                 'total_amount' => $total,
                 'note' => $data['note'] ?? null,
             ]);
-
             DB::commit();
 
             return $purchase->fresh(['supplier', 'items.product']);
@@ -159,16 +174,19 @@ class PurchaseRepository implements PurchaseRepositoryInterface
 
         try {
             $purchase = Purchase::with('items')->findOrFail($id);
-
             if ($purchase->status === 'approved') {
                 foreach ($purchase->items as $item) {
                     $this->removeStockForItem($item, 'Stock reversed from deleted purchase.');
+                    $this->warehouseStockService->decrease(
+                        $purchase->warehouse_id,
+                        $item->product_id,
+                        $item->quantity
+                    );
                 }
             }
 
             PurchaseItem::where('purchase_id', $purchase->id)->delete();
             $purchase->delete();
-
             DB::commit();
 
             return true;
@@ -181,7 +199,6 @@ class PurchaseRepository implements PurchaseRepositoryInterface
     protected function syncItems(Purchase $purchase, array $data, bool $applyStock): float
     {
         $total = 0;
-
         foreach ($data['product_id'] as $key => $productId) {
             $qty = $data['quantity'][$key];
             $price = $data['purchase_price'][$key];

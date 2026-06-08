@@ -22,33 +22,17 @@ class InventoryController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Product::with([
-            'category',
-            'brand'
-        ]);
-
+        $query = Product::with(['category','brand']);
         if ($request->filled('product_id')) {
             $query->where('id', $request->product_id);
         }
 
         $products = IndexTable::apply(
-            $query,
-            ['name', 'sku', 'barcode', 'stock'],
-            'name'
+            $query,['name', 'sku', 'barcode', 'stock'],'name'
         );
 
-        $allProducts = Product::select(
-            'id',
-            'name'
-        )->orderBy('name')->get();
-
-        return view(
-            'inventory.index',
-            compact(
-                'products',
-                'allProducts'
-            )
-        );
+        $allProducts = Product::select('id', 'name')->orderBy('name')->get();
+        return view('inventory.index',compact('products', 'allProducts'));
     }
 
     /**
@@ -57,7 +41,6 @@ class InventoryController extends Controller
     public function adjust(Request $request, $id)
     {
         $request->validate([
-
             'quantity' => ['required','integer'],
             'type' => ['required','in:add,subtract'],
             'notes' => ['nullable','string'],
@@ -72,15 +55,9 @@ class InventoryController extends Controller
             );
         } else {
             if ($request->quantity > $product->stock) {
-                return back()->with(
-                    'error',
-                    'Insufficient stock.'
-                );
+                return back()->with('error', 'Insufficient stock.');
             }
-            $product->decrement(
-                'stock',
-                $request->quantity
-            );
+            $product->decrement('stock', $request->quantity);
         }
 
         $product->refresh();
@@ -94,10 +71,7 @@ class InventoryController extends Controller
             $request->notes
         );
 
-        return back()->with(
-            'success',
-            'Stock adjusted successfully.'
-        );
+        return back()->with('success', 'Stock adjusted successfully.');
     }
 
     /**

@@ -26,6 +26,10 @@
                 <h3 class="text-sm text-slate-500">Supplier</h3>
                 <div class="font-semibold">{{ $purchase->supplier?->name ?? 'N/A' }}</div>
             </div>
+            {{-- <div>
+                <h3 class="text-sm text-slate-500">Warehouse</h3>
+                <div class="font-semibold">{{ $warehouse->name ?? 'N/A' }}</div>
+            </div> --}}
             <div>
                 <h3 class="text-sm text-slate-500">Date</h3>
                 <div class="font-semibold">{{ \Carbon\Carbon::parse($purchase->purchase_date)->format('d M Y') }}</div>

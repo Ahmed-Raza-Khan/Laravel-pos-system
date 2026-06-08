@@ -20,7 +20,6 @@
                 <label class="block mb-2 font-medium">
                     Supplier
                 </label>
-
                 <select name="supplier_id" class="select2 w-full border p-3 rounded">
                     <option value="">
                         Select Supplier
@@ -32,8 +31,28 @@
                         </option>
                     @endforeach
                 </select>
-
                 @error('supplier_id')
+                    <p class="text-red-500 text-sm mt-1">
+                        {{ $message }}
+                    </p>
+                @enderror
+            </div>
+
+            <div>
+                <label class="block mb-2 font-medium">
+                    Warehouse
+                </label>
+                <select name="warehouse_id" class="select2 w-full border p-3 rounded">
+                    <option value="">
+                        Select Warehouse
+                    </option>
+                    @foreach($warehouses as $warehouse)
+                        <option value="{{ $warehouse->id }}" {{ old('warehouse_id') == $warehouse->id ? 'selected' : '' }}>
+                            {{ $warehouse->name }}
+                        </option>
+                    @endforeach
+                </select>
+                @error('warehouse_id')
                     <p class="text-red-500 text-sm mt-1">
                         {{ $message }}
                     </p>

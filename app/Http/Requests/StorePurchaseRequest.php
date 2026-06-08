@@ -24,6 +24,7 @@ class StorePurchaseRequest extends FormRequest
     {
         return [
             'supplier_id' => ['required', 'exists:suppliers,id'],
+            'warehouse_id' => ['required', 'exists:warehouses,id'],
             'purchase_date' => ['required', 'date'],
             'product_id' => ['required', 'array'],
             'product_id.*' => ['required', 'exists:products,id'],

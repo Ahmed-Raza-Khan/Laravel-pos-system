@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\Setting;
 use App\Models\Supplier;
+use App\Models\Warehouse;
 use App\Services\PurchaseService;
 use App\Http\Requests\StorePurchaseRequest;
 use App\Http\Requests\UpdatePurchaseRequest;
@@ -35,8 +36,9 @@ class PurchaseController extends Controller
     {
         $suppliers = Supplier::where('status', 1)->get();
         $products = Product::where('status', 1)->get();
+        $warehouses = Warehouse::where('status',1)->get();
 
-        return view('purchases.create', compact('suppliers', 'products'));
+        return view('purchases.create', compact('suppliers', 'products', 'warehouses'));
     }
 
     /**
@@ -77,14 +79,13 @@ class PurchaseController extends Controller
      */
     public function edit(string $id)
     {
-        $purchase = $this->purchaseService
-            ->getPurchase($id);
+        $purchase = $this->purchaseService->getPurchase($id);
 
         $suppliers = Supplier::where('status', 1)->get();
-
         $products = Product::where('status', 1)->get();
+        $warehouses = Warehouse::where('status', 1)->get();
 
-        return view('purchases.edit',compact('purchase', 'suppliers', 'products'));
+        return view('purchases.edit',compact('purchase', 'suppliers', 'products', 'warehouses'));
     }
 
     /**

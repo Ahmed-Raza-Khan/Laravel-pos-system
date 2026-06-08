@@ -12,6 +12,7 @@ class Purchase extends Model
     protected $fillable = [
         'invoice_no',
         'supplier_id',
+        'warehouse_id',
         'purchase_date',
         'total_amount',
         'note',
@@ -30,5 +31,10 @@ class Purchase extends Model
     public function items()
     {
         return $this->hasMany(PurchaseItem::class);
+    }
+
+    public function warehouse()
+    {
+        return $this->belongsTo(Warehouse::class);
     }
 }

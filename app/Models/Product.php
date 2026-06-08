@@ -43,4 +43,9 @@ class Product extends Model
     {
         return $this->hasMany(InventoryHistory::class);
     }
+
+    public function warehouses()
+    {
+        return $this->belongsToMany(Warehouse::class,'warehouse_products')->withPivot('stock');
+    }
 }

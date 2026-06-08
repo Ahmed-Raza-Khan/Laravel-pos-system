@@ -53,6 +53,9 @@ use App\Interfaces\WarehouseRepositoryInterface;
 use App\Repositories\WarehouseRepository;
 use App\Services\WarehouseService;
 
+// Warehouse Stock service
+use App\Services\Inventory\WarehouseStockService;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -153,6 +156,8 @@ class AppServiceProvider extends ServiceProvider
                 $app->make(WarehouseRepositoryInterface::class)
             );
         });
+
+        $this->app->singleton(WarehouseStockService::class,fn () => new WarehouseStockService());
     }
 
     /**

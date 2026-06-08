@@ -19,6 +19,7 @@
                     @include('partials.sortable-th', ['field' => 'id', 'label' => '#'])
                     @include('partials.sortable-th', ['field' => 'invoice_no', 'label' => 'Invoice'])
                     <th class="px-6 py-4 font-semibold">Supplier</th>
+                    <th>Warehouse</th>
                     @include('partials.sortable-th', ['field' => 'purchase_date', 'label' => 'Date'])
                     @include('partials.sortable-th', ['field' => 'total_amount', 'label' => 'Amount'])
                     @include('partials.sortable-th', ['field' => 'status', 'label' => 'Status'])
@@ -33,6 +34,7 @@
                             <a href="{{ route('purchases.show', $purchase->id) }}" class="hover:underline">{{ $purchase->invoice_no }}</a>
                         </td>
                         <td class="px-6 py-4">{{ $purchase->supplier?->name ?? 'N/A' }}</td>
+                        <td>{{ $purchase->warehouse?->name }}</td>
                         <td class="px-6 py-4">{{ $purchase->purchase_date?->format('d M Y') }}</td>
                         <td class="px-6 py-4 font-bold">{{ $setting->currency ?? 'PKR' }} {{ number_format($purchase->total_amount, 0) }}</td>
                         <td class="px-6 py-4">
