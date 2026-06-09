@@ -24,6 +24,7 @@ class StoreSaleRequest extends FormRequest
     {
         return [
             'customer_id' => ['nullable', 'exists:customers,id'],
+            'warehouse_id' => ['required', 'exists:warehouses,id'],
 
             'discount_type' => [
                 'nullable',

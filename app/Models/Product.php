@@ -18,11 +18,22 @@ class Product extends Model
         'barcode',
         'purchase_price',
         'sale_price',
-        'stock',
+        // 'stock',
         'image',
         'description',
         'status'
     ];
+
+    protected $appends = [
+        'total_stock'
+    ];
+
+    public function getTotalStockAttribute()
+    {
+        return $this->relationLoaded('warehouseStocks')
+            ? $this->warehouseStocks->sum('stock')
+            : $this->warehouseStocks()->sum('stock');
+    }
 
     public function category()
     {
@@ -47,5 +58,10 @@ class Product extends Model
     public function warehouses()
     {
         return $this->belongsToMany(Warehouse::class,'warehouse_products')->withPivot('stock');
+    }
+
+    public function warehouseStocks()
+    {
+        return $this->hasMany(WarehouseProduct::class);
     }
 }

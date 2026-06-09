@@ -88,10 +88,10 @@
 
                         {{-- STOCK --}}
                         <td class="px-6 py-4">
-                            @if($product->stock > 10)
-                                <span class="inline-flex rounded-full bg-green-100 px-3 py-1 text-xs font-bold text-green-700">{{ $product->stock }}</span>
-                            @elseif($product->stock > 0)
-                                <span class="inline-flex rounded-full bg-yellow-100 px-3 py-1 text-xs font-bold text-yellow-700">{{ $product->stock }}</span>
+                            @if($product->total_stock > 10)
+                                <span class="inline-flex rounded-full bg-green-100 px-3 py-1 text-xs font-bold text-green-700">{{ $product->total_stock }}</span>
+                            @elseif($product->total_stock > 0)
+                                <span class="inline-flex rounded-full bg-yellow-100 px-3 py-1 text-xs font-bold text-yellow-700">{{ $product->total_stock }}</span>
                             @else
                                 <span class="inline-flex rounded-full bg-red-100 px-3 py-1 text-xs font-bold text-red-700">Out</span>
                             @endif

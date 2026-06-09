@@ -51,7 +51,7 @@
                         </div>
                         <div class="rounded-3xl bg-slate-50 p-4">
                             <h3 class="text-sm text-slate-500 uppercase tracking-wide">Stock</h3>
-                            <p class="mt-2 font-semibold text-slate-900">{{ $product->stock }}</p>
+                            <p class="mt-2 font-semibold text-slate-900">{{ $product->total_stock }}</p>
                         </div>
                     </div>
                 </div>

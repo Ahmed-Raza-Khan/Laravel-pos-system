@@ -83,6 +83,7 @@ Route::middleware(['auth', 'permission:manage sales'])->prefix('sales')->name('s
     Route::get('/', [SaleController::class, 'index'])->name('index');
     Route::get('/create', [SaleController::class, 'create'])->name('create');
     Route::post('/store', [SaleController::class, 'store'])->name('store');
+    Route::post('/set-warehouse', [SaleController::class, 'setWarehouse'])->name('set-warehouse');
     Route::get('/{id}/edit', [SaleController::class, 'edit'])->name('edit');
     Route::put('/{id}', [SaleController::class, 'update'])->name('update');
     Route::post('/{id}/void', [SaleController::class, 'void'])->name('void');

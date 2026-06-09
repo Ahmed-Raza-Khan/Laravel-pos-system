@@ -159,7 +159,7 @@ class ProductSeeder extends Seeder
                 'barcode' => $barcode,
                 'purchase_price' => $p['purchase_price'],
                 'sale_price' => $p['sale_price'],
-                'stock' => $p['stock'],
+                // 'stock' => $p['stock'],
                 'image' => $imagePath,
                 'description' => fake()->sentence(),
                 'status' => 1,

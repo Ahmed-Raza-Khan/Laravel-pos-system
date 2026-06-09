@@ -21,7 +21,10 @@ class DashboardController extends Controller
         $totalProducts = Product::count();
         $totalCustomers = Customer::count();
         $totalSuppliers = Supplier::count();
-        $lowStockProducts = Product::where('stock','<=',5)->latest()->take(5)->get();
+        $lowStockProducts = Product::with('warehouseStocks')
+            ->get()
+            ->sortBy('total_stock')
+            ->take(5);
         $recentSales = Sale::with('customer')->latest()->take(10)->get();
         $monthlySales = Sale::selectRaw('MONTH(sale_date) as month')
             ->selectRaw('SUM(grand_total) as total')

@@ -109,7 +109,7 @@
             <div>
                 <label class="block mb-1">Stock</label>
                 <input type="number" name="stock" class="w-full border p-2 rounded"
-                    value="{{ old('stock', $product->stock) }}">
+                    value="{{ old('stock', $product->total_stock) }}">
 
                 @error('stock')
                     <p class="text-red-500 text-sm">{{ $message }}</p>

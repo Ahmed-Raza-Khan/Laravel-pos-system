@@ -6,6 +6,7 @@ use App\Models\Product;
 use App\Models\Customer;
 use App\Models\HeldCart;
 use App\Models\Setting;
+use App\Models\Warehouse;
 use App\Http\Requests\StoreSaleRequest;
 use App\Http\Requests\UpdateSaleRequest;
 use App\Http\Requests\RecordSalePaymentRequest;
@@ -30,21 +31,33 @@ class SaleController extends Controller
 
     public function create(Request $request)
     {
+        $warehouses = Warehouse::latest()->get();
+        
+        // Agar session khali hai, toh safely pehle warehouse ki ID save kar dein
+        if (!session()->has('selected_warehouse_id') && $warehouses->isNotEmpty()) {
+            session()->put('selected_warehouse_id', $warehouses->first()->id);
+        }
+
+        $selectedWarehouseId = session('selected_warehouse_id');
+
+        // ... aapki baqi products wali query ...
         $products = Product::when($request->search, function ($query) use ($request) {
-            $query->where(function ($q) use ($request) {
-                $q->where('name', 'like', '%' . $request->search . '%')
-                    ->orWhere('sku', 'like', '%' . $request->search . '%')
-                    ->orWhere('barcode', 'like', '%' . $request->search . '%');
-            });
-        })->where('stock', '>', 0)->latest()->paginate(12);
+            // ...
+        })
+        ->withSum(['warehouseStocks as current_warehouse_stock' => function($query) use ($selectedWarehouseId) {
+            $query->where('warehouse_id', $selectedWarehouseId);
+        }], 'stock')
+        ->latest()
+        ->paginate(12);
 
         $customers = Customer::latest()->get();
         $cart = session()->get('cart', []);
         $heldCarts = HeldCart::where('user_id', auth()->id())->latest()->get();
         $checkoutMeta = session()->get('checkout_meta', []);
+        
         $setting = Setting::first() ?: new Setting(['tax_percentage' => 0, 'currency' => 'PKR']);
 
-        return view('sales.create', compact('products', 'customers', 'cart', 'heldCarts', 'checkoutMeta', 'setting'));
+        return view('sales.create', compact('products', 'customers', 'warehouses', 'cart', 'heldCarts', 'checkoutMeta', 'setting'));
     }
 
     public function edit($id)
@@ -58,6 +71,7 @@ class SaleController extends Controller
         session()->put('cart', $this->saleService->saleToCart($sale));
         session()->put('checkout_meta', [
             'customer_id' => $sale->customer_id,
+            'warehouse_id' => $sale->warehouse_id,
             'discount_type' => $sale->discount_type,
             'discount_value' => $sale->discount_value,
             'tax_percentage' => $sale->tax_percentage,
@@ -67,22 +81,32 @@ class SaleController extends Controller
             'editing_sale_id' => $sale->id,
         ]);
 
+        session()->put('selected_warehouse_id', $sale->warehouse_id);
+
         return redirect()->route('sales.create')->with('success', 'Sale loaded into cart for editing.');
     }
 
     public function addToCart($id)
     {
         $product = Product::findOrFail($id);
+        $warehouseId = session('global_warehouse_id');
 
-        if ($product->stock < 1) {
-            return back()->with('error', 'Out of stock.');
+        // Warehouse specific stock fetch karein
+        $warehouseStock = \App\Models\WarehouseProduct::where('warehouse_id', $warehouseId)
+            ->where('product_id', $id)
+            ->first();
+
+        $availableStock = $warehouseStock ? $warehouseStock->stock : 0;
+
+        if ($availableStock < 1) {
+            return back()->with('error', "{$product->name} is out of stock in this warehouse.");
         }
 
         $cart = session()->get('cart', []);
 
         if (isset($cart[$id])) {
-            if ($product->stock <= $cart[$id]['qty']) {
-                return back()->with('error', 'Stock limit exceeded.');
+            if ($availableStock <= $cart[$id]['qty']) {
+                return back()->with('error', 'Warehouse stock limit exceeded.');
             }
             $cart[$id]['qty']++;
             $cart[$id]['total'] = $cart[$id]['qty'] * $cart[$id]['price'];
@@ -97,7 +121,6 @@ class SaleController extends Controller
         }
 
         session()->put('cart', $cart);
-
         return back()->with('success', 'Product added to cart.');
     }
 
@@ -112,7 +135,7 @@ class SaleController extends Controller
         $product = Product::findOrFail($id);
         $qty = max(1, (int) $request->qty);
 
-        if ($product->stock < $qty) {
+        if ($product->total_stock < $qty) {
             return back()->with('error', 'Stock limit exceeded.');
         }
 
@@ -132,12 +155,23 @@ class SaleController extends Controller
         return back()->with('success', 'Item removed.');
     }
 
-    public function clearCart()
+    public function setWarehouse(Request $request)
     {
-        session()->forget(['cart', 'checkout_meta']);
+        $request->validate([
+            'warehouse_id' => 'required|exists:warehouses,id'
+        ]);
 
-        return back()->with('success', 'Cart cleared.');
+        // Cart clear karne wali logic yahan se hata di gayi hai
+        session()->put('selected_warehouse_id', $request->warehouse_id);
+
+        return back()->with('success', 'Warehouse switched. Cart items retained.');
     }
+    // public function clearCart()
+    // {
+    //     session()->forget(['cart', 'checkout_meta']);
+
+    //     return back()->with('success', 'Cart cleared.');
+    // }
 
     public function holdCart(HoldCartRequest $request)
     {

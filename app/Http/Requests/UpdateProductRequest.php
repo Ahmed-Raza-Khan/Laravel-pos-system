@@ -23,7 +23,7 @@ class UpdateProductRequest extends FormRequest
             'barcode' => 'nullable|unique:products,barcode,' . $id,
             'purchase_price' => 'required|numeric|min:0',
             'sale_price' => 'required|numeric|min:0',
-            'stock' => 'required|integer|min:0',
+            // 'stock' => 'required|integer|min:0',
             'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'description' => 'nullable|string',
             'status' => 'required|boolean',

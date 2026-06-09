@@ -7,8 +7,10 @@ use App\Models\Product;
 use App\Models\Sale;
 use App\Models\SaleItem;
 use App\Models\SalePayment;
+use App\Models\WarehouseProduct;
 use Illuminate\Support\Facades\DB;
 use App\Interfaces\SaleRepositoryInterface;
+use App\Services\InventoryService; // <-- FIXED: Missing import added here
 
 class SaleService
 {
@@ -19,84 +21,75 @@ class SaleService
 
     public function createSale(array $data): Sale
     {
-        DB::beginTransaction();
-        try {
+        return DB::transaction(function () use ($data) {
+
             $cart = session()->get('cart', []);
+
             if (empty($cart)) {
                 throw new \Exception('Cart is empty.');
             }
 
-            $totals = $this->buildTotals($cart, $data);
-            $sale = null;
-            for ($attempt = 1; $attempt <= 3; $attempt++) {
-                try {
-                    $sale = $this->saleRepository->create(array_merge($totals, [
-                        'invoice_no' => $this->saleRepository->generateInvoiceNumber(),
-                        'customer_id' => $data['customer_id'] ?? null,
-                        'payment_method' => $data['payment_method'],
-                        'sale_date' => now(),
-                        'created_by' => auth()->id(),
-                        'notes' => $data['notes'] ?? null,
-                        'status' => 'completed',
-                    ]));
+            foreach ($cart as $item) {
+                $product = \App\Models\Product::findOrFail($item['product_id']);
+                
+                $warehouseStock = \App\Models\WarehouseProduct::where('warehouse_id', $data['warehouse_id'])
+                    ->where('product_id', $product->id)
+                    ->first();
 
-                    break;
-                } catch (\Illuminate\Database\QueryException $e) {
-                    if ($attempt == 3) {
-                        throw new \Exception('Failed to generate unique invoice number.');
-                    }
+                $availableStock = $warehouseStock ? $warehouseStock->stock : 0;
+
+                if ($availableStock < $item['qty']) {
+                    throw new \Exception("{$product->name} has insufficient stock ({$availableStock} available) in the selected warehouse.");
                 }
             }
 
-            $this->applyCartItems($sale, $cart);
-            session()->forget('cart');
-            DB::commit();
-
-            return $sale;
-        } catch (\Exception $e) {
-            DB::rollBack();
-            throw $e;
-        }
-    }
-
-    public function updateSale(int $id, array $data, array $cart): Sale
-    {
-        DB::beginTransaction();
-        try {
-            $sale = Sale::with('items')->findOrFail($id);
-
-            if ($sale->status === 'voided') {
-                throw new \Exception('Cannot edit a voided sale.');
-            }
-
-            if (empty($cart)) {
-                throw new \Exception('Cart is empty.');
-            }
-
-            $this->restoreSaleStock($sale, 'Stock restored before sale edit.');
-
-            SaleItem::where('sale_id', $sale->id)->delete();
-
             $totals = $this->buildTotals($cart, $data);
-            $paidAmount = min($data['paid_amount'], $totals['grand_total']);
-            $dueAmount = $totals['grand_total'] - $paidAmount;
 
-            $sale->update(array_merge($totals, [
+            $sale = $this->saleRepository->create(array_merge($totals, [
+                'invoice_no' => $this->saleRepository->generateInvoiceNumber(),
                 'customer_id' => $data['customer_id'] ?? null,
+                'warehouse_id' => $data['warehouse_id'],
                 'payment_method' => $data['payment_method'],
-                'paid_amount' => $paidAmount,
-                'due_amount' => max(0, $dueAmount),
+                'sale_date' => now(),
+                'created_by' => auth()->id(),
                 'notes' => $data['notes'] ?? null,
+                'status' => 'completed',
             ]));
 
             $this->applyCartItems($sale, $cart);
-            DB::commit();
 
-            return $sale->fresh(['customer', 'items.product']);
-        } catch (\Exception $e) {
-            DB::rollBack();
-            throw $e;
+            session()->forget(['cart', 'checkout_meta']);
+
+            return $sale;
+        });
+    }
+
+    public function updateCart(\Illuminate\Http\Request $request, $id)
+    {
+        $cart = session()->get('cart', []);
+
+        if (! isset($cart[$id])) {
+            return back()->with('error', 'Product not in cart.');
         }
+
+        $product = Product::findOrFail($id);
+        $qty = max(1, (int) $request->qty);
+        
+        $warehouseId = session('selected_warehouse_id');
+        $warehouseStock = \App\Models\WarehouseProduct::where('warehouse_id', $warehouseId)
+                                                    ->where('product_id', $id)
+                                                    ->first();
+        $availableStock = $warehouseStock ? $warehouseStock->stock : 0;
+
+        if ($availableStock < $qty) {
+            return back()->with('error', "Cannot update quantity. Only {$availableStock} items available in this warehouse.");
+        }
+
+        $cart[$id]['qty'] = $qty;
+        $cart[$id]['total'] = $qty * $cart[$id]['price'];
+        session()->put('cart', $cart);
+
+        return back()->with('success', 'Cart updated.');
     }
 
     public function voidSale(int $id): Sale
@@ -254,14 +247,16 @@ class SaleService
         $grandTotal = $afterDiscount + $taxAmount;
         $paidAmount = (float) ($data['paid_amount'] ?? 0);
 
-        if ($paidAmount < $grandTotal) {
-            throw new \Exception(
-                'Paid amount must be equal to or greater than Grand Total.'
-            );
+        if ($paidAmount < 0) {
+            throw new \Exception('Paid amount cannot be negative.');
         }
 
-        $changeAmount = $paidAmount - $grandTotal;
-        
+        $dueAmount = max(0, $grandTotal - $paidAmount);
+
+        $changeAmount = $paidAmount > $grandTotal
+            ? $paidAmount - $grandTotal
+            : 0;
+
         return [
             'subtotal' => round($subtotal, 2),
             'discount_type' => $data['discount_type'] ?? null,
@@ -271,7 +266,7 @@ class SaleService
             'tax_amount' => round($taxAmount, 2),
             'grand_total' => round($grandTotal, 2),
             'paid_amount' => round($paidAmount, 2),
-            'due_amount' => 0,
+            'due_amount' => round($dueAmount, 2),
             'change_amount' => round($changeAmount, 2),
         ];
     }
@@ -279,30 +274,48 @@ class SaleService
     protected function applyCartItems(Sale $sale, array $cart): void
     {
         foreach ($cart as $item) {
-            SaleItem::create([
-                'sale_id' => $sale->id,
-                'product_id' => $item['product_id'],
-                'quantity' => $item['qty'],
-                'price' => $item['price'],
-                'total' => $item['total'],
-            ]);
-
             $product = Product::findOrFail($item['product_id']);
-            if ($product->stock < $item['qty']) {
+            $warehouseStock = WarehouseProduct::firstOrCreate(
+                [
+                    'warehouse_id' => $sale->warehouse_id,
+                    'product_id'   => $product->id,
+                ],
+                [
+                    'stock' => 0
+                ]
+            );
+
+            if ($warehouseStock->stock < $item['qty']) {
+                throw new \Exception("{$product->name} insufficient warehouse stock.");
+            }
+
+            if ($product->total_stock < $item['qty']) {
                 throw new \Exception("{$product->name} stock not available.");
             }
 
-            $before = $product->stock;
-            $product->decrement('stock', $item['qty']);
+            $before = $warehouseStock->stock;
+
+            SaleItem::create([
+                'sale_id'    => $sale->id,
+                'product_id' => $product->id,
+                'quantity'   => $item['qty'],
+                'price'      => $item['price'],
+                'total'      => $item['total'],
+            ]);
+
+            $warehouseStock->decrement('stock', $item['qty']);
+
             $product->refresh();
 
+            // FIXED: Added missing comma after string message
             $this->inventoryService->log(
                 $product,
                 'sale',
                 $item['qty'],
                 $before,
-                $product->stock,
-                "Stock reduced from sale #{$sale->invoice_no}."
+                $warehouseStock->fresh()->stock,
+                "Stock reduced from sale #{$sale->invoice_no}", 
+                $sale->warehouse_id
             );
         }
     }
@@ -315,8 +328,20 @@ class SaleService
                 continue;
             }
 
-            $before = $product->stock;
-            $product->increment('stock', $item->quantity);
+            $warehouseStock = WarehouseProduct::firstOrCreate(
+                [
+                    'warehouse_id' => $sale->warehouse_id,
+                    'product_id' => $product->id,
+                ],
+                [
+                    'stock' => 0,
+                ]
+            );
+
+            $before = $warehouseStock->stock;
+
+            $warehouseStock->increment('stock', $item->quantity);
+
             $product->refresh();
 
             $this->inventoryService->log(
@@ -324,8 +349,9 @@ class SaleService
                 'adjustment',
                 $item->quantity,
                 $before,
-                $product->stock,
-                $note
+                $warehouseStock->fresh()->stock,
+                $note,
+                $sale->warehouse_id
             );
         }
     }

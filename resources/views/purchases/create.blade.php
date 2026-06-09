@@ -102,7 +102,7 @@
                                 @foreach($products as $product)
                                     <option value="{{ $product->id }}" data-price="{{ $product->purchase_price }}">
                                         {{ $product->name }}
-                                        (Stock: {{ $product->stock }})
+                                        (Stock: {{ $product->total_stock }})
                                     </option>
                                 @endforeach
                             </select>
@@ -164,7 +164,7 @@
                                 <option value="{{ $product->id }}"
                                         data-price="{{ $product->purchase_price }}">
                                     {{ $product->name }}
-                                    (Stock: {{ $product->stock }})
+                                    (Stock: {{ $product->total_stock }})
                                 </option>
                             @endforeach
                         </select>

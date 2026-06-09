@@ -140,7 +140,7 @@
                                 <p class="text-sm text-slate-500">SKU: {{ $product->sku }}</p>
                             </div>
                             <span class="bg-red-100 text-red-700 px-4 py-2 rounded-full text-sm font-bold">
-                                {{ $product->stock }} Left
+                                {{ $product->total_stock }} Left
                             </span>
                         </div>
                     @empty

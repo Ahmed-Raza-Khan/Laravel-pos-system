@@ -116,7 +116,7 @@ class ProductController extends Controller
 
         return response()->stream(function () {
             $handle = fopen('php://output', 'w');
-            fputcsv($handle, ['name', 'sku', 'barcode', 'category_id', 'brand_id', 'purchase_price', 'sale_price', 'stock', 'description', 'status']);
+            fputcsv($handle, ['name', 'sku', 'barcode', 'category_id', 'brand_id', 'purchase_price', 'sale_price', 'total_stock', 'description', 'status']);
 
             Product::with(['category', 'brand'])->orderBy('name')->chunk(200, function ($products) use ($handle) {
                 foreach ($products as $product) {
@@ -128,7 +128,7 @@ class ProductController extends Controller
                         $product->brand_id,
                         $product->purchase_price,
                         $product->sale_price,
-                        $product->stock,
+                        $product->total_stock,
                         $product->description,
                         $product->status,
                     ]);
@@ -184,7 +184,7 @@ class ProductController extends Controller
                 'brand_id' => $data['brand_id'] ?: null,
                 'purchase_price' => $data['purchase_price'] ?? 0,
                 'sale_price' => $data['sale_price'] ?? 0,
-                'stock' => $data['stock'] ?? 0,
+                // 'stock' => $data['stock'] ?? 0,
                 'description' => $data['description'] ?? null,
                 'status' => $data['status'] ?? 1,
             ]);

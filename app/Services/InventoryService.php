@@ -7,20 +7,19 @@ use App\Models\InventoryHistory;
 
 class InventoryService
 {
-    /**
-     * Create Inventory History
-     */
     public function log(
         Product $product,
         string $type,
         int $quantity,
         int $stockBefore,
         int $stockAfter,
-        ?string $notes = null
+        ?string $notes = null,
+        ?int $warehouseId = null
     ) {
 
         InventoryHistory::create([
             'product_id'   => $product->id,
+            'warehouse_id' => $warehouseId,
             'type'         => $type,
             'quantity'     => $quantity,
             'stock_before' => $stockBefore,

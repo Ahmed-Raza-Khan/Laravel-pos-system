@@ -47,6 +47,7 @@ use App\Services\ReportService;
 // Setting updates
 use App\Models\Setting;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Schema;
 
 // Warehouse interface repository service
 use App\Interfaces\WarehouseRepositoryInterface;
@@ -165,6 +166,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        if (! Schema::hasTable('settings')) {
+            return;
+        }
+
         $setting = Setting::first();
 
         if (! $setting) {

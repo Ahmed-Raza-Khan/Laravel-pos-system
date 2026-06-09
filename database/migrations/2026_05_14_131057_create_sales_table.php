@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('invoice_no')->unique();
             $table->foreignId('customer_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('warehouse_id')->constrained()->cascadeOnDelete();
             $table->decimal('subtotal', 12, 2)->default(0);
             $table->enum('discount_type', ['fixed', 'percentage'])
                 ->nullable();

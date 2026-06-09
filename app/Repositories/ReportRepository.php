@@ -162,11 +162,12 @@ class ReportRepository implements ReportRepositoryInterface
 
         return [
             'products' => $products,
-            'current_stock_count' => $allProducts->sum('stock'),
-            'low_stock' => $allProducts->where('stock', '>', 0)->where('stock', '<=', $lowStockThreshold)->values(),
-            'out_of_stock' => $allProducts->where('stock', '<=', 0)->values(),
-            'in_stock' => $allProducts->where('stock', '>', $lowStockThreshold)->values(),
-            'inventory_valuation' => $allProducts->sum(fn ($p) => $p->stock * $p->purchase_price),
+            'current_stock_count' => $allProducts->sum('total_stock'),
+            'low_stock' => $allProducts
+                ->filter(fn($p) =>$p->total_stock > 0 &&$p->total_stock <= $lowStockThreshold)->values(),
+            'out_of_stock' => $allProducts->filter(fn($p) =>$p->total_stock <= 0)->values(),
+            'in_stock' => $allProducts->filter(fn($p) =>$p->total_stock > $lowStockThreshold)->values(),
+            'inventory_valuation' => $allProducts->sum(fn ($p) => $p->total_stock * $p->purchase_price),
             'low_stock_threshold' => $lowStockThreshold,
         ];
     }

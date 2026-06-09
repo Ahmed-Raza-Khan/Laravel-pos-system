@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Models\Product;
 use App\Models\Purchase;
 use App\Models\PurchaseItem;
+use App\Models\WarehouseProduct;
 use App\Support\IndexTable;
 use Illuminate\Support\Facades\DB;
 use App\Services\InventoryService;
@@ -224,41 +225,68 @@ class PurchaseRepository implements PurchaseRepositoryInterface
 
     protected function addStockForItem(PurchaseItem $item, string $note): void
     {
-        $product = Product::findOrFail($item->product_id);
-        $before = $product->stock;
-        $product->stock += $item->quantity;
-        $product->save();
-        $product->refresh();
+        $purchase = $item->purchase;
+        $warehouseStock = WarehouseProduct::firstOrCreate(
+            [
+                'warehouse_id' => $purchase->warehouse_id,
+                'product_id' => $item->product_id,
+            ],
+            [
+                'stock' => 0,
+            ]
+        );
+
+        $before = $warehouseStock->stock;
+        $warehouseStock->increment('stock', $item->quantity);
+        $after = $warehouseStock->fresh()->stock;
 
         $this->inventoryService->log(
-            $product,
+            Product::findOrFail($item->product_id),
             'purchase',
             $item->quantity,
             $before,
-            $product->stock,
-            $note
+            $after,
+            $note,
+            $purchase->warehouse_id
         );
     }
 
     protected function removeStockForItem(PurchaseItem $item, string $note): void
     {
-        $product = Product::find($item->product_id);
-        if (! $product) {
+        $purchase = $item->purchase;
+        $warehouseStock = WarehouseProduct::where(
+            'warehouse_id',
+            $purchase->warehouse_id
+        )
+        ->where(
+            'product_id',
+            $item->product_id
+        )
+        ->first();
+
+        if (!$warehouseStock) {
             return;
         }
 
-        $before = $product->stock;
-        $product->stock = max(0, $product->stock - $item->quantity);
-        $product->save();
-        $product->refresh();
+        $before = $warehouseStock->stock;
+
+        $warehouseStock->stock = max(
+            0,
+            $warehouseStock->stock - $item->quantity
+        );
+
+        $warehouseStock->save();
+
+        $after = $warehouseStock->stock;
 
         $this->inventoryService->log(
-            $product,
+            Product::findOrFail($item->product_id),
             'adjustment',
             $item->quantity,
             $before,
-            $product->stock,
-            $note
+            $after,
+            $note,
+            $purchase->warehouse_id
         );
     }
 }

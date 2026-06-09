@@ -32,7 +32,7 @@
                 @forelse($out_of_stock as $product)
                     <section class="flex justify-between items-center p-3 bg-red-50 rounded-xl">
                         <span class="font-medium">{{ $product->name }}</span>
-                        <span class="text-red-600 font-bold text-sm">{{ $product->stock }} left</span>
+                        <span class="text-red-600 font-bold text-sm">{{ $product->total_stock }} left</span>
                     </section>
                 @empty
                     <p class="text-slate-500 text-sm">No out-of-stock products.</p>
@@ -45,7 +45,7 @@
                 @forelse($low_stock as $product)
                     <section class="flex justify-between items-center p-3 bg-amber-50 rounded-xl">
                         <span class="font-medium">{{ $product->name }}</span>
-                        <span class="text-amber-700 font-bold text-sm">{{ $product->stock }} left</span>
+                        <span class="text-amber-700 font-bold text-sm">{{ $product->total_stock }} left</span>
                     </section>
                 @empty
                     <p class="text-slate-500 text-sm">No low-stock alerts.</p>
@@ -74,15 +74,15 @@
                 <tbody class="divide-y divide-slate-200">
                     @foreach($products as $product)
                         @php
-                            $status = $product->stock <= 0 ? 'out' : ($product->stock <= $low_stock_threshold ? 'low' : 'ok');
+                            $status = $product->total_stock <= 0 ? 'out' : ($product->total_stock <= $low_stock_threshold ? 'low' : 'ok');
                         @endphp
                         <tr class="hover:bg-slate-50">
                             <td class="px-6 py-4 font-medium">{{ $product->name }}</td>
                             <td class="px-6 py-4 text-slate-500">{{ $product->sku }}</td>
                             <td class="px-6 py-4">{{ $product->category?->name ?? '—' }}</td>
-                            <td class="px-6 py-4 text-right font-semibold">{{ $product->stock }}</td>
+                            <td class="px-6 py-4 text-right font-semibold">{{ $product->total_stock }}</td>
                             <td class="px-6 py-4 text-right">{{ $setting->currency ?? 'PKR' }} {{ number_format($product->purchase_price, 0) }}</td>
-                            <td class="px-6 py-4 text-right">{{ $setting->currency ?? 'PKR' }} {{ number_format($product->stock * $product->purchase_price, 0) }}</td>
+                            <td class="px-6 py-4 text-right">{{ $setting->currency ?? 'PKR' }} {{ number_format($product->total_stock * $product->purchase_price, 0) }}</td>
                             <td class="px-6 py-4">
                                 @if($status === 'out')
                                     <span class="bg-red-100 text-red-700 px-2 py-1 rounded-full text-xs font-bold">Out</span>

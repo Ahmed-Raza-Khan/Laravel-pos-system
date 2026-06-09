@@ -12,7 +12,7 @@ class ProductRepository implements ProductRepositoryInterface
     {
         return IndexTable::apply(
             Product::with(['category', 'brand']),
-            ['name', 'sku', 'barcode', 'category.name', 'brand.name', 'sale_price', 'stock'],
+            ['name', 'sku', 'barcode', 'category.name', 'brand.name', 'sale_price'],
             'name'
         );
     }

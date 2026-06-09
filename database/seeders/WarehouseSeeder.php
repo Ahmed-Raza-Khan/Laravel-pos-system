@@ -16,6 +16,8 @@ class WarehouseSeeder extends Seeder
                 'phone' => '03001234567',
                 'address' => 'Karachi',
                 'status' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
                 'name' => 'Lahore Warehouse',
@@ -23,6 +25,8 @@ class WarehouseSeeder extends Seeder
                 'phone' => '03001234568',
                 'address' => 'Lahore',
                 'status' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
                 'name' => 'Karachi Warehouse',
@@ -30,6 +34,8 @@ class WarehouseSeeder extends Seeder
                 'phone' => '03001234569',
                 'address' => 'Karachi',
                 'status' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
         ]);
     }

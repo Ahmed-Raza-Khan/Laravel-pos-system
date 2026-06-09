@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\Warehouse;
+use App\Models\WarehouseProduct;
+use App\Models\InventoryHistory;
 use App\Support\IndexTable;
 use Illuminate\Http\Request;
 use App\Services\InventoryService;
@@ -22,17 +25,36 @@ class InventoryController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Product::with(['category','brand']);
+        $query = Product::with([
+            'category',
+            'brand'
+        ]);
+
         if ($request->filled('product_id')) {
             $query->where('id', $request->product_id);
         }
 
         $products = IndexTable::apply(
-            $query,['name', 'sku', 'barcode', 'stock'],'name'
+            $query,
+            ['name', 'sku', 'barcode'],
+            'name'
         );
 
-        $allProducts = Product::select('id', 'name')->orderBy('name')->get();
-        return view('inventory.index',compact('products', 'allProducts'));
+        $allProducts = Product::select(
+            'id',
+            'name'
+        )->orderBy('name')->get();
+
+        $warehouses = Warehouse::orderBy('name')->get();
+
+        return view(
+            'inventory.index',
+            compact(
+                'products',
+                'allProducts',
+                'warehouses'
+            )
+        );
     }
 
     /**
@@ -41,37 +63,80 @@ class InventoryController extends Controller
     public function adjust(Request $request, $id)
     {
         $request->validate([
-            'quantity' => ['required','integer'],
-            'type' => ['required','in:add,subtract'],
-            'notes' => ['nullable','string'],
+            'warehouse_id' => [
+                'required',
+                'exists:warehouses,id'
+            ],
+            'quantity' => [
+                'required',
+                'integer',
+                'min:1'
+            ],
+            'type' => [
+                'required',
+                'in:add,subtract'
+            ],
+            'notes' => [
+                'nullable',
+                'string'
+            ],
         ]);
 
         $product = Product::findOrFail($id);
-        $before = $product->stock;
+
+        $warehouseStock = WarehouseProduct::firstOrCreate(
+            [
+                'warehouse_id' => $request->warehouse_id,
+                'product_id' => $product->id,
+            ],
+            [
+                'stock' => 0,
+            ]
+        );
+
+        $before = $warehouseStock->stock;
+
         if ($request->type === 'add') {
-            $product->increment(
+
+            $warehouseStock->increment(
                 'stock',
                 $request->quantity
             );
+
         } else {
-            if ($request->quantity > $product->stock) {
-                return back()->with('error', 'Insufficient stock.');
+
+            if ($request->quantity > $warehouseStock->stock) {
+
+                return back()->with(
+                    'error',
+                    'Insufficient stock.'
+                );
             }
-            $product->decrement('stock', $request->quantity);
+
+            $warehouseStock->decrement(
+                'stock',
+                $request->quantity
+            );
         }
 
-        $product->refresh();
-        $after = $product->stock;
+        $warehouseStock->refresh();
+
+        $after = $warehouseStock->stock;
+
         $this->inventoryService->log(
             $product,
             'adjustment',
             $request->quantity,
             $before,
             $after,
-            $request->notes
+            $request->notes,
+            $request->warehouse_id
         );
 
-        return back()->with('success', 'Stock adjusted successfully.');
+        return back()->with(
+            'success',
+            'Stock adjusted successfully.'
+        );
     }
 
     /**
@@ -79,11 +144,17 @@ class InventoryController extends Controller
      */
     public function history()
     {
-        $histories = \App\Models\InventoryHistory::with([
+        $histories = InventoryHistory::with([
             'product',
-            'user'
-        ])->latest()->paginate(20);
+            'user',
+            'warehouse'
+        ])
+        ->latest()
+        ->paginate(20);
 
-        return view('inventory.history',compact('histories'));
+        return view(
+            'inventory.history',
+            compact('histories')
+        );
     }
 }

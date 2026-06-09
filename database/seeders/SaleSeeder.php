@@ -6,6 +6,7 @@ use App\Models\Sale;
 use App\Models\Product;
 use App\Models\Customer;
 use App\Models\SaleItem;
+use App\Models\Warehouse;
 use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
 
@@ -18,6 +19,7 @@ class SaleSeeder extends Seeder
     {
         $products = Product::all();
         $customers = Customer::all();
+        $warehouses = Warehouse::all();
 
         if ($products->count() == 0) {
             $this->command->error('No products found. Please seed products first.');
@@ -33,6 +35,7 @@ class SaleSeeder extends Seeder
             $sale = Sale::create([
                 'invoice_no'      => 'INV-' . now()->format('Ymd') . '-' . str_pad($i, 4, '0', STR_PAD_LEFT),
                 'customer_id'     => $customers->random()?->id,
+                'warehouse_id'    => $warehouses->random()->id,
                 'subtotal'        => 0,
                 'discount_type'   => 'fixed',
                 'discount_value'  => $discountAmount,
