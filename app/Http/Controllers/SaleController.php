@@ -89,9 +89,13 @@ class SaleController extends Controller
     public function addToCart($id)
     {
         $product = Product::findOrFail($id);
-        $warehouseId = session('global_warehouse_id');
+        
+        $warehouseId = session('selected_warehouse_id');
 
-        // Warehouse specific stock fetch karein
+        if (!$warehouseId) {
+            return back()->with('error', 'Please select a warehouse first.');
+        }
+
         $warehouseStock = \App\Models\WarehouseProduct::where('warehouse_id', $warehouseId)
             ->where('product_id', $id)
             ->first();
@@ -135,8 +139,15 @@ class SaleController extends Controller
         $product = Product::findOrFail($id);
         $qty = max(1, (int) $request->qty);
 
-        if ($product->total_stock < $qty) {
-            return back()->with('error', 'Stock limit exceeded.');
+        $warehouseId = session('selected_warehouse_id');
+        $warehouseStock = \App\Models\WarehouseProduct::where('warehouse_id', $warehouseId)
+            ->where('product_id', $id)
+            ->first();
+
+        $availableStock = $warehouseStock ? $warehouseStock->stock : 0;
+
+        if ($availableStock < $qty) {
+            return back()->with('error', "Stock limit exceeded. Only {$availableStock} items available in this warehouse.");
         }
 
         $cart[$id]['qty'] = $qty;

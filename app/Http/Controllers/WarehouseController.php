@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\WarehouseService;
+use App\Models\Warehouse;
 use App\Http\Requests\StoreWarehouseRequest;
 use App\Http\Requests\UpdateWarehouseRequest;
 
@@ -53,7 +54,12 @@ class WarehouseController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $warehouse = Warehouse::with(['products' => function($query) {
+            $query->select('products.id', 'products.name', 'products.sku', 'products.sale_price')
+                  ->withPivot('stock');
+        }])->findOrFail($id);
+
+        return view('warehouses.show', compact('warehouse'));
     }
 
     /**

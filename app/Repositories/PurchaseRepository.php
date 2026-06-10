@@ -63,7 +63,8 @@ class PurchaseRepository implements PurchaseRepositoryInterface
         DB::beginTransaction();
 
         try {
-            $purchase = Purchase::with('items')->findOrFail($id);
+            // lockForUpdate use kiya hai taake concurrent background double clicks handle ho sakein
+            $purchase = Purchase::with('items')->lockForUpdate()->findOrFail($id);
 
             if ($purchase->status === 'approved') {
                 throw new \Exception('Purchase is already approved.');
@@ -74,12 +75,9 @@ class PurchaseRepository implements PurchaseRepositoryInterface
             }
 
             foreach ($purchase->items as $item) {
+                // FIX: `addStockForItem` already database update aur logging dono handle karta hai.
+                // Doosri extra dependency (`warehouseStockService->increase`) ko yahan se drop kar diya taake stock exact 90 rahe.
                 $this->addStockForItem($item, "Stock added from approved purchase #{$purchase->invoice_no}.");
-                $this->warehouseStockService->increase(
-                    $purchase->warehouse_id,
-                    $item->product_id,
-                    $item->quantity
-                );
             }
 
             $purchase->update(['status' => 'approved']);
@@ -97,7 +95,7 @@ class PurchaseRepository implements PurchaseRepositoryInterface
         DB::beginTransaction();
 
         try {
-            $purchase = Purchase::with('items')->findOrFail($id);
+            $purchase = Purchase::with('items')->lockForUpdate()->findOrFail($id);
 
             if ($purchase->status === 'cancelled') {
                 throw new \Exception('Purchase is already cancelled.');
@@ -105,12 +103,8 @@ class PurchaseRepository implements PurchaseRepositoryInterface
 
             if ($purchase->status === 'approved') {
                 foreach ($purchase->items as $item) {
+                    // FIX: `removeStockForItem` inventory reduce aur logging dono handle kar raha hai, double handling removed.
                     $this->removeStockForItem($item, "Stock reversed from cancelled purchase #{$purchase->invoice_no}.");
-                    $this->warehouseStockService->decrease(
-                        $purchase->warehouse_id,
-                        $item->product_id,
-                        $item->quantity
-                    );
                 }
             }
 
@@ -133,7 +127,7 @@ class PurchaseRepository implements PurchaseRepositoryInterface
     {
         DB::beginTransaction();
         try {
-            $purchase = Purchase::with('items')->findOrFail($id);
+            $purchase = Purchase::with('items')->lockForUpdate()->findOrFail($id);
             if ($purchase->status === 'cancelled') {
                 throw new \Exception('Cancelled purchases cannot be edited.');
             }
@@ -141,11 +135,6 @@ class PurchaseRepository implements PurchaseRepositoryInterface
             if ($purchase->status === 'approved') {
                 foreach ($purchase->items as $item) {
                     $this->removeStockForItem($item, 'Stock reversed before purchase update.');
-                    $this->warehouseStockService->decrease(
-                        $purchase->warehouse_id,
-                        $item->product_id,
-                        $item->quantity
-                    );
                 }
             }
             PurchaseItem::where('purchase_id', $purchase->id)->delete();
@@ -174,15 +163,10 @@ class PurchaseRepository implements PurchaseRepositoryInterface
         DB::beginTransaction();
 
         try {
-            $purchase = Purchase::with('items')->findOrFail($id);
+            $purchase = Purchase::with('items')->lockForUpdate()->findOrFail($id);
             if ($purchase->status === 'approved') {
                 foreach ($purchase->items as $item) {
                     $this->removeStockForItem($item, 'Stock reversed from deleted purchase.');
-                    $this->warehouseStockService->decrease(
-                        $purchase->warehouse_id,
-                        $item->product_id,
-                        $item->quantity
-                    );
                 }
             }
 
@@ -237,7 +221,7 @@ class PurchaseRepository implements PurchaseRepositoryInterface
         );
 
         $before = $warehouseStock->stock;
-        $warehouseStock->increment('stock', $item->quantity);
+        $warehouseStock->increment('stock', $item->item ?? $item->quantity); 
         $after = $warehouseStock->fresh()->stock;
 
         $this->inventoryService->log(
@@ -254,27 +238,16 @@ class PurchaseRepository implements PurchaseRepositoryInterface
     protected function removeStockForItem(PurchaseItem $item, string $note): void
     {
         $purchase = $item->purchase;
-        $warehouseStock = WarehouseProduct::where(
-            'warehouse_id',
-            $purchase->warehouse_id
-        )
-        ->where(
-            'product_id',
-            $item->product_id
-        )
-        ->first();
+        $warehouseStock = WarehouseProduct::where('warehouse_id', $purchase->warehouse_id)
+            ->where('product_id', $item->product_id)
+            ->first();
 
         if (!$warehouseStock) {
             return;
         }
 
         $before = $warehouseStock->stock;
-
-        $warehouseStock->stock = max(
-            0,
-            $warehouseStock->stock - $item->quantity
-        );
-
+        $warehouseStock->stock = max(0, $warehouseStock->stock - $item->quantity);
         $warehouseStock->save();
 
         $after = $warehouseStock->stock;

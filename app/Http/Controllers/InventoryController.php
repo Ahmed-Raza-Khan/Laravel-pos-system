@@ -25,9 +25,17 @@ class InventoryController extends Controller
      */
     public function index(Request $request)
     {
+        $warehouseId = $request->get('warehouse_id');
+
+        // Main Query with exact collection mapping
         $query = Product::with([
             'category',
-            'brand'
+            'brand',
+            'warehouses' => function ($query) use ($warehouseId) {
+                if ($warehouseId) {
+                    $query->where('warehouses.id', $warehouseId);
+                }
+            }
         ]);
 
         if ($request->filled('product_id')) {
@@ -40,20 +48,12 @@ class InventoryController extends Controller
             'name'
         );
 
-        $allProducts = Product::select(
-            'id',
-            'name'
-        )->orderBy('name')->get();
-
+        $allProducts = Product::select('id', 'name')->orderBy('name')->get();
         $warehouses = Warehouse::orderBy('name')->get();
 
         return view(
             'inventory.index',
-            compact(
-                'products',
-                'allProducts',
-                'warehouses'
-            )
+            compact('products', 'allProducts', 'warehouses')
         );
     }
 

@@ -74,13 +74,33 @@
                                     {{ $product->name }}
                                 </td>
                                 <td class="px-6 py-4">
-                                    @if ($product->total_stock <= 5)
+                                    @php
+                                        $currentWarehouseId = request('warehouse_id');
+                                        $warehouseStock = 0;
+
+                                        if ($currentWarehouseId) {
+                                            // Agar database relation collection mein entry match karti hai toh wahan se stock uthao
+                                            $matchedWarehouse = $product->warehouses->first();
+                                            
+                                            // Agar filter requested warehouse dynamic match ho jaye toh pivot stock warna strict 0
+                                            if ($matchedWarehouse && $matchedWarehouse->id == $currentWarehouseId) {
+                                                $warehouseStock = $matchedWarehouse->pivot->stock ?? 0;
+                                            } else {
+                                                $warehouseStock = 0;
+                                            }
+                                        } else {
+                                            // Agar koi filter nahi laga, toh overall system ka total combined stock show karein
+                                            $warehouseStock = $product->total_stock ?? 0;
+                                        }
+                                    @endphp
+
+                                    @if ($warehouseStock <= 5)
                                         <span class="inline-flex rounded-full bg-red-100 px-3 py-1 text-sm font-bold text-red-700">
-                                            {{ $product->total_stock }} Left
+                                            {{ $warehouseStock }} Left
                                         </span>
                                     @else
                                         <span class="inline-flex rounded-full bg-emerald-100 px-3 py-1 text-sm font-bold text-emerald-700">
-                                            {{ $product->total_stock }} Units
+                                            {{ $warehouseStock }} Units
                                         </span>
                                     @endif
                                 </td>

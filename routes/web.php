@@ -108,7 +108,7 @@ Route::middleware(['auth', 'permission:manage users'])->group(function () {
 });
 
 Route::middleware(['auth', 'permission:manage warehouses'])->group(function () {
-    Route::resource('warehouses', WarehouseController::class)->except(['show']);
+    Route::resource('warehouses', WarehouseController::class);
 });
 
 require __DIR__.'/auth.php';
