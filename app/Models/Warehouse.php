@@ -19,7 +19,7 @@ class Warehouse extends Model
 
     public function suppliers()
     {
-        return $this->belongsToMany(Supplier::class);
+        return $this->belongsToMany(Supplier::class, 'supplier_warehouse');
     }
 
     public function products()

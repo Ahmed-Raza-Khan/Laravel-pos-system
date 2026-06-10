@@ -101,6 +101,8 @@ Route::middleware(['auth', 'permission:manage inventory'])->prefix('inventory')-
     Route::get('/', [InventoryController::class, 'index'])->name('index');
     Route::post('/adjust/{id}', [InventoryController::class, 'adjust'])->name('adjust');
     Route::get('/history', [InventoryController::class, 'history'])->name('history');
+    Route::get('/transfers', [InventoryController::class, 'showTransferForm'])->name('transfer.create');
+    Route::post('/transfers/process', [InventoryController::class, 'processTransfer'])->name('transfer.store');
 });
 
 Route::middleware(['auth', 'permission:manage users'])->group(function () {
