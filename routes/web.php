@@ -59,6 +59,7 @@ Route::middleware(['auth', 'permission:manage purchases'])->group(function () {
     Route::post('/purchases/{id}/approve', [PurchaseController::class, 'approve'])->name('purchases.approve');
     Route::post('/purchases/{id}/cancel', [PurchaseController::class, 'cancel'])->name('purchases.cancel');
     Route::resource('purchases', PurchaseController::class);
+    Route::get('/warehouses/{warehouse}/suppliers', [PurchaseController::class, 'getWarehouseSuppliers'])->name('warehouses.suppliers');
 });
 
 Route::middleware(['auth', 'permission:manage settings'])->group(function () {

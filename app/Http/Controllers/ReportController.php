@@ -73,7 +73,7 @@ class ReportController extends Controller
 
     public function stock()
     {
-        $data = $this->reportService->total_stockReport();
+        $data = $this->reportService->stockReport();
 
         return view('reports.stock', $data);
     }

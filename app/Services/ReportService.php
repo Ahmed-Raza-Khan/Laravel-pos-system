@@ -20,9 +20,9 @@ class ReportService
         return $this->repo->getDailySalesReport($date, $endDate);
     }
 
-    public function monthlySalesReport(?int $year = null): array
+    public function monthlySalesReport(?int $year = null, ?int $month = null): array
     {
-        return $this->repo->getMonthlySalesReport($year);
+        return $this->repo->getMonthlySalesReport($year, $month);
     }
 
     public function purchaseReport(?string $from = null, ?string $to = null, ?int $supplierId = null): array

@@ -1,7 +1,91 @@
 @extends('layouts.app')
 
+@push('styles')
+    <style>
+    @media print {
+
+        @page {
+            size: A4;
+            margin: 5mm;
+        }
+
+        /* Hide non-print elements */
+        .no-print,
+        aside,
+        nav,
+        header,
+        footer,
+        .sidebar,
+        .navbar {
+            display: none !important;
+        }
+
+        html,
+        body {
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+            height: auto !important;
+            background: #fff !important;
+        }
+
+        /* Reset Laravel layout */
+        #app,
+        main,
+        .main-content,
+        .content,
+        .container,
+        .wrapper,
+        .lg\:ml-64,
+        .ml-64,
+        .lg\:pl-64,
+        .pl-64 {
+            margin: 0 !important;
+            padding: 0 !important;
+            max-width: 100% !important;
+            width: 100% !important;
+        }
+
+        /* Print area takes full page */
+        .print-area {
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        /* Invoice card full width */
+        .print-area > section {
+            width: 100% !important;
+            max-width: 100% !important;
+            margin: 0 !important;
+            border: none !important;
+            border-radius: 0 !important;
+            box-shadow: none !important;
+        }
+
+        table {
+            width: 100% !important;
+            border-collapse: collapse !important;
+        }
+
+        th,
+        td {
+            padding: 8px !important;
+        }
+
+        * {
+            box-shadow: none !important;
+        }
+    }
+    </style>
+@endpush
+
 @section('content')
-<section class="w-full mx-auto print-area">
+<section class="w-full max-w-none print-area">
     <section class="bg-white rounded-3xl shadow-lg border border-slate-100 overflow-hidden">
         <section class="p-6 border-b border-slate-100">
             <div class="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
@@ -105,7 +189,7 @@
         @endif
 
         @if($sale->status !== 'voided' && $sale->due_amount > 0)
-            <section class="p-6 border-t bg-emerald-50/50">
+            <section class="p-6 border-t bg-emerald-50/50 collect-payment-section no-print">
                 <h3 class="font-bold text-slate-900 mb-4">Collect Due Payment</h3>
                 <form method="POST" action="{{ route('sales.payment', $sale->id) }}" class="grid sm:grid-cols-3 gap-4 max-w-2xl">
                     @csrf

@@ -20,7 +20,7 @@ class DashboardController extends Controller
     {
         $setting = Setting::first();
 
-        $totalSales = Sale::sum('grand_total');
+        $totalSales = Sale::where('status', '!=', 'voided')->sum('grand_total');
         $totalPurchases = Purchase::sum('total_amount');
         $netProfitLoss = $totalSales - $totalPurchases;
 
@@ -28,16 +28,21 @@ class DashboardController extends Controller
         $totalCustomers = Customer::count();
         $totalSuppliers = Supplier::count();
 
-        $voidSalesCount = Sale::where('status', 'void')->count();
+        $voidSalesCount = Sale::where('status', 'voided')->count();
         
         $lowStockProducts = Product::with('warehouseStocks')
             ->get()
             ->sortBy('total_stock')
             ->take(5);
 
-        $recentSales = Sale::with('customer')->latest()->take(6)->get();
+        $recentSales = Sale::with('customer')
+            ->where('status', '!=', 'voided')
+            ->latest()
+            ->take(6)
+            ->get();
 
-        $monthlySales = Sale::selectRaw('MONTH(sale_date) as month, SUM(grand_total) as total')
+        $monthlySales = Sale::where('status', '!=', 'voided')
+            ->selectRaw('MONTH(sale_date) as month, SUM(grand_total) as total')
             ->groupBy('month')
             ->orderBy('month')
             ->pluck('total', 'month');

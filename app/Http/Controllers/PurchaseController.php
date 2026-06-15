@@ -34,11 +34,11 @@ class PurchaseController extends Controller
      */
     public function create()
     {
-        $suppliers = Supplier::where('status', 1)->get();
         $products = Product::where('status', 1)->get();
-        $warehouses = Warehouse::where('status',1)->get();
+        $warehouses = Warehouse::where('status', 1)->get();
+        $suppliers = collect();
 
-        return view('purchases.create', compact('suppliers', 'products', 'warehouses'));
+        return view('purchases.create', compact('products','warehouses','suppliers'));
     }
 
     /**
@@ -80,12 +80,13 @@ class PurchaseController extends Controller
     public function edit(string $id)
     {
         $purchase = $this->purchaseService->getPurchase($id);
-
-        $suppliers = Supplier::where('status', 1)->get();
         $products = Product::where('status', 1)->get();
         $warehouses = Warehouse::where('status', 1)->get();
+        $suppliers = Supplier::whereHas('warehouses', function ($q) use ($purchase) {
+            $q->where('warehouses.id', $purchase->warehouse_id);
+        })->where('status', 1)->get();
 
-        return view('purchases.edit',compact('purchase', 'suppliers', 'products', 'warehouses'));
+        return view('purchases.edit', compact('purchase','products','warehouses','suppliers'));
     }
 
     /**
@@ -122,5 +123,12 @@ class PurchaseController extends Controller
             ->deletePurchase($id);
 
         return redirect()->route('purchases.index')->with('success', 'Purchase deleted successfully');
+    }
+    
+    public function getWarehouseSuppliers(Warehouse $warehouse)
+    {
+        return response()->json(
+            $warehouse->suppliers()->where('suppliers.status', 1)->select('suppliers.id','suppliers.name')->get()
+        );
     }
 }

@@ -15,6 +15,73 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <style>
+        @media print {
+            @page {
+                size: A4;
+                margin: 5mm;
+            }
+
+            aside, header, nav, footer, .no-print {
+                display: none !important;
+            }
+
+            html, body {
+                margin: 0 !important;
+                padding: 0 !important;
+                width: 100% !important;
+                background: #fff !important;
+            }
+
+            .ml-expanded, .ml-collapsed, .sidebar-expanded, .sidebar-collapsed {
+                margin-left: 0 !important;
+                width: 100% !important;
+            }
+
+            body > section, main {
+                width: 100% !important;
+                max-width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            .flex-1 {
+                flex: none !important;
+            }
+
+            .print-area {
+                width: 100% !important;
+                max-width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            .print-area > section {
+                width: 100% !important;
+                max-width: 100% !important;
+                margin: 0 !important;
+                border: none !important;
+                border-radius: 0 !important;
+                box-shadow: none !important;
+            }
+
+            .collect-payment-section {
+                display: none !important;
+            }
+
+            table {
+                width: 100% !important;
+                border-collapse: collapse !important;
+            }
+
+            * {
+                box-shadow: none !important;
+            }
+        }
+    </style>
+
+    @stack('styles')
 </head>
 <body class="min-h-screen bg-slate-100 text-slate-900 antialiased" x-data="{ sidebarOpen: localStorage.getItem('sidebarOpen') !== 'false' }">
     <section class="flex min-h-screen">
