@@ -34,36 +34,44 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div class="lg:col-span-2">
-                <div class="bg-white shadow rounded-xl p-4 mb-6">
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 mb-6">
                     <form method="GET">
-                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Search Product / SKU / Barcode"
-                            class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                        <div class="relative">
+                            <i class="fa-solid fa-magnifying-glass absolute left-4 top-4 text-slate-400"></i>
+                            <input type="text" name="search" value="{{ request('search') }}" placeholder="Search Product, SKU or Barcode..." class="w-full pl-12 pr-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500">
+                        </div>
                     </form>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
                     @foreach ($products as $product)
-                        <div class="bg-white shadow rounded-xl overflow-hidden hover:shadow-lg transition">
+                        <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden hover:shadow-xl transition-all duration-300">
+                            @if ($product->image)
+                                <img src="{{ asset('storage/'.$product->image) }}"
+                                    class="w-full h-44 object-cover">
+                            @endif
+
                             <div class="p-4">
-                                @if ($product->image)
-                                    <img src="{{ asset('storage/' . $product->image) }}"
-                                        class="w-full h-40 object-cover rounded-lg mb-3">
-                                @endif
-                                <h3 class="font-semibold text-gray-800 text-sm mb-1">
+                                <h3 class="font-bold text-slate-800 line-clamp-1">
                                     {{ $product->name }}
                                 </h3>
-                                @if($product->brand)
-                                    <div class="text-xs text-slate-500 mb-1">{{ $product->brand->name }}</div>
-                                @endif
-                                <p class="text-green-600 font-bold mb-1">
-                                    {{ $setting->currency ?? 'PKR' }} {{ number_format($product->sale_price, 2) }}
-                                </p>
-                                <p class="text-xs text-gray-500 mb-3">
-                                    Stock: {{ $product->current_warehouse_stock ?? 0 }} Left
-                                </p>
-                                <form method="POST" action="{{ route('sales.addToCart', $product->id) }}">
+                                <div class="text-xs text-slate-500 mt-1">
+                                    {{ $product->brand?->name }}
+                                </div>
+                                <div class="flex justify-between items-center mt-3">
+                                    <span class="text-lg font-bold text-green-600">
+                                        {{ number_format($product->sale_price,2) }}
+                                    </span>
+                                    <span class="text-xs bg-indigo-100 text-indigo-700 px-2 py-1 rounded-lg">
+                                        {{ $product->current_warehouse_stock ?? 0 }} In Stock
+                                    </span>
+                                </div>
+
+                                <form action="{{ route('sales.addToCart',$product->id) }}" method="POST" class="mt-4">
                                     @csrf
-                                    <button class="w-full bg-slate-900 hover:bg-slate-800 text-white text-sm font-medium py-2 rounded-lg transition">
+
+                                    <button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-xl font-medium">
+                                        <i class="fa-solid fa-cart-plus mr-2"></i>
                                         Add To Cart
                                     </button>
                                 </form>
@@ -218,9 +226,13 @@
                                         <span>Tax</span>
                                         <span id="tax-preview">0.00</span>
                                     </div>
-                                    <div class="flex justify-between text-lg font-bold border-t pt-2">
-                                        <span>Grand Total</span>
-                                        <span id="grand-total-preview">{{ number_format($subtotal, 2) }}</span>
+                                    <div class="bg-gradient-to-r from-green-600 to-emerald-600 text-slate-900 rounded-2xl p-5">
+                                        <div class="text-sm opacity-90">
+                                            Grand Total
+                                        </div>
+                                        <div class="text-3xl font-bold mt-1" id="grand-total-preview">
+                                            {{ number_format($subtotal,2) }}
+                                        </div>
                                     </div>
                                     <div class="flex justify-between">
                                         <span>Change</span>
@@ -254,8 +266,13 @@
                                     <textarea name="notes" rows="3" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
                                 </div>
 
-                                <button class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-lg transition">
-                                    Complete Sale
+                                <button class="w-full bg-green-400 text-white py-4 rounded-2xl font-bold text-lg">
+                                    <i class="fa-solid fa-circle-check mr-2"></i>
+                                    @if(isset($checkoutMeta['editing_sale_id']))
+                                        Update Sale
+                                    @else
+                                        Complete Sale
+                                    @endif
                                 </button>
                             </div>
                         </form>

@@ -41,14 +41,17 @@ class SaleController extends Controller
         $selectedWarehouseId = session('selected_warehouse_id');
 
         // ... aapki baqi products wali query ...
-        $products = Product::when($request->search, function ($query) use ($request) {
-            // ...
-        })
-        ->withSum(['warehouseStocks as current_warehouse_stock' => function($query) use ($selectedWarehouseId) {
-            $query->where('warehouse_id', $selectedWarehouseId);
-        }], 'stock')
-        ->latest()
-        ->paginate(12);
+        $products = Product::query()->when($request->search, function ($query) use ($request) {
+            $query->where(function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->search . '%')
+                ->orWhere('sku', 'like', '%' . $request->search . '%')
+                ->orWhere('barcode', 'like', '%' . $request->search . '%');
+            });
+        })->with(['brand', 'category'])
+        ->withSum([
+            'warehouseStocks as current_warehouse_stock' => function ($q) use ($selectedWarehouseId) {
+                $q->where('warehouse_id', $selectedWarehouseId);
+            }], 'stock')->latest()->paginate(12);
 
         $customers = Customer::latest()->get();
         $cart = session()->get('cart', []);
@@ -177,12 +180,13 @@ class SaleController extends Controller
 
         return back()->with('success', 'Warehouse switched. Cart items retained.');
     }
-    // public function clearCart()
-    // {
-    //     session()->forget(['cart', 'checkout_meta']);
 
-    //     return back()->with('success', 'Cart cleared.');
-    // }
+    public function clearCart()
+    {
+        session()->forget(['cart', 'checkout_meta']);
+
+        return back()->with('success', 'Cart cleared.');
+    }
 
     public function holdCart(HoldCartRequest $request)
     {

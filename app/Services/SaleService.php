@@ -10,7 +10,7 @@ use App\Models\SalePayment;
 use App\Models\WarehouseProduct;
 use Illuminate\Support\Facades\DB;
 use App\Interfaces\SaleRepositoryInterface;
-use App\Services\InventoryService; // <-- FIXED: Missing import added here
+use App\Services\InventoryService;
 
 class SaleService
 {
@@ -307,7 +307,6 @@ class SaleService
 
             $product->refresh();
 
-            // FIXED: Added missing comma after string message
             $this->inventoryService->log(
                 $product,
                 'sale',
@@ -354,5 +353,47 @@ class SaleService
                 $sale->warehouse_id
             );
         }
+    }
+
+    public function updateSale(int $saleId, array $data, array $cart): Sale
+    {
+        return DB::transaction(function () use ($saleId, $data, $cart) {
+            $sale = Sale::with('items')->findOrFail($saleId);
+            if ($sale->status === 'voided') {
+                throw new \Exception('Voided sales cannot be edited.');
+            }
+
+            $this->restoreSaleStock(
+                $sale, "Stock restored before editing sale #{$sale->invoice_no}"
+            );
+
+            $sale->items()->delete();
+
+            foreach ($cart as $item) {
+                $warehouseStock = WarehouseProduct::where(
+                    'warehouse_id',
+                    $data['warehouse_id']
+                )->where('product_id', $item['product_id'])->first();
+
+                $availableStock = $warehouseStock?->stock ?? 0;
+                if ($availableStock < $item['qty']) {
+                    throw new \Exception(
+                        "{$item['name']} has only {$availableStock} stock available."
+                    );
+                }
+            }
+
+            $totals = $this->buildTotals($cart, $data);
+
+            $sale->update(array_merge($totals, [
+                'customer_id'    => $data['customer_id'] ?? null,
+                'warehouse_id'   => $data['warehouse_id'],
+                'payment_method' => $data['payment_method'],
+                'notes'          => $data['notes'] ?? null,
+            ]));
+            $this->applyCartItems($sale, $cart);
+
+            return $sale->fresh(['items.product', 'customer']);
+        });
     }
 }

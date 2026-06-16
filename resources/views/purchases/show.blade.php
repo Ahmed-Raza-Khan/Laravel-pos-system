@@ -30,26 +30,22 @@
 
         {{-- Invoice Card --}}
         <div class="bg-white rounded-3xl shadow-lg border border-slate-200 overflow-hidden">
-
             {{-- Top Header --}}
-            <div class="bg-gradient-to-r from-slate-900 to-slate-700 text-white p-8">
-
+            <div class="bg-gradient-to-r from-slate-900 to-slate-700 text-slate-900 p-8">
                 <div class="flex flex-col md:flex-row justify-between">
-
                     <div>
                         <h2 class="text-3xl font-bold">
                             {{ $setting->store_name ?? config('app.name') }}
                         </h2>
-
-                        <p class="text-slate-300 mt-2">
+                        <p class="text-slate-500 mt-2">
                             {{ $setting->store_address }}
                         </p>
 
-                        <p class="text-slate-300">
+                        <p class="text-slate-500">
                             {{ $setting->contact_email }}
                         </p>
 
-                        <p class="text-slate-300">
+                        <p class="text-slate-500">
                             {{ $setting->contact_phone }}
                         </p>
                     </div>
@@ -60,7 +56,7 @@
                             PURCHASE
                         </h3>
 
-                        <p class="mt-3 text-slate-300">
+                        <p class="mt-3 text-slate-500">
                             Invoice #
                         </p>
 
@@ -297,7 +293,6 @@
 
     <style>
         @media print {
-
             .no-print {
                 display: none !important;
             }

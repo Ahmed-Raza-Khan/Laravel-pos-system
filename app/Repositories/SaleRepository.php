@@ -13,7 +13,8 @@ class SaleRepository implements SaleRepositoryInterface
     public function getAll()
     {
         return IndexTable::apply(
-            Sale::with(['customer', 'items']),
+            // Sale::with(['customer', 'items']),
+            Sale::with(['customer','warehouse']),
             ['invoice_no', 'customer.name', 'grand_total', 'status', 'sale_date'],
             'sale_date'
         );

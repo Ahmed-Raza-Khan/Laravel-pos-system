@@ -60,4 +60,9 @@ class Sale extends Model
     {
         return $this->belongsTo(User::class, 'voided_by');
     }
+
+    public function warehouse()
+    {
+        return $this->belongsTo(Warehouse::class);
+    }
 }
