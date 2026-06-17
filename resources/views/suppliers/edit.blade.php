@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="max-w-5xl mx-auto px-4 py-6">
+    <div class="w-full mx-auto px-4 py-6">
         {{-- Header --}}
         <div class="flex items-center gap-4 mb-8">
             @include('partials.back-button', ['href' => route('suppliers.index')])

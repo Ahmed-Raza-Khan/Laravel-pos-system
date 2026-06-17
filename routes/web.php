@@ -14,6 +14,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WarehouseController;
+use App\Http\Controllers\PermissionController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -108,8 +109,14 @@ Route::middleware(['auth', 'permission:manage inventory'])->prefix('inventory')-
 
 Route::middleware(['auth', 'permission:manage users'])->group(function () {
     Route::resource('users', UserController::class)->except(['show']);
+    
+    Route::get('/users/{user}/permissions', [UserController::class, 'showPermissions'])->name('users.permissions');
+    Route::put('/users/{user}/permissions', [UserController::class, 'updatePermissions'])->name('users.permissions.update');
+    // Role permission routes
+    Route::get('/roles/{role}/permissions', [PermissionController::class, 'editRolePermissions'])->name('roles.permissions');
+    Route::put('/roles/{role}/permissions', [PermissionController::class, 'updateRolePermissions'])->name('roles.permissions.update');
 });
-
+    
 Route::middleware(['auth', 'permission:manage warehouses'])->group(function () {
     Route::resource('warehouses', WarehouseController::class);
 });
