@@ -35,6 +35,11 @@ class Product extends Model
             : $this->warehouseStocks()->sum('stock');
     }
 
+    public function scopeWithTotalStock($query)
+    {
+        return $query->withSum('warehouseStocks', 'stock');
+    }
+
     public function category()
     {
         return $this->belongsTo(Category::class);

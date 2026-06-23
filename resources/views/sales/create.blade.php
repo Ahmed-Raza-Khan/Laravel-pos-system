@@ -35,17 +35,26 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div class="lg:col-span-2">
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 mb-6">
-                    <form method="GET">
+                    <form method="GET" id="search-form" action="{{ route('sales.create') }}">
                         <div class="relative">
-                            <i class="fa-solid fa-magnifying-glass absolute left-4 top-4 text-slate-400"></i>
-                            <input type="text" name="search" value="{{ request('search') }}" placeholder="Search Product, SKU or Barcode..." class="w-full pl-12 pr-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500">
+                            <i class="fa-solid fa-magnifying-glass absolute left-4 top-4 text-slate-400 z-10"></i>
+                            <input 
+                                type="text" 
+                                name="search" 
+                                id="product-search-input"
+                                value="{{ request('search') }}"
+                                placeholder="Search Product, SKU or Barcode..." 
+                                class="w-full pl-12 pr-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                                autocomplete="off"
+                            >
+                            <div id="search-results" class="absolute z-50 w-full mt-1 bg-white rounded-xl shadow-lg border border-slate-200 hidden max-h-96 overflow-y-auto"></div>
                         </div>
                     </form>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4" id="product-grid">
                     @foreach ($products as $product)
-                        <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden hover:shadow-xl transition-all duration-300">
+                        <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden hover:shadow-xl transition-all duration-300 product-card" data-product-id="{{ $product->id }}">
                             @if ($product->image)
                                 <img src="{{ asset('storage/'.$product->image) }}"
                                     class="w-full h-44 object-cover">
@@ -282,50 +291,250 @@
         </div>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const subtotal = {{ $subtotal }};
-            const taxInput = document.getElementById('tax_percentage');
-            const discountType = document.getElementById('discount_type');
-            const discountValue = document.getElementById('discount_value');
-            const paidAmount = document.getElementById('paid_amount');
-
-            function calculate() {
-                let discount = 0;
-                if (discountType.value === 'fixed') {
-                    discount = parseFloat(discountValue.value) || 0;
+    @push('scripts')
+        <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+        <script>
+            $(document).ready(function() {
+                let searchTimeout;
+                const searchInput = $('#product-search-input');
+                const resultsContainer = $('#search-results');
+                
+                // Add to cart function using AJAX
+                function addToCart(productId) {
+                    // Show loading indicator
+                    const $resultItem = $('.search-result-item[data-product-id="' + productId + '"]');
+                    $resultItem.css('opacity', '0.5');
+                    
+                    $.ajax({
+                        url: '{{ route("sales.addToCart", ":id") }}'.replace(':id', productId),
+                        type: 'POST', // Changed from 'method' to 'type'
+                        data: {
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function(response) {
+                            // Reload page to show updated cart
+                            window.location.reload();
+                        },
+                        error: function(xhr) {
+                            let errorMsg = 'Error adding product to cart.';
+                            if (xhr.responseJSON && xhr.responseJSON.message) {
+                                errorMsg = xhr.responseJSON.message;
+                            }
+                            alert(errorMsg);
+                            $resultItem.css('opacity', '1');
+                        }
+                    });
                 }
-                if (discountType.value === 'percentage') {
-                    discount = subtotal * ((parseFloat(discountValue.value) || 0) / 100);
+                
+                // Function to perform search
+                function performSearch(query) {
+                    if (query.length < 2) {
+                        resultsContainer.addClass('hidden').empty();
+                        return;
+                    }
+                    
+                    // Show loading state
+                    resultsContainer.html('<div class="p-4 text-center text-slate-500"><i class="fa-solid fa-spinner fa-spin mr-2"></i>Searching...</div>');
+                    resultsContainer.removeClass('hidden');
+                    
+                    $.ajax({
+                        url: '{{ route("sales.search-products") }}',
+                        type: 'GET',
+                        data: {
+                            search: query,
+                            warehouse_id: '{{ session('selected_warehouse_id') }}'
+                        },
+                        success: function(data) {
+                            resultsContainer.empty();
+                            
+                            if (data.length === 0) {
+                                resultsContainer.html('<div class="p-4 text-center text-slate-500">No products found</div>');
+                                return;
+                            }
+                            
+                            // Build results with click handler
+                            $.each(data, function(index, product) {
+                                const productHtml = `
+                                    <div class="flex items-center gap-3 p-3 hover:bg-indigo-50 border-b border-slate-100 last:border-0 transition cursor-pointer search-result-item" data-product-id="${product.id}">
+                                        <div class="w-12 h-12 rounded-lg bg-slate-100 flex-shrink-0 overflow-hidden">
+                                            ${product.image ? `<img src="{{ asset('storage') }}/${product.image}" class="w-full h-full object-cover">` : `<i class="fa-solid fa-box text-slate-400 text-xl flex items-center justify-center w-full h-full"></i>`}
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <div class="font-semibold text-slate-800 truncate">${product.name}</div>
+                                            <div class="text-sm text-slate-500">SKU: ${product.sku || 'N/A'}</div>
+                                            <div class="flex gap-3 mt-1 flex-wrap">
+                                                <span class="text-xs font-medium text-green-600">Price: $${product.sale_price}</span>
+                                                <span class="text-xs font-medium text-indigo-600">Stock: ${product.current_warehouse_stock || 0}</span>
+                                            </div>
+                                        </div>
+                                        <i class="fa-solid fa-chevron-right text-slate-300"></i>
+                                    </div>
+                                `;
+                                resultsContainer.append(productHtml);
+                            });
+                            
+                            // Add click handler to each result
+                            $('.search-result-item').on('click', function() {
+                                const productId = $(this).data('product-id');
+                                addToCart(productId);
+                            });
+                        },
+                        error: function(xhr) {
+                            console.error('Search error:', xhr.responseText);
+                            resultsContainer.html('<div class="p-4 text-center text-red-500">Error searching products. Please try again.</div>');
+                        }
+                    });
+                }
+                
+                // Handle input with debounce
+                searchInput.on('input', function() {
+                    clearTimeout(searchTimeout);
+                    const query = $(this).val().trim();
+                    
+                    if (query.length < 2) {
+                        resultsContainer.addClass('hidden').empty();
+                        return;
+                    }
+                    
+                    searchTimeout = setTimeout(function() {
+                        performSearch(query);
+                    }, 300);
+                });
+                
+                // Show results when input gets focus (if there are results)
+                searchInput.on('focus', function() {
+                    if (resultsContainer.children().length > 0) {
+                        resultsContainer.removeClass('hidden');
+                    }
+                });
+                
+                // Hide results when clicking outside
+                $(document).on('click', function(e) {
+                    if (!$(e.target).closest('#product-search-input, #search-results').length) {
+                        resultsContainer.addClass('hidden');
+                    }
+                });
+                
+                // Handle Enter key - submit form
+                searchInput.on('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        if (resultsContainer.children().length > 0 && !resultsContainer.hasClass('hidden')) {
+                            e.preventDefault();
+                        }
+                    }
+                });
+
+                // Existing calculation functions
+                const subtotal = {{ $subtotal }};
+                const taxInput = document.getElementById('tax_percentage');
+                const discountType = document.getElementById('discount_type');
+                const discountValue = document.getElementById('discount_value');
+                const paidAmount = document.getElementById('paid_amount');
+
+                function calculate() {
+                    let discount = 0;
+                    if (discountType.value === 'fixed') {
+                        discount = parseFloat(discountValue.value) || 0;
+                    }
+                    if (discountType.value === 'percentage') {
+                        discount = subtotal * ((parseFloat(discountValue.value) || 0) / 100);
+                    }
+
+                    let afterDiscount = subtotal - discount;
+                    let tax = afterDiscount * ((parseFloat(taxInput.value) || 0) / 100);
+                    let grandTotal = afterDiscount + tax;
+                    let paid = parseFloat(paidAmount.value) || 0;
+
+                    let due = 0;
+                    let change = 0;
+
+                    if (paid >= grandTotal) {
+                        change = paid - grandTotal;
+                    } else {
+                        due = grandTotal - paid;
+                    }
+
+                    document.getElementById('discount-preview').innerText = discount.toFixed(2);
+                    document.getElementById('tax-preview').innerText = tax.toFixed(2);
+                    document.getElementById('grand-total-preview').innerText = grandTotal.toFixed(2);
+                    document.getElementById('due-preview').innerText = due.toFixed(2);
+                    document.getElementById('change-preview').innerText = change.toFixed(2);
                 }
 
-                let afterDiscount = subtotal - discount;
-                let tax = afterDiscount * ((parseFloat(taxInput.value) || 0) / 100);
-                let grandTotal = afterDiscount + tax;
-                let paid = parseFloat(paidAmount.value) || 0;
+                if (taxInput) taxInput.addEventListener('input', calculate);
+                if (discountType) discountType.addEventListener('change', calculate);
+                if (discountValue) discountValue.addEventListener('input', calculate);
+                if (paidAmount) paidAmount.addEventListener('input', calculate);
 
-                let due = 0;
-                let change = 0;
+                calculate();
+            });
+        </script>
+    @endpush
 
-                if (paid >= grandTotal) {
-                    change = paid - grandTotal;
-                } else {
-                    due = grandTotal - paid;
-                }
-
-                document.getElementById('discount-preview').innerText = discount.toFixed(2);
-                document.getElementById('tax-preview').innerText = tax.toFixed(2);
-                document.getElementById('grand-total-preview').innerText = grandTotal.toFixed(2);
-                document.getElementById('due-preview').innerText = due.toFixed(2);
-                document.getElementById('change-preview').innerText = change.toFixed(2);
+    {{-- Add Select2 CSS and JS --}}
+    @push('styles')
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
+        <style>
+            .select2-container--bootstrap-5 .select2-selection {
+                min-height: 44px;
+                border-radius: 0.75rem;
+                border-color: #cbd5e1;
             }
-
-            taxInput.addEventListener('input', calculate);
-            discountType.addEventListener('change', calculate);
-            discountValue.addEventListener('input', calculate);
-            paidAmount.addEventListener('input', calculate);
-
-            calculate();
-        });
-    </script>
+            .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
+                line-height: 44px;
+                padding-left: 44px;
+            }
+            .select2-container--bootstrap-5 .select2-selection--single .select2-selection__arrow {
+                height: 44px;
+            }
+            .select2-container--bootstrap-5 .select2-dropdown {
+                border-radius: 0.75rem;
+                border-color: #cbd5e1;
+            }
+            .select2-container--bootstrap-5 .select2-results__option {
+                padding: 8px 12px;
+            }
+            .select2-container--bootstrap-5 .select2-results__option--highlighted {
+                background-color: #6366f1;
+            }
+            .select2-results__option .flex {
+                display: flex;
+            }
+            .select2-results__option .items-center {
+                align-items: center;
+            }
+            .select2-results__option .gap-3 {
+                gap: 0.75rem;
+            }
+            .select2-results__option .p-2 {
+                padding: 0.5rem;
+            }
+            #search-results {
+            max-height: 400px;
+            overflow-y: auto;
+            }
+            #search-results a {
+                text-decoration: none;
+                color: inherit;
+            }
+            #search-results a:hover {
+                background-color: #f8fafc;
+            }
+            #search-results::-webkit-scrollbar {
+                width: 6px;
+            }
+            #search-results::-webkit-scrollbar-track {
+                background: #f1f1f1;
+                border-radius: 3px;
+            }
+            #search-results::-webkit-scrollbar-thumb {
+                background: #cbd5e1;
+                border-radius: 3px;
+            }
+            #search-results::-webkit-scrollbar-thumb:hover {
+                background: #94a3b8;
+            }
+        </style>
+    @endpush
 @endsection

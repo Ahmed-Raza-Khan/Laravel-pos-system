@@ -67,13 +67,15 @@
                             </h2>
                             <p class="text-sm text-slate-500 mt-1 flex items-center gap-2 flex-wrap">
                                 @if ($product->category)
-                                    <span class="inline-flex items-center gap-1">
+                                    <span class="inline-flex items-center gap-1 me-3">
+                                        Category : 
                                         <i class="fas fa-tag text-indigo-400 text-xs"></i>
                                         {{ $product->category->name }}
                                     </span>
                                 @endif
                                 @if ($product->brand)
                                     <span class="inline-flex items-center gap-1">
+                                        Brand : 
                                         <i class="fas fa-building text-indigo-400 text-xs"></i>
                                         {{ $product->brand->name }}
                                     </span>
@@ -209,7 +211,7 @@
 
                     <div class="mt-6 flex flex-col sm:flex-row gap-3 justify-end">
                         <a href="{{ route('products.barcode', $product->id) }}" target="_blank"
-                            class="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-indigo-600 to-indigo-700 px-6 py-3 text-slate-900 shadow-lg shadow-indigo-200 hover:shadow-indigo-300 hover:scale-[1.02] transition-all duration-300">
+                            class="inline-flex items-center justify-center gap-2 rounded-2xl bg-slate-900 px-6 py-3 text-slate-900 shadow-lg shadow-indigo-200 hover:shadow-indigo-300 hover:scale-[1.02] transition-all duration-300 text-white">
                             <i class="fas fa-print"></i>
                             Print Barcode
                         </a>

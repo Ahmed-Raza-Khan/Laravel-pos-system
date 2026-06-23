@@ -12,11 +12,17 @@ class SaleRepository implements SaleRepositoryInterface
 {
     public function getAll()
     {
+        $perPage = (int) request('per_page', 10);
+        if ($perPage < 1) {
+            $perPage = 10;
+        }
+
         return IndexTable::apply(
             // Sale::with(['customer', 'items']),
             Sale::with(['customer','warehouse']),
             ['invoice_no', 'customer.name', 'grand_total', 'status', 'sale_date'],
-            'sale_date'
+            'sale_date',
+            $perPage
         );
     }
 

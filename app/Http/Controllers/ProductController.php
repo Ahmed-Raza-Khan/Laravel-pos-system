@@ -153,7 +153,9 @@ class ProductController extends Controller
         $file = fopen($request->file('file')->getRealPath(), 'r');
         $header = fgetcsv($file);
         $imported = 0;
+        $updated = 0;
         $skipped = [];
+        $errors = [];
 
         while (($row = fgetcsv($file)) !== false) {
             if (count($row) < 8) {
@@ -166,40 +168,83 @@ class ProductController extends Controller
             }
 
             $slug = Str::slug($data['name']);
-            $exists = Product::where('slug', $slug)
-                ->orWhere('sku', $data['sku'] ?? '')
-                ->orWhere('barcode', $data['barcode'] ?? '')->exists();
+            $sku = $data['sku'] ?? 'SKU-' . rand(10000, 99999);
+            $barcode = $data['barcode'] ?? 'BC-' . rand(1000000000, 9999999999);
 
-            if ($exists) {
-                $skipped[] = $data['name'];
+            // Check if product exists
+            $existingProduct = Product::where('slug', $slug)
+                ->orWhere('sku', $sku)
+                ->orWhere('barcode', $barcode)
+                ->first();
+
+            if ($existingProduct) {
+                $skipped[] = $data['name'] . ' (SKU: ' . $existingProduct->sku . ')';
                 continue;
             }
 
-            Product::create([
-                'name' => $data['name'],
-                'slug' => $slug,
-                'sku' => $data['sku'] ?? 'SKU-' . rand(10000, 99999),
-                'barcode' => $data['barcode'] ?? 'BC-' . rand(1000000000, 9999999999),
-                'category_id' => $data['category_id'] ?: 1,
-                'brand_id' => $data['brand_id'] ?: null,
-                'purchase_price' => $data['purchase_price'] ?? 0,
-                'sale_price' => $data['sale_price'] ?? 0,
-                // 'stock' => $data['stock'] ?? 0,
-                'description' => $data['description'] ?? null,
-                'status' => $data['status'] ?? 1,
-            ]);
+            try {
+                $product = Product::create([
+                    'name' => $data['name'],
+                    'slug' => $slug,
+                    'sku' => $sku,
+                    'barcode' => $barcode,
+                    'category_id' => $data['category_id'] ?? 1,
+                    'brand_id' => $data['brand_id'] ?? null,
+                    'purchase_price' => $data['purchase_price'] ?? 0,
+                    'sale_price' => $data['sale_price'] ?? 0,
+                    'description' => $data['description'] ?? null,
+                    'status' => $data['status'] ?? 1,
+                ]);
 
-            $imported++;
+                // Handle stock if provided
+                if (isset($data['stock']) && $data['stock'] > 0) {
+                    $defaultWarehouse = \App\Models\Warehouse::first();
+                    if ($defaultWarehouse) {
+                        \App\Models\WarehouseProduct::create([
+                            'warehouse_id' => $defaultWarehouse->id,
+                            'product_id' => $product->id,
+                            'stock' => $data['stock'],
+                        ]);
+                    }
+                }
+
+                $imported++;
+            } catch (\Exception $e) {
+                $errors[] = $data['name'] . ': ' . $e->getMessage();
+            }
         }
 
         fclose($file);
-        $message = "{$imported} products imported successfully.";
 
-        if (count($skipped)) {
-            $message .= ' Skipped duplicate products: ' . implode(', ', $skipped);
+        // Build response message
+        $message = [];
+        
+        if ($imported > 0) {
+            $message[] = "{$imported} product(s) imported successfully.";
+        }
+        
+        if (count($skipped) > 0) {
+            $message[] = count($skipped) . " product(s) skipped (already exist).";
+        }
+        
+        if (count($errors) > 0) {
+            $message[] = count($errors) . " product(s) failed to import.";
+        }
+        
+        if (empty($message)) {
+            $message[] = "No products were processed.";
         }
 
-        return redirect()->route('products.index')->with('success', $message);
+        // Store detailed results in session for display
+        session()->flash('import_results', [
+            'imported' => $imported,
+            'skipped' => $skipped,
+            'errors' => $errors,
+            'total' => $imported + count($skipped) + count($errors)
+        ]);
+
+        return redirect()->route('products.index')
+            ->with('success', implode(' ', $message));
     }
 
     private function generateSku()

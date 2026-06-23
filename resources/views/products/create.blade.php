@@ -109,13 +109,13 @@
             </div>
 
             <!-- Stock -->
-            <div>
+            {{-- <div>
                 <label class="block mb-2 text-sm font-semibold text-slate-700">
                     <i class="fas fa-warehouse text-indigo-500 mr-2"></i>Stock Quantity
                 </label>
                 <input type="number" name="stock" placeholder="Enter stock quantity"
                     class="w-full border-2 border-slate-200 p-3 rounded-xl shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 focus:ring-opacity-50 transition-all duration-300">
-            </div>
+            </div> --}}
 
             <!-- Image Upload -->
             <div>

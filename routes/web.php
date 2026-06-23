@@ -54,6 +54,7 @@ Route::middleware(['auth', 'permission:manage customers'])->group(function () {
 
 Route::middleware(['auth', 'permission:manage suppliers'])->group(function () {
     Route::resource('suppliers', SupplierController::class)->except(['show']);
+    Route::get('/suppliers/{supplier}', [SupplierController::class, 'show'])->name('suppliers.show');
 });
 
 Route::middleware(['auth', 'permission:manage purchases'])->group(function () {
@@ -97,6 +98,7 @@ Route::middleware(['auth', 'permission:manage sales'])->prefix('sales')->name('s
     Route::post('/update-cart/{id}', [SaleController::class, 'updateCart'])->name('updateCart');
     Route::delete('/remove-cart/{id}', [SaleController::class, 'removeCart'])->name('removeCart');
     Route::delete('/clear-cart', [SaleController::class, 'clearCart'])->name('clearCart');
+    Route::get('/search-products', [SaleController::class, 'searchProducts'])->name('search-products');
 });
 
 Route::middleware(['auth', 'permission:manage inventory'])->prefix('inventory')->name('inventory.')->group(function () {

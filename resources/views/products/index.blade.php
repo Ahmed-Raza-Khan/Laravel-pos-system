@@ -2,6 +2,74 @@
 
 @section('content')
 
+@if(session('import_results'))
+    <div class="bg-white rounded-lg shadow-lg p-6 mb-6 border border-slate-200">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-semibold text-slate-800">
+                <i class="fa-solid fa-file-import text-indigo-600 mr-2"></i>
+                Import Results
+            </h3>
+            <span class="text-sm text-slate-500">{{ now()->format('d/m/Y H:i:s') }}</span>
+        </div>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+            <div class="bg-green-50 p-4 rounded-lg border border-green-200">
+                <div class="flex items-center justify-between">
+                    <span class="text-sm font-medium text-green-700">Imported</span>
+                    <span class="text-2xl font-bold text-green-600">{{ session('import_results')['imported'] }}</span>
+                </div>
+                <span class="text-xs text-green-600">New products added</span>
+            </div>
+            
+            <div class="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+                <div class="flex items-center justify-between">
+                    <span class="text-sm font-medium text-yellow-700">Skipped</span>
+                    <span class="text-2xl font-bold text-yellow-600">{{ count(session('import_results')['skipped']) }}</span>
+                </div>
+                <span class="text-xs text-yellow-600">Products already exist</span>
+            </div>
+            
+            <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                <div class="flex items-center justify-between">
+                    <span class="text-sm font-medium text-blue-700">Total Processed</span>
+                    <span class="text-2xl font-bold text-blue-600">{{ session('import_results')['total'] }}</span>
+                </div>
+                <span class="text-xs text-blue-600">All products in file</span>
+            </div>
+        </div>
+        
+        @if(count(session('import_results')['skipped']) > 0)
+            <details class="mt-2">
+                <summary class="cursor-pointer text-sm text-yellow-600 hover:text-yellow-700 font-medium">
+                    <i class="fa-solid fa-chevron-down mr-1"></i>
+                    View Skipped Products ({{ count(session('import_results')['skipped']) }})
+                </summary>
+                <div class="mt-2 max-h-48 overflow-y-auto bg-yellow-50 p-3 rounded border border-yellow-200">
+                    <div class="flex flex-wrap gap-1">
+                        @foreach(session('import_results')['skipped'] as $product)
+                            <span class="inline-block bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-xs">{{ $product }}</span>
+                        @endforeach
+                    </div>
+                </div>
+            </details>
+        @endif
+        
+        @if(count(session('import_results')['errors'] ?? []) > 0)
+            <details class="mt-2">
+                <summary class="cursor-pointer text-sm text-red-600 hover:text-red-700 font-medium">
+                    <i class="fa-solid fa-chevron-down mr-1"></i>
+                    View Errors ({{ count(session('import_results')['errors']) }})
+                </summary>
+                <div class="mt-2 max-h-48 overflow-y-auto bg-red-50 p-3 rounded border border-red-200">
+                    @foreach(session('import_results')['errors'] as $error)
+                        <div class="text-sm text-red-700 py-1 border-b border-red-100 last:border-0">{{ $error }}</div>
+                    @endforeach
+                </div>
+            </details>
+        @endif
+    </div>
+@endif
+
 <div class="w-full mx-auto px-4 py-6 space-y-6">
 
     {{-- Header --}}
@@ -16,6 +84,7 @@
                 Manage product catalog, stock, and pricing from one place.
             </p>
         </div>
+
 
         {{-- Actions --}}
         <div class="flex flex-wrap gap-2">
@@ -68,7 +137,7 @@
 
                         @include('partials.sortable-th', ['field' => 'sale_price', 'label' => 'Sale'])
 
-                        @include('partials.sortable-th', ['field' => 'stock', 'label' => 'Stock'])
+                        @include('partials.sortable-th', ['field' => 'total_stock', 'label' => 'Stock'])
 
                         <th class="px-6 py-4 font-semibold">Status</th>
 

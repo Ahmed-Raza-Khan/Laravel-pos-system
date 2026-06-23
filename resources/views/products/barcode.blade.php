@@ -17,17 +17,17 @@
             <div class="bg-gradient-to-r from-indigo-600 to-indigo-700 px-8 py-6">
                 <div class="flex items-center justify-between">
                     <div>
-                        <h2 class="text-2xl font-bold text-white flex items-center gap-3">
+                        <h2 class="text-2xl font-bold text-black flex items-center gap-3">
                             <i class="fas fa-barcode"></i>
                             Barcode Label
                         </h2>
-                        <p class="text-indigo-200 mt-1 flex items-center gap-2">
+                        <p class="text-indigo-300 mt-2 flex items-center gap-2">
                             <i class="fas fa-tag text-xs"></i>
                             Product identification barcode
                         </p>
                     </div>
                     <div class="bg-white/20 backdrop-blur-sm rounded-full p-3 no-print">
-                        <i class="fas fa-print text-white text-2xl"></i>
+                        <i class="fas fa-print text-indigo-500 text-2xl"></i>
                     </div>
                 </div>
             </div>
@@ -41,23 +41,23 @@
                         {{ $product->name }}
                     </h3>
                     <div class="flex items-center justify-center gap-4 text-sm text-slate-500 flex-wrap">
-                        <span class="inline-flex items-center gap-1">
+                        <span class="inline-flex items-center gap-2">
                             <i class="fas fa-barcode text-indigo-400"></i>
                             SKU: <span class="font-semibold text-slate-700">{{ $product->sku }}</span>
                         </span>
                         @if ($product->category)
-                            <span class="inline-flex items-center gap-1">
+                            <span class="inline-flex items-center gap-2">
                                 <i class="fas fa-tag text-indigo-400"></i>
                                 {{ $product->category->name }}
                             </span>
                         @endif
                         @if ($product->brand)
-                            <span class="inline-flex items-center gap-1">
+                            <span class="inline-flex items-center gap-2">
                                 <i class="fas fa-building text-indigo-400"></i>
                                 {{ $product->brand->name }}
                             </span>
                         @endif
-                        <span class="inline-flex items-center gap-1">
+                        <span class="inline-flex items-center gap-2">
                             <i class="fas fa-warehouse text-indigo-400"></i>
                             Stock: <span class="font-semibold text-slate-700">{{ $product->total_stock }}</span>
                         </span>
@@ -66,7 +66,7 @@
 
                 <!-- Barcode Image -->
                 <div
-                    class="flex justify-center mb-8 p-8 bg-gradient-to-br from-slate-50 to-slate-100 rounded-3xl border-2 border-dashed border-slate-300">
+                    class="flex justify-center mb-8 p-8 bg-slate-100 rounded-3xl border-2 border-dashed border-slate-300">
                     <div class="bg-white p-6 rounded-2xl shadow-lg barcode-wrapper">
                         {!! DNS1D::getBarcodeHTML($product->barcode, 'C128', 2, 80) !!}
                     </div>
@@ -136,7 +136,7 @@
                     Close
                 </a>
                 <button onclick="window.print()"
-                    class="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-indigo-600 to-indigo-700 px-6 py-3 text-white shadow-lg shadow-indigo-200 hover:shadow-indigo-300 hover:scale-[1.02] transition-all duration-300">
+                    class="inline-flex items-center justify-center gap-2 rounded-2xl bg-slate-900 px-6 py-3 text-white shadow-lg shadow-indigo-200 hover:shadow-indigo-300 hover:scale-[1.02] transition-all duration-300">
                     <i class="fas fa-print"></i>
                     Print Barcode
                 </button>

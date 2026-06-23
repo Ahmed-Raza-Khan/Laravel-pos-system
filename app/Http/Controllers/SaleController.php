@@ -276,4 +276,47 @@ class SaleController extends Controller
             return back()->with('error', $e->getMessage());
         }
     }
+
+    public function searchProducts(Request $request)
+{
+    $search = $request->get('search');
+    $warehouseId = $request->get('warehouse_id', session('selected_warehouse_id'));
+    
+    // Log the search query for debugging
+    \Log::info('Search Products', ['search' => $search, 'warehouse_id' => $warehouseId]);
+    
+    if (strlen($search) < 2) {
+        return response()->json([]);
+    }
+    
+    $products = Product::with(['brand'])
+        ->where('status', 1)
+        ->where(function ($query) use ($search) {
+            $query->where('name', 'LIKE', "%{$search}%")
+                ->orWhere('sku', 'LIKE', "%{$search}%")
+                ->orWhere('barcode', 'LIKE', "%{$search}%");
+        })
+        ->limit(20)
+        ->get();
+    
+    // Log the results count
+    \Log::info('Products found', ['count' => $products->count()]);
+    
+    $results = $products->map(function ($product) use ($warehouseId) {
+        $stock = $product->warehouseStocks()
+            ->where('warehouse_id', $warehouseId)
+            ->first();
+        
+        return [
+            'id' => $product->id,
+            'name' => $product->name,
+            'sku' => $product->sku,
+            'image' => $product->image,
+            'sale_price' => $product->sale_price,
+            'current_warehouse_stock' => $stock ? $stock->stock : 0,
+        ];
+    });
+    
+    return response()->json($results);
+}
 }

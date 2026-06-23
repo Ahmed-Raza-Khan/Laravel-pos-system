@@ -162,7 +162,7 @@
             </div>
 
             {{-- Stock --}}
-            <div>
+            {{-- <div>
                 <label class="block mb-2 text-sm font-semibold text-slate-700">
                     <i class="fas fa-warehouse text-indigo-500 mr-2"></i>Stock Quantity
                 </label>
@@ -175,7 +175,7 @@
                         {{ $message }}
                     </p>
                 @enderror
-            </div>
+            </div> --}}
 
             {{-- Image --}}
             <div>
@@ -253,7 +253,7 @@
                 Cancel
             </a>
             <button type="submit"
-                class="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-indigo-600 to-indigo-700 px-6 py-3 text-white shadow-lg shadow-indigo-200 hover:shadow-indigo-300 hover:scale-[1.02] transition-all duration-300">
+                class="inline-flex items-center justify-center gap-2 rounded-2xl bg-slate-900 px-6 py-3 text-white shadow-lg shadow-indigo-200 hover:shadow-indigo-300 hover:scale-[1.02] transition-all duration-300">
                 <i class="fas fa-sync-alt"></i>
                 Update Product
             </button>
